@@ -1,0 +1,35 @@
+{
+  "name": "northrook/core-framework",
+  "description": "Core framework functionality.",
+  "type": "symfony-bundle",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Martin",
+      "email": "mn@northrook.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Core\\Framework\\": "src/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": ">=8.3",
+    "symfony/http-kernel": "@stable",
+    "symfony/dependency-injection": "@stable",
+    "symfony/routing": "@stable",
+    "symfony/security-core": "@stable",
+    "symfony/security-bundle": "@stable",
+    "northrook/core-services": "dev-main",
+    "symfony/serializer": "^7.1"
+  },
+  "require-dev": {
+    "northrook/dev-env": "dev-main"
+  },
+  "scripts": {
+    "phpstan": "vendor/bin/phpstan analyse"
+  }
+}
