@@ -56,10 +56,11 @@ final class CoreFrameworkBundle extends AbstractBundle
     ) : void {
 
         /** @used-by \Core\Framework\ServiceContainer */
-        $container->services()->set( 'core.service_locator' )
+        $container->services()
+            ->set( 'core.service_locator' )
             ->tag( 'container.service_locator' )
             ->args(
-                [
+                [[
                     Request::class    => service( Request::class ),
                     Pathfinder::class => service( Pathfinder::class ),
                     Document::class   => service( Document::class ),
@@ -75,25 +76,20 @@ final class CoreFrameworkBundle extends AbstractBundle
                     TokenStorageInterface::class         => service( 'security.token_storage' )->nullOnInvalid(),
                     CsrfTokenManagerInterface::class     => service( 'security.csrf.token_manager' )->nullOnInvalid(),
                     AuthorizationCheckerInterface::class => service( 'security.authorization_checker' ),
-                ],
+                ]],
             );
 
-        // Static Service Locator
-        // ->set( FrameworkServices::class )
-        // ->tag(
-        //     'kernel.event_listener',
-        //     [
-        //         'event'    => 'kernel.request',
-        //         'priority' => 1_024,
-        //     ],
-        // )
-        // ->tag(
-        //     'kernel.event_listener',
-        //     [
-        //         'event'    => 'kernel.terminate',
-        //         'priority' => 2_048,
-        //     ],
-        // )
-        // ->args( [service( 'core.framework.service_locator' )] );
+        $container->services()->defaults()
+            ->tag( 'controller.service_arguments' )
+            ->autowire()
+
+                // ResponseHeaderBag Service
+            ->set( Headers::class )
+
+                // Document Properties
+            ->set( Document::class )
+
+                // Template Parameters
+            ->set( Parameters::class );
     }
 }
