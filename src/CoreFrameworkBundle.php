@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Core\Framework;
 
 use Core\Framework\DependencyInjection\RegisterCoreServicesPass;
-use Core\Service\{Pathfinder, Request};
 use Core\Framework\Response\{Document, Headers, Parameters};
+use Core\Service\{Pathfinder, Request};
 use Override;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -55,7 +55,7 @@ final class CoreFrameworkBundle extends AbstractBundle
         ContainerBuilder      $builder,
     ) : void {
 
-        /** @used-by \Core\Framework\ServiceContainer */
+        /** @used-by \Core\Framework\DependencyInjection\ServiceContainer */
         $container->services()
             ->set( 'core.service_locator' )
             ->tag( 'container.service_locator' )

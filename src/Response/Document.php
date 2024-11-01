@@ -7,6 +7,7 @@ namespace Core\Framework\Response;
 use Northrook\{ArrayAccessor, Logger\Log, Resource\Path, Exception\Trigger};
 use Support\Normalize;
 use function Support\toString;
+use Stringable;
 
 /**
  * Handles all Document related properties.
@@ -91,9 +92,9 @@ final class Document extends ArrayAccessor
         return $this;
     }
 
-    public function head( string $key, string|Element $html ) : Document
+    public function head( string $key, string|Stringable $html ) : Document
     {
-        $value = $html instanceof Element ? $html->toString() : $html;
+        $value = $html instanceof Stringable ? $html->__toString() : $html;
 
         // TODO : Cache
         // TODO : Linting / validation step

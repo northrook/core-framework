@@ -4,14 +4,20 @@ declare(strict_types=1);
 
 namespace Core\Framework\Controller;
 
+use Core\Framework\DependencyInjection\ServiceContainer;
+use Exception;
 use Northrook\Resource\URL;
 use Symfony\Component\Finder\SplFileInfo;
-use Symfony\Component\HttpFoundation\{File, BinaryFileResponse, JsonResponse, RedirectResponse, Response, ResponseHeaderBag};
+use Symfony\Component\HttpFoundation\{BinaryFileResponse,
+        File,
+        JsonResponse,
+        RedirectResponse,
+        Response,
+        ResponseHeaderBag};
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-use Exception;
 use Throwable;
 
 trait ResponseMethods
