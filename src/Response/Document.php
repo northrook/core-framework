@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Framework\Response;
 
-use Northrook\{ArrayAccessor, Logger\Log, Resource\Path, Exception\Trigger};
+use Northrook\{ArrayAccessor, Exception\E_Value, Logger\Log, Resource\Path};
 use Support\Normalize;
 use function Support\toString;
 use Stringable;
@@ -122,7 +122,7 @@ final class Document extends ArrayAccessor
 
         foreach ( $rule as $content ) {
             if ( ! \is_string( $content ) ) {
-                Trigger::valueError(
+                E_Value::error(
                     message : 'Invalid robots rule for {bot}, a string is required, but {type} was provided.',
                     context : ['bot' => $bot, 'type' => \gettype( $content )],
                 );

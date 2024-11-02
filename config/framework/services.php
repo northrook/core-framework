@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Core\Service\{Pathfinder, Request};
+use Core\Framework\Settings;
 use Core\Framework\Response\{Document, Headers, Parameters};
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -31,6 +32,7 @@ return static function( ContainerConfigurator $container ) : void {
                 Document::class   => service( Document::class ),
                 Parameters::class => service( Parameters::class ),
                 Headers::class    => service( Headers::class ),
+                Settings::class   => service( Settings::class ),
 
                 // Symfony
                 ParameterBagInterface::class => service( 'parameter_bag' ),

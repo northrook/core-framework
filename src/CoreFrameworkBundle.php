@@ -17,7 +17,6 @@ use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
  */
 final class CoreFrameworkBundle extends AbstractBundle
 {
-
     #[Override]
     public function getPath() : string
     {
@@ -46,6 +45,13 @@ final class CoreFrameworkBundle extends AbstractBundle
         ContainerConfigurator $container,
         ContainerBuilder      $builder,
     ) : void {
+
+        $container->services()
+                // Settings handler
+            ->set( Settings::class )
+            ->args( ['%kernel.cache_dir%/framework-settings.php'] )
+            ->tag( 'controller.service_arguments' )
+            ->autowire();
 
         \array_map( [$container, 'import'], $this->config() );
     }
