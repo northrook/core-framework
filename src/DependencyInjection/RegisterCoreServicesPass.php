@@ -42,7 +42,7 @@ final class RegisterCoreServicesPass implements CompilerPassInterface
     private function injectServiceLocator( ContainerBuilder $container ) : void
     {
         foreach ( \get_declared_classes() as $class ) {
-            if ( uses_trait( $class, ServiceContainer::class ) && $container->hasDefinition( $class ) ) {
+            if ( uses_trait( $class, ServiceContainer::class, true ) && $container->hasDefinition( $class ) ) {
                 $container->getDefinition( $class )->addMethodCall( 'setServiceLocator', [$container->getDefinition( 'core.service_locator' )] );
             }
         }

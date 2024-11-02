@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace Core\Framework\Controller;
 
 use Core\Framework\DependencyInjection\ServiceContainer;
+use Core\Service\Request;
 use Exception;
 use Northrook\Resource\URL;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\{BinaryFileResponse,
-        File,
-        JsonResponse,
-        RedirectResponse,
-        Response,
-        ResponseHeaderBag};
+    File,
+    JsonResponse,
+    RedirectResponse,
+    Response,
+    ResponseHeaderBag};
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -22,6 +23,8 @@ use Throwable;
 
 trait ResponseMethods
 {
+    use ServiceContainer;
+
     /**
      * Forwards the request to another controller.
      *
@@ -33,7 +36,7 @@ trait ResponseMethods
      */
     protected function forward( string $controller, array $path = [], array $query = [] ) : Response
     {
-        $request             = $this->request->current;
+        $request             = $this->serviceLocator( Request::class )->current;
         $path['_controller'] = $controller;
         $subRequest          = $request->duplicate( $query, null, $path );
 
