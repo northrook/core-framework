@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Framework;
 
-use Core\Framework\Controller\{ContentResponse, DocumentResponse, ResponseMethods};
+use Core\Framework\Controller\{OnContent, OnDocument, ResponseMethods};
 use Core\Framework\DependencyInjection\ServiceContainer;
 use Core\Framework\DependencyInjection\ServiceContainerInterface;
 use Core\Framework\Response\{Document, Headers, Parameters};
@@ -37,7 +37,7 @@ abstract class Controller implements ServiceContainerInterface
      */
     private function controllerResponseMethods() : void
     {
-        $responseType = $this->getRequest()->isHtmx ? ContentResponse::class : DocumentResponse::class;
+        $responseType = $this->getRequest()->isHtmx ? OnContent::class : OnDocument::class;
 
         $autowire = [
             Headers::class,

@@ -8,6 +8,7 @@ use Core\Framework\DependencyInjection\Exception\ServiceContainerException;
 use Northrook\Logger\Log;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
+use Symfony\Component\HttpFoundation\{Request, RequestStack};
 use Symfony\Contracts\Service\Attribute\Required;
 use Throwable;
 
@@ -18,6 +19,12 @@ trait ServiceContainer
 {
     protected readonly ServiceLocator $serviceLocator;
 
+    #[Required]
+    final public function setServiceLocator( ServiceLocator $serviceLocator ) : void
+    {
+        $this->serviceLocator = $serviceLocator;
+    }
+
     /**
      * @final
      *
@@ -27,8 +34,8 @@ trait ServiceContainer
      */
     final protected function applicationEnvironment( ?string $is = null ) : string|bool
     {
-        $env   = (string) $this->parameterBag()->get( 'kernel.environment' );
-        $debug = (bool) $this->parameterBag()->get( 'kernel.debug' );
+        $env   = (string) $this->getParameterBag()->get( 'kernel.environment' );
+        $debug = (bool) $this->getParameterBag()->get( 'kernel.debug' );
 
         // Log a warning if debugging is enabled in production.
         if ( $debug && 'prod' === $env ) {
@@ -49,15 +56,9 @@ trait ServiceContainer
         return $env;
     }
 
-    final protected function parameterBag() : ParameterBagInterface
+    final protected function getParameterBag() : ParameterBagInterface
     {
         return $this->serviceLocator( ParameterBagInterface::class );
-    }
-
-    #[Required]
-    final public function setServiceLocator( ServiceLocator $serviceLocator ) : void
-    {
-        $this->serviceLocator = $serviceLocator;
     }
 
     /**
@@ -68,19 +69,22 @@ trait ServiceContainer
      * @param class-string<Service> $get
      * @param bool                  $nullable
      *
-     * @return Service
+     * @return null|Service
      */
-    final protected function serviceLocator( string $get, bool $nullable = false ) : mixed
+    final protected function serviceLocator( string $get, bool $nullable = false )
     {
         try {
-            return $this->serviceLocator->get( $get );
+            $service = match ( $get ) {
+                Request::class => $this->serviceLocator->get( RequestStack::class )->getCurrentRequest(),
+                default        => $this->serviceLocator->get( $get ),
+            };
+
+            \assert( $service instanceof $get );
         }
         catch ( Throwable $exception ) {
             $exception = new ServiceContainerException( $get, previous : $exception );
 
-            if ( ! $nullable ) {
-                throw $exception;
-            }
+            $service = $nullable ? null : throw $exception;
 
             if ( $this->applicationEnvironment( 'dev' ) ) {
                 Log::exception( $exception );
@@ -88,6 +92,6 @@ trait ServiceContainer
 
         }
 
-        return null;
+        return $service;
     }
 }

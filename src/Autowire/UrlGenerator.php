@@ -1,7 +1,8 @@
 <?php
 
-namespace Core\Framework\DependencyInjection;
+namespace Core\Framework\Autowire;
 
+use Core\Framework\DependencyInjection\ServiceContainer;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 trait UrlGenerator

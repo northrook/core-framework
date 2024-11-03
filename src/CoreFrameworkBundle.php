@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Framework;
 
-use Core\Framework\DependencyInjection\RegisterCoreServicesPass;
+use Core\Framework\DependencyInjection\Compiler\RegisterCoreServicesPass;
 use Override;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -47,7 +47,7 @@ final class CoreFrameworkBundle extends AbstractBundle
     ) : void {
 
         $container->services()
-                // Settings handler
+            // Settings handler
             ->set( Settings::class )
             ->args( ['%kernel.cache_dir%/framework-settings.php'] )
             ->tag( 'controller.service_arguments' )
@@ -61,6 +61,6 @@ final class CoreFrameworkBundle extends AbstractBundle
      */
     private function config() : array
     {
-        return \glob( \dirname( __DIR__, 2 ).'/config/framework/*.php' ) ?: [];
+        return \glob( \dirname( __DIR__ ).'/config/framework/*.php' ) ?: [];
     }
 }

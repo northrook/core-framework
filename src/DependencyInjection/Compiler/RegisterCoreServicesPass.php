@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Core\Framework\DependencyInjection;
+namespace Core\Framework\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\{ContainerBuilder, Reference};
-use function Support\uses_trait;
 use CompileError;
+use Symfony\Component\DependencyInjection\{ContainerBuilder, Reference};
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use function Support\uses_trait;
 
 final class RegisterCoreServicesPass implements CompilerPassInterface
 {
@@ -38,14 +38,36 @@ final class RegisterCoreServicesPass implements CompilerPassInterface
         $container->getDefinition( 'core.service_locator' )->setArguments( [$serviceLocatorArguments] );
     }
 
-
     private function injectServiceLocator( ContainerBuilder $container ) : void
     {
-        foreach ( \get_declared_classes() as $class ) {
-            if ( uses_trait( $class, ServiceContainer::class, true ) && $container->hasDefinition( $class ) ) {
-                $container->getDefinition( $class )->addMethodCall( 'setServiceLocator', [$container->getDefinition( 'core.service_locator' )] );
+        $coreServiceLocator = $container->getDefinition( 'core.service_locator' );
+
+        foreach ( $this->getDeclaredClasses( $container->getServiceIds() ) as $class ) {
+            if (
+                uses_trait( $class, ServiceContainer::class, true )
+                && $container->hasDefinition( $class )
+            ) {
+                $container->getDefinition( $class )
+                    ->addMethodCall(
+                        'setServiceLocator',
+                        [$coreServiceLocator],
+                    );
             }
         }
     }
 
+    /**
+     * @param string[] $services
+     *
+     * @return array<int, class-string>
+     */
+    private function getDeclaredClasses( array $services ) : array
+    {
+        return \array_values(
+            \array_unique( [
+                ...\get_declared_classes(),
+                ...\array_filter( $services, 'class_exists' ),
+            ] ),
+        );
+    }
 }

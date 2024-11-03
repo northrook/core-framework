@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Core\Framework\Controller;
 
 use Core\Framework\DependencyInjection\ServiceContainer;
-use Core\Service\Request;
 use Exception;
 use Northrook\Resource\URL;
 use Symfony\Component\Finder\SplFileInfo;
@@ -13,6 +12,7 @@ use Symfony\Component\HttpFoundation\{BinaryFileResponse,
     File,
     JsonResponse,
     RedirectResponse,
+    Request,
     Response,
     ResponseHeaderBag};
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -36,7 +36,7 @@ trait ResponseMethods
      */
     protected function forward( string $controller, array $path = [], array $query = [] ) : Response
     {
-        $request             = $this->serviceLocator( Request::class )->current;
+        $request             = $this->serviceLocator( Request::class );
         $path['_controller'] = $controller;
         $subRequest          = $request->duplicate( $query, null, $path );
 

@@ -1,8 +1,9 @@
 <?php
 
-namespace Core\Framework\DependencyInjection;
+namespace Core\Framework\Autowire;
 
-use Core\Framework  ;
+use Core\Framework;
+use Core\Framework\DependencyInjection\ServiceContainer;
 
 trait Settings
 {
