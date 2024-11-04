@@ -24,7 +24,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 final class ResponseHandler implements EventSubscriberInterface
 {
-    #[Override]
     public static function getSubscribedEvents() : array
     {
         return [

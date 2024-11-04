@@ -6,12 +6,9 @@ use Northrook\Clerk;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\{ExceptionEvent, ResponseEvent, TerminateEvent};
 
-final readonly class LifecycleDataCollector implements EventSubscriberInterface
+final readonly class LifecycleProfiler implements EventSubscriberInterface
 {
-    public function __construct( private Clerk $monitor )
-    {
-        dump( $this );
-    }
+    public function __construct( private Clerk $monitor ) {}
 
     public static function getSubscribedEvents() : array
     {
@@ -68,5 +65,7 @@ final readonly class LifecycleDataCollector implements EventSubscriberInterface
         foreach ( $this->monitor->getEvents() as $event ) {
             $event->stop();
         }
+
+        $this->monitor->reset( true );
     }
 }
