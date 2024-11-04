@@ -12,6 +12,7 @@ use Core\Framework\Response\{Document, Headers, Parameters};
 use Northrook\Logger\Log;
 use ReflectionClass;
 use ReflectionException;
+
 abstract class Controller implements ServiceContainerInterface
 {
     use ServiceContainer, ResponseMethods;
@@ -25,8 +26,11 @@ abstract class Controller implements ServiceContainerInterface
     /**
      * @return void
      */
-    private function controllerResponseMethods() : void
+    final protected function controllerResponseMethods() : void
     {
+
+        // Add invoked methods to the Request attributes
+        dump( $this->getRequest()->attributes->get( '_htmx_request' ) );
         $responseType = $this->getRequest()->headers->has( 'HX-Request' ) ? OnContent::class : OnDocument::class;
 
         $autowire = [

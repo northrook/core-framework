@@ -34,11 +34,11 @@ final class ResponseHandler implements EventSubscriberInterface
 
     public function handleView( ViewEvent $event ) : void
     {
-        dump( $event );
+        // dump( $event );
     }
 
     public function handleResponse( ResponseEvent $event ) : void
     {
-        dump( $event );
+        // dump( $event );
     }
 }
