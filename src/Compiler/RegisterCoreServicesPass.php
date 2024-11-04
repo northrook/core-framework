@@ -2,20 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Core\Framework\DependencyInjection\Compiler;
+namespace Core\Framework\Compiler;
 
 use CompileError;
+use Core\Framework\DependencyInjection\{CompilerPass, ServiceContainer};
 use Symfony\Component\DependencyInjection\{ContainerBuilder, Reference};
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use function Support\uses_trait;
 
-final class RegisterCoreServicesPass implements CompilerPassInterface
+final class RegisterCoreServicesPass extends CompilerPass
 {
-    public function process( ContainerBuilder $container ) : void
+    public function compile( ContainerBuilder $container ) : void
     {
-        if ( ! $container->hasDefinition( 'core.service_locator' ) ) {
-            return;
-        }
+        \assert( $container->hasDefinition( 'core.service_locator' ) );
 
         $this->registerTaggedServices( $container );
         $this->injectServiceLocator( $container );

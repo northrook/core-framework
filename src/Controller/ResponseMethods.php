@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Core\Framework\Controller;
 
+use Core\Framework\Autowire\CurrentRequest;
 use Core\Framework\DependencyInjection\ServiceContainer;
 use Exception;
-use Northrook\Resource\URL;
+use Northrook\Filesystem\URL;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\{BinaryFileResponse,
     File,
@@ -23,7 +24,7 @@ use Throwable;
 
 trait ResponseMethods
 {
-    use ServiceContainer;
+    use ServiceContainer, CurrentRequest;
 
     /**
      * Forwards the request to another controller.

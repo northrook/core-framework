@@ -7,7 +7,7 @@ namespace Core\Framework;
 use Northrook\ArrayStore;
 use Northrook\Exception\E_Value;
 use Northrook\Logger\Log;
-use Northrook\Resource\Path;
+use Northrook\Filesystem\Path;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use function Support\getProjectRootDirectory;
@@ -61,7 +61,7 @@ final readonly class Pathfinder
         $path = \str_replace( '\\', '/', $path );
 
         // Determine what, if any, separator is used
-        $separator = \str_contains( $path, '/' ) ;
+        $separator = \str_contains( $path, '/' );
 
         // If the requested $path has no separator, should be a key
         if ( false === $separator ) {
@@ -79,31 +79,33 @@ final readonly class Pathfinder
         // Split the $path by the first $separator
         [$root, $tail] = \explode( '/', $path, 2 );
 
-        // Resolve the $root key
+        // Resolve the $root key.
         $parameter = $this->getParameter( $root );
 
+        // Bail early on empty parameters
         if ( ! $parameter ) {
             return null;
         }
 
-        $resolved = new Path( [$parameter, $tail] );
+        $resolved = new Path( "{$parameter}/{$tail}" );
 
-        if ( $resolved->exists ) {
-            $this->pathfinder()->set( $this->cacheKey( $path ), $resolved->path );
+        if ( $resolved->exists() ) {
+            $this->pathfinder()->set( $this->cacheKey( $path ), (string) $resolved );
         }
 
-        return $resolved->path;
+        return (string) $resolved;
     }
 
     /**
      * @param string $name {@see ParameterBagInterface::get}
      *
-     * @return ?string
+     * @return null|non-empty-string
      */
     private function getParameter( string $name ) : ?string
     {
         try {
             $parameter = $this->parameterBag->get( $name );
+            \assert( \is_string( $parameter ) || \is_null( $parameter ) );
         }
         catch ( Throwable|ParameterNotFoundException $exception ) {
             E_Value::error(
@@ -118,9 +120,9 @@ final readonly class Pathfinder
             return null;
         }
 
-        \assert( \is_string( $parameter ) );
+        $parameter = \trim( (string) $parameter );
 
-        return $parameter;
+        return empty( $parameter ) ? null : $parameter;
     }
 
     /**
@@ -153,7 +155,6 @@ final readonly class Pathfinder
      */
     public static function normalize( string ...$path ) : string
     {
-
         // Normalize separators
         $nroamlized = \str_replace( ['\\', '/'], DIRECTORY_SEPARATOR, $path );
 
@@ -171,13 +172,13 @@ final readonly class Pathfinder
         if ( ( $length = \mb_strlen( $path ) ) > ( $limit = PHP_MAXPATHLEN - 2 ) ) {
             E_Value::error(
                 '{method} resulted in a string of {length} characters, exceeding the {limit} character limit.'
-                           .PHP_EOL.'Operation was halted to prevent buffer overflow.',
+                            .PHP_EOL.'Operation was halted to prevent buffer overflow.',
                 [
                     'method' => __METHOD__,
                     'length' => (string) $length,
                     'limit'  => (string) $limit,
                 ],
-                throw: true,
+                throw : true,
             );
         }
 

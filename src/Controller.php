@@ -4,27 +4,17 @@ declare(strict_types=1);
 
 namespace Core\Framework;
 
-use Core\Framework\Controller\{OnContent, OnDocument, ResponseMethods};
-use Core\Framework\DependencyInjection\ServiceContainer;
-use Core\Framework\DependencyInjection\ServiceContainerInterface;
+use Core\Framework\Attribute\{OnContent, OnDocument};
+use Symfony\Component\HttpFoundation\{Response};
+use Core\Framework\DependencyInjection\{ServiceContainer, ServiceContainerInterface};
+use Core\Framework\Controller\ResponseMethods;
 use Core\Framework\Response\{Document, Headers, Parameters};
-use Core\Service\{Pathfinder, Request};
 use Northrook\Logger\Log;
 use ReflectionClass;
 use ReflectionException;
-use Symfony\Component\HttpFoundation\Response;
-
 abstract class Controller implements ServiceContainerInterface
 {
     use ServiceContainer, ResponseMethods;
-
-    /**
-     * @return Request
-     */
-    final protected function getRequest() : Request
-    {
-        return $this->serviceLocator->get( Request::class );
-    }
 
     final protected function response( ?string $content = null ) : Response
     {
@@ -37,7 +27,7 @@ abstract class Controller implements ServiceContainerInterface
      */
     private function controllerResponseMethods() : void
     {
-        $responseType = $this->getRequest()->isHtmx ? OnContent::class : OnDocument::class;
+        $responseType = $this->getRequest()->headers->has( 'HX-Request' ) ? OnContent::class : OnDocument::class;
 
         $autowire = [
             Headers::class,

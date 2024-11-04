@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Core\Framework;
 
-use Core\Framework\DependencyInjection\Compiler\RegisterCoreServicesPass;
 use Override;
+use Core\Framework\Compiler\{ApplicationConfigPass};
+use Core\Framework\Compiler\RegisterCoreServicesPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
@@ -28,8 +29,14 @@ final class CoreFrameworkBundle extends AbstractBundle
     {
         parent::build( $container );
 
+        dump( $container::class . ' is ' . ( $container->isCompiled() ? 'compiled' : 'not compiled') );
+
         // Generate application config files and update kernel and public index files
-        $container->addCompilerPass( new RegisterCoreServicesPass() );
+        $container
+            ->addCompilerPass( new RegisterCoreServicesPass() )
+            ->addCompilerPass( new ApplicationConfigPass() );
+
+        // type : PassConfig::TYPE_OPTIMIZE,
     }
 
     /**

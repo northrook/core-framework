@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Framework\Response;
 
-use Northrook\{ArrayAccessor, Exception\E_Value, Logger\Log, Resource\Path};
+use Northrook\{ArrayAccessor, Exception\E_Value, Logger\Log, Filesystem\Path};
 use Support\Normalize;
 use function Support\toString;
 use Stringable;
