@@ -14,6 +14,8 @@ final class ControllerContent
 
     private ?string $controller = null;
 
+    private ?string $method = null;
+
     private bool $isHtmxRequest = false;
 
     public function __construct() {}
@@ -28,6 +30,7 @@ final class ControllerContent
         }
 
         $this->isHtmxRequest = $event->getRequest()->headers->has( 'hx-request' );
+        $this->method        = $event->getControllerReflector()->getName();
 
         $event->getRequest()->attributes->set( '_htmx_request', $this->isHtmxRequest );
 

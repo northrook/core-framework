@@ -8,8 +8,8 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\Framework\{Pathfinder, Settings};
-use Core\Framework\Response\{Document, Headers, Parameters};
+use Core\Framework\{Lifecycle\Response\Document, Lifecycle\Response\Parameters, Pathfinder, Settings};
+use Core\Framework\Lifecycle\Response\{Headers};
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\{RequestStack};
 use Symfony\Component\HttpKernel\HttpKernelInterface;

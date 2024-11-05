@@ -18,10 +18,10 @@ return static function( ContainerConfigurator $container ) : void {
     $container->services()
 
         // Response EventSubscriber;
-        ->set( ControllerContent::class )
-        ->tag( 'kernel.event_listener', ['event' => 'kernel.controller'] )
-        ->tag( 'kernel.event_listener', ['event' => 'kernel.view'] )
-        ->tag( 'kernel.event_listener', ['event' => 'kernel.response'] )
+        // ->set( ControllerContent::class )
+        // ->tag( 'kernel.event_listener', ['event' => 'kernel.controller'] )
+        // ->tag( 'kernel.event_listener', ['event' => 'kernel.view'] )
+        // ->tag( 'kernel.event_listener', ['event' => 'kernel.response'] )
 
             // Response EventSubscriber;
         ->set( ResponseHandler::class )

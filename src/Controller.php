@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Core\Framework;
 
 use Core\Framework\Attribute\{OnContent, OnDocument};
-use Symfony\Component\HttpFoundation\{Response};
-use Core\Framework\DependencyInjection\{ServiceContainer, ServiceContainerInterface};
 use Core\Framework\Controller\ResponseMethods;
-use Core\Framework\Response\{Document, Headers, Parameters};
+use Core\Framework\DependencyInjection\{ServiceContainer, ServiceContainerInterface};
+use Core\Framework\Lifecycle\Response\{Document, Parameters, Headers};
+use Core\Framework\Lifecycle\Response;
 use Northrook\Logger\Log;
 use ReflectionClass;
 use ReflectionException;

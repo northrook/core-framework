@@ -8,7 +8,8 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\Framework\Response\{Document, Headers, Parameters};
+use Core\Framework\Lifecycle\Response\{Headers};
+use Core\Framework\Lifecycle\Response\{Document, Parameters};
 
 return static function( ContainerConfigurator $container ) : void {
 

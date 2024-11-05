@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Core\Framework\Response;
+namespace Core\Framework\Lifecycle\Response;
 
-use Northrook\{ArrayAccessor, Exception\E_Value, Logger\Log, Filesystem\Path};
+use Northrook\{ArrayAccessor, Exception\E_Value, Filesystem\Path, Logger\Log};
+use Stringable;
 use Support\Normalize;
 use function Support\toString;
-use Stringable;
 
 /**
  * Handles all Document related properties.

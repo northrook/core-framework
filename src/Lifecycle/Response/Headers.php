@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Framework\Response;
+namespace Core\Framework\Lifecycle\Response;
 
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
