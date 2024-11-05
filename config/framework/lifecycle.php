@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\Framework\Lifecycle\{ControllerContent, ResponseHandler};
+use Core\Framework\Lifecycle\{ControllerResponseListener, ResponseHandler};
 use Core\Framework\Telemetry\LifecycleProfiler;
 use Northrook\Clerk;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -18,10 +18,10 @@ return static function( ContainerConfigurator $container ) : void {
     $container->services()
 
         // Response EventSubscriber;
-        // ->set( ControllerContent::class )
-        // ->tag( 'kernel.event_listener', ['event' => 'kernel.controller'] )
-        // ->tag( 'kernel.event_listener', ['event' => 'kernel.view'] )
-        // ->tag( 'kernel.event_listener', ['event' => 'kernel.response'] )
+        ->set( ControllerResponseListener::class )
+        ->tag( 'kernel.event_listener', ['event' => 'kernel.controller'] )
+        ->tag( 'kernel.event_listener', ['event' => 'kernel.view', 'method' => 'handleResponse'] )
+        ->tag( 'kernel.event_listener', ['event' => 'kernel.response', 'method' => 'handleResponse'] )
 
             // Response EventSubscriber;
         ->set( ResponseHandler::class )

@@ -8,9 +8,11 @@ namespace Core\Framework\Lifecycle;
 // later: ensure headers etc
 
 use Core\Framework\Controller;
+use Core\Framework\DependencyInjection\ServiceContainer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\{ControllerEvent, ResponseEvent, ViewEvent};
+use Symfony\Component\HttpKernel\Event\{ControllerEvent, ResponseEvent, TerminateEvent, ViewEvent};
 use Symfony\Component\HttpKernel\KernelEvents;
+use Reflector;
 
 /**
  * Handles {@see Response} events for controllers extending the {@see Controller}.
@@ -24,12 +26,19 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 final class ResponseHandler implements EventSubscriberInterface
 {
+    use ServiceContainer;
+
+    private bool $shouldHandle;
+
+    private readonly Reflector $controllerReflection;
+
     public static function getSubscribedEvents() : array
     {
         return [
             KernelEvents::CONTROLLER => ['parseController', 192],
             KernelEvents::VIEW       => ['handleResponse'],
             KernelEvents::RESPONSE   => ['handleResponse'],
+            KernelEvents::TERMINATE  => ['onKernelTerminate'],
         ];
     }
 
@@ -40,28 +49,32 @@ final class ResponseHandler implements EventSubscriberInterface
      */
     public function parseController( ControllerEvent $event ) : void
     {
-        if ( \is_array( $event->getController() ) && $event->getController()[0] instanceof Controller ) {
+        $this->shouldHandle = ( \is_array( $event->getController() ) && $event->getController()[0] instanceof Controller );
 
-            dd(
-                $event,
-                $event->getRequest(),
-                $event->getController(),
-                $event->getControllerReflector(),
-                $this,
-            );
-            // $this->controller    = $event->getController()[0]::class;
-            // $this->isHtmxRequest = $event->getRequest()->headers->has( 'hx-request' );
-            //
-            // $event->getRequest()->attributes->set( '_document_template', $this->getControllerTemplate() );
-            // $event->getRequest()->attributes->set(
-            //     '_content_template',
-            //     $this->getMethodTemplate( $event->getControllerReflector() ),
-            // );
+        if ( ! $this->shouldHandle ) {
+            return;
         }
+
+        $event->getRequest()->attributes->set( '_htmx_request', $event->getRequest()->headers->has( 'hx-request' ) );
+
+        $this->controllerReflection = $event->getControllerReflector();
+
+        dump( $event );
     }
 
     public function handleResponse( ResponseEvent|ViewEvent $event ) : void
     {
-        dump( __METHOD__, $event );
+        if ( ! $this->shouldHandle ) {
+            return;
+        }
+
+
+    }
+
+    public function onKernelTerminate( TerminateEvent $event ) : void
+    {
+        if ( $this->shouldHandle ) {
+            dump( __METHOD__, $event );
+        }
     }
 }
