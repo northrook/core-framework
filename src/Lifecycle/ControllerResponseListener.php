@@ -6,14 +6,10 @@ use Core\Framework\Controller;
 use Core\Framework\DependencyInjection\ServiceContainer;
 use Symfony\Component\HttpKernel\Event\{ControllerEvent, ResponseEvent, ViewEvent};
 use Northrook\Exception\E_Value;
-use ReflectionClass;
-use ReflectionMethod;
 use Symfony\Component\HttpFoundation\{Request, Response};
 use Support\Reflect;
 use function Support\{explode_class_callable, get_class_name};
 use Stringable;
-use LogicException;
-use ReflectionException;
 
 final class ControllerResponseListener
 {
@@ -87,34 +83,20 @@ final class ControllerResponseListener
         }
 
         [$controller, $method] = explode_class_callable( $caller, true );
-        //
-        // try {
-        //     $reflectClass  = new ReflectionClass( $controller );
-        //     $reflectMethod = new ReflectionMethod( $controller, $method );
-        // }
-        // catch ( ReflectionException $exception ) {
-        //     throw new LogicException( $exception->getMessage() );
-        // }
 
-        $reflectClass  = Reflect::class( $controller );
-        $reflectMethod = Reflect::method( $controller, $method );
-
-        // ($classTemplate[0]->newInstance())->name;
-        $controllerTemplate = Reflect::getAttribute( $reflectClass, Controller\Template::class );
-        $methodTemplate     = Reflect::getAttribute( $reflectMethod, Controller\Template::class );
+        $controllerTemplate = Reflect::getAttribute( $controller, Controller\Template::class );
+        $methodTemplate     = Reflect::getAttribute( [$controller, $method], Controller\Template::class );
 
         $templates = [
-            '_document_template' => $controllerTemplate->name,
-            '_content_template'  => $methodTemplate->name,
+            '_document_template' => $controllerTemplate?->name,
+            '_content_template'  => $methodTemplate?->name,
         ];
 
         // Create a Support\Reflect helper for returning typed attributes
 
         dump(
             $templates,
-            $reflectClass->getAttributes(),
             $controllerTemplate,
-            $reflectMethod->getAttributes(),
             $methodTemplate,
         );
 
