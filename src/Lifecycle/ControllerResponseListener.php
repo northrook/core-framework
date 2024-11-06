@@ -22,9 +22,9 @@ final class ControllerResponseListener
     /**
      * For debugging - will be cached later.
      *
-     * @var array<string, false|array{
-     *      string: string,
-     *      string: string
+     * @var array<string, array{
+     *      _document_template: string,
+     *      _content_template: string
      *  }>
      */
     private array $responseTemplateCache = [];
@@ -56,7 +56,9 @@ final class ControllerResponseListener
             return;
         }
 
-        $responseTemplate = $this->resolveResponseTemplate( $event->getRequest() );
+        $event->getRequest()->attributes->add(
+            $this->getTemplateAttributes( $event->getRequest() ),
+        );
     }
 
     /**
@@ -68,14 +70,14 @@ final class ControllerResponseListener
      *
      * @param Request $request
      *
-     * @return false|array{
-     *     string: string,
-     *     string: string
+     * @return array{
+     *     _document_template: string,
+     *     _content_template: string
      * }
      */
-    private function resolveResponseTemplate( Request $request ) : false|array
+    private function getTemplateAttributes( Request $request ) : array
     {
-        dump( $request );
+        // dump( $request );
         $caller = $request->attributes->get( '_controller' );
 
         \assert( \is_string( $caller ) );
@@ -101,20 +103,22 @@ final class ControllerResponseListener
         $controllerTemplate = Reflect::getAttribute( $reflectClass, Controller\Template::class );
         $methodTemplate     = Reflect::getAttribute( $reflectMethod, Controller\Template::class );
 
-        // $template
+        $templates = [
+            '_document_template' => $controllerTemplate->name,
+            '_content_template'  => $methodTemplate->name,
+        ];
 
         // Create a Support\Reflect helper for returning typed attributes
 
         dump(
-            // $controller,
+            $templates,
             $reflectClass->getAttributes(),
             $controllerTemplate,
-            // $method,
             $reflectMethod->getAttributes(),
             $methodTemplate,
         );
 
-        return false;
+        return $templates;
     }
 
     /**
