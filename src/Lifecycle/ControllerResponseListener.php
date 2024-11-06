@@ -19,8 +19,8 @@ final class ControllerResponseListener
      * For debugging - will be cached later.
      *
      * @var array<string, array{
-     *      _document_template: string,
-     *      _content_template: string
+     *      _document_template: ?string,
+     *      _content_template: ?string
      *  }>
      */
     private array $responseTemplateCache = [];
@@ -37,8 +37,6 @@ final class ControllerResponseListener
 
         $event->getRequest()->attributes->set( '_htmx_request', $isHtmx );
         $event->getRequest()->attributes->set( '_request_type', $isHtmx ? 'content' : 'document' );
-
-        dump( $this );
     }
 
     public function onKernelView( ViewEvent $event ) : void
@@ -66,14 +64,10 @@ final class ControllerResponseListener
      *
      * @param Request $request
      *
-     * @return array{
-     *     _document_template: string,
-     *     _content_template: string
-     * }
+     * @return array{_document_template: ?string, _content_template: ?string}
      */
     private function getTemplateAttributes( Request $request ) : array
     {
-        // dump( $request );
         $caller = $request->attributes->get( '_controller' );
 
         \assert( \is_string( $caller ) );
@@ -87,20 +81,10 @@ final class ControllerResponseListener
         $controllerTemplate = Reflect::getAttribute( $controller, Controller\Template::class );
         $methodTemplate     = Reflect::getAttribute( [$controller, $method], Controller\Template::class );
 
-        $templates = [
+        return [
             '_document_template' => $controllerTemplate?->name,
             '_content_template'  => $methodTemplate?->name,
         ];
-
-        // Create a Support\Reflect helper for returning typed attributes
-
-        dump(
-            $templates,
-            $controllerTemplate,
-            $methodTemplate,
-        );
-
-        return $templates;
     }
 
     /**
