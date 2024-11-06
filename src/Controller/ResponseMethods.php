@@ -73,9 +73,9 @@ trait ResponseMethods
             $url = new URL( $url );
         }
 
-        // if ( ! $url->exists ) {
-        //     $this->throwNotFoundException(  );
-        // }
+        if ( ! $url->exists() ) {
+            throw $this->notFoundException(  );
+        }
 
         return new RedirectResponse( $url->path, $status );
     }

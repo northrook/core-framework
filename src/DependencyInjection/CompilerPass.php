@@ -41,9 +41,9 @@ abstract class CompilerPass implements CompilerPassInterface
      * @return void
      */
     final protected function createYamlFile(
-            string       $fromProjectDir,
-            #[Language( 'PHP' )] string|array $data,
-            bool         $override = false,
+        string       $fromProjectDir,
+        #[Language( 'PHP' )] string|array $data,
+        bool         $override = false,
     ) : void {
         $path = $this->path( $fromProjectDir );
 
@@ -55,10 +55,10 @@ abstract class CompilerPass implements CompilerPassInterface
     }
 
     final protected function createPhpFile(
-            string    $fromProjectDir,
-            #[Language( 'PHP' )] string    $php,
-            bool      $override = false,
-            string ...$comment,
+        string    $fromProjectDir,
+        #[Language( 'PHP' )] string    $php,
+        bool      $override = false,
+        string ...$comment,
     ) : void {
         $path = $this->path( $fromProjectDir );
 
@@ -66,7 +66,7 @@ abstract class CompilerPass implements CompilerPassInterface
             return;
         }
 
-        $path->save( $this->parsePhpString( $php, ...$comment) );
+        $path->save( $this->parsePhpString( $php, ...$comment ) );
     }
 
     private function setProjectDirectory() : string
@@ -74,7 +74,7 @@ abstract class CompilerPass implements CompilerPassInterface
         $projectDirectory = $this->parameterBag->get( 'kernel.project_dir' );
 
         \assert(
-                \is_string( $projectDirectory )
+            \is_string( $projectDirectory )
                 && \is_dir( $projectDirectory )
                 && \is_writable( $projectDirectory ),
         );
@@ -111,9 +111,9 @@ abstract class CompilerPass implements CompilerPassInterface
         $header[] = "\n{$separator}*/\n\n";
 
         $content = \preg_replace(
-                pattern     : '#<\?php\s+?(?=\S)#A',
-                replacement : '<?php'.\implode( "\n", $header ),
-                subject     : $php,
+            pattern     : '#<\?php\s+?(?=\S)#A',
+            replacement : '<?php'.\implode( "\n", $header ),
+            subject     : $php,
         );
 
         \assert( \is_string( $content ) );

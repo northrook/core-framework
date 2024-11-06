@@ -29,8 +29,6 @@ final class CoreFrameworkBundle extends AbstractBundle
     {
         parent::build( $container );
 
-        dump( $container::class . ' is ' . ( $container->isCompiled() ? 'compiled' : 'not compiled') );
-
         // Generate application config files and update kernel and public index files
         $container
             ->addCompilerPass( new RegisterCoreServicesPass() )

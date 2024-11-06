@@ -30,7 +30,6 @@ abstract class Controller implements ServiceContainerInterface
     {
 
         // Add invoked methods to the Request attributes
-        dump( $this->getRequest()->attributes->get( '_htmx_request' ) );
         $responseType = $this->getRequest()->headers->has( 'HX-Request' ) ? OnContent::class : OnDocument::class;
 
         $autowire = [

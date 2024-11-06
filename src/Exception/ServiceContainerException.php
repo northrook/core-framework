@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Framework\DependencyInjection\Exception;
+namespace Core\Framework\Exception;
 
 use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;

@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\Framework\Lifecycle\{ControllerResponseListener, ResponseHandler};
+use Core\Framework\Lifecycle\{ControllerResponseListener};
 use Core\Framework\Telemetry\LifecycleProfiler;
 use Northrook\Clerk;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -22,12 +22,9 @@ return static function( ContainerConfigurator $container ) : void {
         ->tag( 'kernel.event_listener', ['event' => 'kernel.controller'] )
         ->tag( 'kernel.event_listener', ['event' => 'kernel.view'] )
         ->tag( 'kernel.event_listener', ['event' => 'kernel.response'] )
+        ->tag( 'kernel.event_listener', ['event' => 'kernel.terminate'] )
 
-            // Response EventSubscriber;
-        ->set( ResponseHandler::class )
-        ->tag( 'kernel.event_subscriber' )
-
-            // Stopwatch
+        // Stopwatch
         ->set( Clerk::class )
         ->args( [
             service( Stopwatch::class ),
@@ -36,7 +33,7 @@ return static function( ContainerConfigurator $container ) : void {
             param( 'kernel.debug' ), // only enable when debugging
         ] )
 
-            // TelemetryEventSubscriber
+        // TelemetryEventSubscriber
         ->set( LifecycleProfiler::class )
         ->tag( 'kernel.event_subscriber' )
         ->args( [service( Clerk::class )] );

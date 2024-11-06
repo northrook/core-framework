@@ -2,7 +2,7 @@
 
 namespace Core\Framework\DependencyInjection;
 
-use Core\Framework\DependencyInjection\Exception\ServiceInjectionException;
+use Core\Framework\Exception\ServiceInjectionException;
 
 /**
  * @phpstan-require-implements AutowireServicesInterface

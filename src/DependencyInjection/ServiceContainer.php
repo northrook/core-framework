@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Framework\DependencyInjection;
 
-use Core\Framework\DependencyInjection\Exception\ServiceContainerException;
+use Core\Framework\Exception\ServiceContainerException;
 use Northrook\Logger\Log;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;

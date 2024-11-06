@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Core\Framework\View;
 
-use Core\Framework\DependencyInjection\Exception\ServiceInjectionException;
-use function Support\classBasename;
 use Stringable;
+use function Support\classBasename;
 
 abstract class Component implements Stringable
 {

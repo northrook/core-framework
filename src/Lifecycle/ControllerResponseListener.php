@@ -4,7 +4,7 @@ namespace Core\Framework\Lifecycle;
 
 use Core\Framework\Controller;
 use Core\Framework\DependencyInjection\ServiceContainer;
-use Symfony\Component\HttpKernel\Event\{ControllerEvent, ResponseEvent, ViewEvent};
+use Symfony\Component\HttpKernel\Event\{ControllerEvent, ResponseEvent, TerminateEvent, ViewEvent};
 use Northrook\Exception\E_Value;
 use Symfony\Component\HttpFoundation\{Request, Response};
 use Support\Reflect;
@@ -53,6 +53,11 @@ final class ControllerResponseListener
         $event->getRequest()->attributes->add(
             $this->getTemplateAttributes( $event->getRequest() ),
         );
+    }
+
+    public function onKernelTerminate( TerminateEvent $event ) : void
+    {
+        dump( __METHOD__, $event );
     }
 
     /**

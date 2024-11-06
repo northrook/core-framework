@@ -9,10 +9,10 @@ namespace Core\Framework\Lifecycle;
 
 use Core\Framework\Controller;
 use Core\Framework\DependencyInjection\ServiceContainer;
+use JetBrains\PhpStorm\Deprecated;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\{ControllerEvent, ResponseEvent, TerminateEvent, ViewEvent};
 use Symfony\Component\HttpKernel\KernelEvents;
-use Reflector;
 
 /**
  * Handles {@see Response} events for controllers extending the {@see Controller}.
@@ -24,13 +24,12 @@ use Reflector;
  *
  * @author Martin Nielsen <mn@northrook.com>
  */
+#[Deprecated]
 final class ResponseHandler implements EventSubscriberInterface
 {
     use ServiceContainer;
 
     private bool $shouldHandle;
-
-    private readonly Reflector $controllerReflection;
 
     public static function getSubscribedEvents() : array
     {
@@ -54,12 +53,6 @@ final class ResponseHandler implements EventSubscriberInterface
         if ( ! $this->shouldHandle ) {
             return;
         }
-
-        $event->getRequest()->attributes->set( '_htmx_request', $event->getRequest()->headers->has( 'hx-request' ) );
-
-        $this->controllerReflection = $event->getControllerReflector();
-
-        dump( $event );
     }
 
     public function handleResponse( ResponseEvent|ViewEvent $event ) : void
@@ -67,8 +60,6 @@ final class ResponseHandler implements EventSubscriberInterface
         if ( ! $this->shouldHandle ) {
             return;
         }
-
-
     }
 
     public function onKernelTerminate( TerminateEvent $event ) : void
