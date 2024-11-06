@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Framework\View\Exception;
+namespace Core\Framework\Exception;
 
 use Core\Framework\View\Component;
 use InvalidArgumentException;

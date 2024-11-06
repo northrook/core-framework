@@ -8,7 +8,7 @@ use Core\Framework\Attribute\{OnContent, OnDocument};
 use Core\Framework\Controller\ResponseMethods;
 use Core\Framework\DependencyInjection\{ServiceContainer, ServiceContainerInterface};
 use Core\Framework\Lifecycle\Response\{Document, Parameters, Headers};
-use Core\Framework\Lifecycle\Response;
+use Symfony\Component\HttpFoundation\Response;
 use Northrook\Logger\Log;
 use ReflectionClass;
 use ReflectionException;

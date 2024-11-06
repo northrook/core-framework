@@ -3,7 +3,7 @@
 namespace Core\Framework\View;
 
 use Core\Framework\DependencyInjection\{AutowireServicesInterface, ServiceContainer};
-use Core\Framework\View\Exception\ComponentNotFoundException;
+use Core\Framework\Exception\ComponentNotFoundException;
 use function Support\classBasename;
 
 final class ComponentFactory
