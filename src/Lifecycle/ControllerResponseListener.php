@@ -85,14 +85,17 @@ final class ControllerResponseListener
         }
 
         [$controller, $method] = explode_class_callable( $caller, true );
+        //
+        // try {
+        //     $reflectClass  = new ReflectionClass( $controller );
+        //     $reflectMethod = new ReflectionMethod( $controller, $method );
+        // }
+        // catch ( ReflectionException $exception ) {
+        //     throw new LogicException( $exception->getMessage() );
+        // }
 
-        try {
-            $reflectClass  = new ReflectionClass( $controller );
-            $reflectMethod = new ReflectionMethod( $controller, $method );
-        }
-        catch ( ReflectionException $exception ) {
-            throw new LogicException( $exception->getMessage() );
-        }
+        $reflectClass  = Reflect::class( $controller );
+        $reflectMethod = Reflect::method( $controller, $method );
 
         // ($classTemplate[0]->newInstance())->name;
         $controllerTemplate = Reflect::getAttribute( $reflectClass, Controller\Template::class );
