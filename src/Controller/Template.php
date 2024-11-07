@@ -7,7 +7,7 @@ namespace Core\Framework\Controller;
 use Attribute;
 
 /**
- * Set the template name to be used by the {@see \Core\Framework\Lifecycle\ResponseHandler}.
+ * Set the template name to be used by the {@see ResponseHandler}.
  *
  * - When set on an extending {@see Controller}, it will be used as the wrapping layout.
  * - When set on the called `method`, it will provide the content block. or as a stand-alone render for `htmx`.

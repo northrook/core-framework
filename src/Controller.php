@@ -7,11 +7,13 @@ namespace Core\Framework;
 use Core\Framework\Attribute\{OnContent, OnDocument};
 use Core\Framework\Controller\ResponseMethods;
 use Core\Framework\DependencyInjection\{ServiceContainer, ServiceContainerInterface};
-use Core\Framework\Lifecycle\Response\{Document, Parameters, Headers};
-use Symfony\Component\HttpFoundation\Response;
+use Core\Framework\Response\{Parameters};
+use Core\Framework\Response\Document;
+use Core\Framework\Response\Headers;
 use Northrook\Logger\Log;
 use ReflectionClass;
 use ReflectionException;
+use Symfony\Component\HttpFoundation\Response;
 
 abstract class Controller implements ServiceContainerInterface
 {

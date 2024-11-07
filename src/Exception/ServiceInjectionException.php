@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Core\Framework\Exception;
 
-use;
 use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Throwable;
@@ -18,8 +17,8 @@ class ServiceInjectionException extends InvalidArgumentException implements NotF
      * @param null|Throwable $previous
      */
     public function __construct(
-        private readonly string $property,
-        private readonly string $id,
+        public readonly string $property,
+        public readonly string $id,
         ?string                 $message = null,
         ?Throwable              $previous = null,
     ) {

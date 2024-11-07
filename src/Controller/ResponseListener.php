@@ -1,17 +1,17 @@
 <?php
 
-namespace Core\Framework\Lifecycle;
+namespace Core\Framework\Controller;
 
 use Core\Framework\Controller;
 use Core\Framework\DependencyInjection\ServiceContainer;
-use Symfony\Component\HttpKernel\Event\{ControllerEvent, ResponseEvent, TerminateEvent, ViewEvent};
 use Northrook\Exception\E_Value;
-use Symfony\Component\HttpFoundation\{Request, Response};
-use Support\Reflect;
-use function Support\{explode_class_callable, get_class_name};
 use Stringable;
+use Support\Reflect;
+use Symfony\Component\HttpFoundation\{Request, Response};
+use Symfony\Component\HttpKernel\Event\{ControllerEvent, ResponseEvent, TerminateEvent, ViewEvent};
+use function Support\{explode_class_callable, get_class_name};
 
-final class ControllerResponseListener
+final class ResponseListener
 {
     use ServiceContainer;
 
@@ -83,8 +83,8 @@ final class ControllerResponseListener
 
         [$controller, $method] = explode_class_callable( $caller, true );
 
-        $controllerTemplate = Reflect::getAttribute( $controller, Controller\Template::class );
-        $methodTemplate     = Reflect::getAttribute( [$controller, $method], Controller\Template::class );
+        $controllerTemplate = Reflect::getAttribute( $controller, Template::class );
+        $methodTemplate     = Reflect::getAttribute( [$controller, $method], Template::class );
 
         return [
             '_document_template' => $controllerTemplate?->name,

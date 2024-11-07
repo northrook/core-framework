@@ -25,9 +25,10 @@
     "symfony/security-bundle": "@stable",
     "northrook/html-element": "dev-main",
     "northrook/array-access": "dev-main",
-    "symfony/serializer": "^7.1",
+    "symfony/serializer": "@stable",
     "northrook/clerk": "dev-main",
-    "symfony/yaml": "^7.1"
+    "symfony/yaml": "@stable",
+    "symfony/framework-bundle": "@stable"
   },
   "require-dev": {
     "northrook/dev-env": "dev-main"

@@ -11,9 +11,9 @@ use Throwable;
 class ServiceContainerException extends InvalidArgumentException implements NotFoundExceptionInterface
 {
     public function __construct(
-        private readonly string $id,
-        ?string                 $message = null,
-        ?Throwable              $previous = null,
+        public readonly string $id,
+        ?string                $message = null,
+        ?Throwable             $previous = null,
     ) {
         $message ??= $this->getMessage();
 

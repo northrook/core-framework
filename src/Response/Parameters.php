@@ -2,7 +2,7 @@
 
 declare( strict_types = 1 );
 
-namespace Core\Framework\Lifecycle\Response;
+namespace Core\Framework\Response;
 
 /**
  * @author Martin Nielsen <mn@northrook.com>
