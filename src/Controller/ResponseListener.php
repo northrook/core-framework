@@ -57,6 +57,9 @@ final class ResponseListener
 
     public function onKernelTerminate( TerminateEvent $event ) : void
     {
+        if ( ! $this->handleController( $event->getRequest() ) ) {
+            return;
+        }
         dump( __METHOD__, $event );
     }
 

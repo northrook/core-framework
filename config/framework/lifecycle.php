@@ -14,31 +14,37 @@ use Northrook\Clerk;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 return static function( ContainerConfigurator $container ) : void {
-
     $container->services()
 
-        // Response EventSubscriber;
+            // Response EventSubscriber;
         ->set( ResponseListener::class )
         ->tag( 'kernel.event_listener', ['event' => 'kernel.controller'] )
         ->tag( 'kernel.event_listener', ['event' => 'kernel.view'] )
         ->tag( 'kernel.event_listener', ['event' => 'kernel.response'] )
         ->tag( 'kernel.event_listener', ['event' => 'kernel.terminate'] )
 
-        // Stopwatch
+            // Stopwatch
         ->set( Clerk::class )
-        ->args( [
-            service( Stopwatch::class ),
-            true, // single instance
-            true, // throw on reinstantiation attempt
-            param( 'kernel.debug' ), // only enable when debugging
-        ] )
+        ->args(
+            [
+                service( Stopwatch::class ),
+                true, // single instance
+                true, // throw on reinstantiation attempt
+                param( 'kernel.debug' ), // only enable when debugging
+            ],
+        )
 
-        // TelemetryEventSubscriber
+            // TelemetryEventSubscriber
         ->set( LifecycleProfiler::class )
         ->tag( 'kernel.event_subscriber' )
-        ->args( [service( Clerk::class )] )
+        ->args(
+            [
+                service( Clerk::class ),
+                service( 'profiler' ),
+            ],
+        )
 
-        // Profiler
+            // Profiler
         ->set( PipelineCollector::class )
         ->tag( 'data_collector' );
 };
