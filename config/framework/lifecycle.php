@@ -9,7 +9,7 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Core\Framework\Controller\{ResponseListener};
-use Core\Framework\Telemetry\{LifecycleProfiler, PipelineCollector};
+use Core\Framework\Telemetry\{ClerkProfiler, PipelineCollector};
 use Northrook\Clerk;
 use Symfony\Component\Stopwatch\Stopwatch;
 
@@ -34,17 +34,12 @@ return static function( ContainerConfigurator $container ) : void {
             ],
         )
 
-            // TelemetryEventSubscriber
-        ->set( LifecycleProfiler::class )
+        // TelemetryEventSubscriber
+        ->set( ClerkProfiler::class )
         ->tag( 'kernel.event_subscriber' )
-        ->args(
-            [
-                service( Clerk::class ),
-                service( 'profiler' ),
-            ],
-        )
+        ->args( [service( Clerk::class )] )
 
-            // Profiler
+        // Profiler
         ->set( PipelineCollector::class )
         ->tag( 'data_collector' );
 };

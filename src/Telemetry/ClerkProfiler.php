@@ -1,18 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\Framework\Telemetry;
 
 use Northrook\Clerk;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\{ExceptionEvent, ResponseEvent, TerminateEvent};
-use Symfony\Component\HttpKernel\Profiler\Profiler;
 
-final readonly class LifecycleProfiler implements EventSubscriberInterface
+final readonly class ClerkProfiler implements EventSubscriberInterface
 {
-    public function __construct(
-        private Clerk    $monitor,
-        private Profiler $profiler,
-    ) {}
+    public function __construct( private Clerk $monitor ) {}
 
     public static function getSubscribedEvents() : array
     {
@@ -24,10 +22,7 @@ final readonly class LifecycleProfiler implements EventSubscriberInterface
             'kernel.response'             => 'onKernelResponse',
             'kernel.finish_request'       => 'onKernelFinishRequest',
             'kernel.exception'            => 'onKernelException',
-            'kernel.terminate'            => [
-                ['onKernelTerminate'],
-                // ['onDelayedKernelTerminate', 1_024],
-            ],
+            'kernel.terminate'            => 'onKernelTerminate',
         ];
     }
 
@@ -54,7 +49,6 @@ final readonly class LifecycleProfiler implements EventSubscriberInterface
 
     public function onKernelResponse( ResponseEvent $event ) : void
     {
-        dump( $this->profiler );
         $this->monitor->event( $event::class, 'response' );
     }
 

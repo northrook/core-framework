@@ -60,7 +60,6 @@ final class ResponseListener
         if ( ! $this->handleController( $event->getRequest() ) ) {
             return;
         }
-        dump( __METHOD__, $event );
     }
 
     /**
