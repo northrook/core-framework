@@ -40,7 +40,7 @@ final class ApplicationInitializationPass extends CompilerPass
         foreach ( $app_defaults as $default ) {
             $project_path = $this->getProjectPath( $default );
 
-            if ( ! ( $this->override ?? $this->overrideExistingFile( $project_path ) ) ) {
+            if ( ! $this->overrideExistingFile( $project_path ) ) {
                 $this->console->info( 'Skipping existing file: '.$project_path );
 
                 continue;
