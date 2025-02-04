@@ -22,7 +22,10 @@
     "northrook/core": "dev-main",
     "northrook/core-symfony": "dev-main",
     "northrook/pathfinder": "dev-main",
-    "symfony/framework-bundle": "@stable"
+    "symfony/framework-bundle": "@stable",
+    "symfony/monolog-bundle": "@stable",
+    "symfony/profiler-pack": "@stable",
+    "symfony/debug-bundle": "@stable"
   },
   "scripts": {
     "phpstan": "vendor/bin/phpstan analyse"

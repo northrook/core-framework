@@ -40,6 +40,6 @@ final class CoreBundle extends AbstractBundle
      */
     public function build( ContainerBuilder $container ) : void
     {
-        $container->addCompilerPass( new ApplicationInitializationPass() );
+        $container->addCompilerPass( new ApplicationInitializationPass( false ) );
     }
 }

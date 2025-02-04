@@ -48,7 +48,7 @@ final class ApplicationInitializationPass extends CompilerPass
 
             $config = $this->createPhpConfig( $default->getRealPath() );
 
-            Filesystem::save( $project_path, $config );
+            \file_put_contents( $project_path, $config );
         }
     }
 
