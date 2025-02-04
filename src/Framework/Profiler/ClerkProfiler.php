@@ -28,43 +28,43 @@ final readonly class ClerkProfiler implements EventSubscriberInterface
 
     public function onKernelRequest() : void
     {
-        $this->monitor->event( 'onKernelRequest' );
+        $this->monitor->event( 'onKernelRequest', ClerkProfiler::class );
     }
 
     public function onKernelController() : void
     {
-        $this->monitor->event( 'onKernelController' );
+        $this->monitor->event( 'onKernelController', ClerkProfiler::class );
         // $this->monitor->stopwatch->stop( 'onKernelRequest' );
     }
 
     public function onKernelControllerArguments() : void
     {
-        $this->monitor->stop( 'onKernelController' );
+        $this->monitor->event( 'onKernelControllerArguments', ClerkProfiler::class );
     }
 
     public function onKernelView() : void
     {
-        $this->monitor->event( 'onKernelView' );
+        $this->monitor->event( 'onKernelView', ClerkProfiler::class );
     }
 
     public function onKernelResponse( ResponseEvent $event ) : void
     {
-        $this->monitor->event( 'onKernelResponse' );
+        $this->monitor->event( 'onKernelResponse', ClerkProfiler::class );
     }
 
     public function onKernelFinishRequest() : void
     {
-        $this->monitor->event( 'onKernelFinishRequest' );
+        $this->monitor->event( 'onKernelFinishRequest', ClerkProfiler::class );
     }
 
     public function onKernelException( ExceptionEvent $event ) : void
     {
-        $this->monitor->event( 'onKernelException' );
+        $this->monitor->event( 'onKernelException', ClerkProfiler::class );
     }
 
     public function onKernelTerminate( TerminateEvent $event ) : void
     {
-        $this->monitor->event( 'onKernelTerminate' );
+        $this->monitor->event( 'onKernelTerminate', ClerkProfiler::class );
 
         foreach ( $this->monitor->getEvents() as $event ) {
             $event->stop();
