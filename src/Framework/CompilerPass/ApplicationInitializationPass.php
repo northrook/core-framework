@@ -17,14 +17,14 @@ final class ApplicationInitializationPass extends CompilerPass
 {
     protected readonly string $defaultsDirectory;
 
-    public function __construct( protected ?bool $override = null )
+    public function __construct( protected bool $override = false )
     {
         $this->defaultsDirectory = Normalize::path( \dirname( __DIR__, 3 ).'/config.app' );
     }
 
     public function compile( ContainerBuilder $container ) : void
     {
-        $this->override ??= (bool) $this->parameterBag->get( 'kernel.debug' );
+        // $this->override ??= (bool) $this->parameterBag->get( 'kernel.debug' );
 
         $this->normalizePathParameters();
 
