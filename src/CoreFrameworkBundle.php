@@ -1,14 +1,9 @@
 <?php
 
-declare(strict_types=1);
+declare( strict_types = 1 );
 
-namespace Core\Framework;
+namespace Core;
 
-use Override;
-use Core\Framework\Compiler\{ApplicationConfigPass};
-use Core\Framework\Compiler\RegisterCoreServicesPass;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 
 /**
@@ -18,54 +13,9 @@ use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
  */
 final class CoreFrameworkBundle extends AbstractBundle
 {
-    #[Override]
-    public function getPath() : string
+    public function boot() : void
     {
-        return \dirname( __DIR__ );
-    }
-
-    #[Override]
-    public function build( ContainerBuilder $container ) : void
-    {
-        parent::build( $container );
-
-        // Generate application config files and update kernel and public index files
-        $container
-            ->addCompilerPass( new RegisterCoreServicesPass() )
-            ->addCompilerPass( new ApplicationConfigPass() );
-
-        // type : PassConfig::TYPE_OPTIMIZE,
-    }
-
-    /**
-     * @param array<array-key, mixed> $config
-     * @param ContainerConfigurator   $container
-     * @param ContainerBuilder        $builder
-     *
-     * @return void
-     */
-    #[Override]
-    public function loadExtension(
-        array                 $config,
-        ContainerConfigurator $container,
-        ContainerBuilder      $builder,
-    ) : void {
-
-        $container->services()
-            // Settings handler
-            ->set( Settings::class )
-            ->args( ['%kernel.cache_dir%/framework-settings.php'] )
-            ->tag( 'controller.service_arguments' )
-            ->autowire();
-
-        \array_map( [$container, 'import'], $this->config() );
-    }
-
-    /**
-     * @return array<int, string>
-     */
-    private function config() : array
-    {
-        return \glob( \dirname( __DIR__ ).'/config/framework/*.php' ) ?: [];
+        parent::boot();
+        dump( 'Hello there!' );
     }
 }

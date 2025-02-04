@@ -11,27 +11,14 @@
   ],
   "autoload": {
     "psr-4": {
-      "Core\\Framework\\": "src/"
+      "Core\\": "src/"
     }
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
     "php": ">=8.3",
-    "symfony/http-kernel": "@stable",
-    "symfony/dependency-injection": "@stable",
-    "symfony/routing": "@stable",
-    "symfony/security-core": "@stable",
-    "symfony/security-bundle": "@stable",
-    "northrook/html-element": "dev-main",
-    "northrook/array-access": "dev-main",
-    "symfony/serializer": "@stable",
-    "northrook/clerk": "dev-main",
-    "symfony/yaml": "@stable",
     "symfony/framework-bundle": "@stable"
-  },
-  "require-dev": {
-    "northrook/dev-env": "dev-main"
   },
   "scripts": {
     "phpstan": "vendor/bin/phpstan analyse"
