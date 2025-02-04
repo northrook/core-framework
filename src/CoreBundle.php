@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Core;
 
 use Core\Framework\CompilerPass\ApplicationInitializationPass;
+use Core\Framework\CompilerPass\RegisterCoreServicesPass;
 use Core\Symfony\Compiler\AutodiscoverServicesPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -45,6 +46,7 @@ final class CoreBundle extends AbstractBundle
     {
         $container
             ->addCompilerPass( new AutodiscoverServicesPass(), priority : 1_024 )
+            ->addCompilerPass( new RegisterCoreServicesPass() )
             ->addCompilerPass( new ApplicationInitializationPass() );
     }
 }
