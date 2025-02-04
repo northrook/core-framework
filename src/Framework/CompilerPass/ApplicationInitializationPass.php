@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Core\CompilerPass;
+namespace Core\Framework\CompilerPass;
 
 use Core\Symfony\Console\Output;
 use Core\Symfony\DependencyInjection\CompilerPass;
@@ -19,7 +19,7 @@ final class ApplicationInitializationPass extends CompilerPass
 
     public function __construct( protected ?bool $override = null )
     {
-        $this->defaultsDirectory = Normalize::path( \dirname( __DIR__, 2 ).'/config.app' );
+        $this->defaultsDirectory = Normalize::path( \dirname( __DIR__, 3 ).'/config.app' );
     }
 
     public function compile( ContainerBuilder $container ) : void
