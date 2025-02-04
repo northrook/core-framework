@@ -18,12 +18,14 @@
   "prefer-stable": true,
   "require": {
     "php": ">=8.3",
-    "symfony/framework-bundle": "@stable"
+    "symfony/framework-bundle": "@stable",
+    "northrook/pathfinder": "dev-main"
   },
   "scripts": {
     "phpstan": "vendor/bin/phpstan analyse"
   },
   "require-dev": {
-    "northrook/php-cs": "dev-main"
+    "northrook/php-cs": "dev-main",
+    "jetbrains/phpstorm-attributes": "^1.2"
   }
 }
