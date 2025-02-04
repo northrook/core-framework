@@ -11,7 +11,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Core\\": "src/"
+      "Core\\": "src"
     }
   },
   "minimum-stability": "dev",
@@ -22,5 +22,8 @@
   },
   "scripts": {
     "phpstan": "vendor/bin/phpstan analyse"
+  },
+  "require-dev": {
+    "northrook/php-cs": "dev-main"
   }
 }

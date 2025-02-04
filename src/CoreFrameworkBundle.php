@@ -4,6 +4,8 @@ declare( strict_types = 1 );
 
 namespace Core;
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 
 /**
@@ -13,9 +15,87 @@ use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
  */
 final class CoreFrameworkBundle extends AbstractBundle
 {
+    /** @var array<string, array{0: non-empty-string, 1: int}|string> */
+    public const array PARAMETERS = [
+            'dir.root'              => '%kernel.project_dir%',
+            'dir.var'               => '%dir.root%/var',
+            'dir.public'            => '%dir.root%/public',
+            'dir.core'              => [ __DIR__, 1 ],
+            'dir.core_src'          => '%dir.core%/src',
+
+            // Assets
+            'dir.assets'            => '%dir.root%/assets',
+            'dir.assets.public'     => '%dir.root%/public/assets',
+            'dir.assets.build'      => '%dir.root%/assets/build',
+            'dir.core.assets'       => '%dir.core%/assets',
+            'dir.assets.themes'     => '%dir.core%/assets',
+            'dir.assets.cache'      => __DIR__ . '/var/assets',
+            //
+            //
+            'path.asset_manifest'   => '%dir.root%/var/asset.manifest',
+            'path.pathfinder_cache' => '%dir.root%/var/pathfinder.cache',
+
+            // Templates
+            'dir.templates'         => '%dir.root%/templates',
+            'dir.core.templates'    => '%dir.core%/templates',
+
+            // Cache
+            'dir.cache'             => '%kernel.cache_dir%',
+            'dir.cache.latte'       => '%kernel.cache_dir%/latte',
+            'dir.cache.view'        => '%kernel.cache_dir%/view',
+
+            // Themes
+            'path.theme.core'       => '%dir.core%/config/themes/core.php',
+
+            // Settings DataStore
+            'path.settings_store'   => '%dir.root%/var/settings/data_store.php',
+            'path.settings_history' => '%dir.root%/var/settings/history_store.php',
+    ];
+
+    /** @var string[] */
+    private const array CONFIG = [
+        // '../config/framework/application.php',
+        // '../config/framework/assets.php',
+        // '../config/framework/cache.php',
+        // '../config/framework/controllers.php',
+        // '../config/framework/profiler.php',
+        // '../config/framework/services.php',
+        // '../config/framework/toasts.php',
+        // '../config/view/components.php',
+        // '../config/view/renderer.php',
+    ];
+
     public function boot() : void
     {
         parent::boot();
         dump( 'Hello there!' );
+    }
+
+    /**
+     * @param array<array-key, mixed>  $config
+     * @param ContainerConfigurator    $container
+     * @param ContainerBuilder         $builder
+     *
+     * @return void
+     */
+    public function loadExtension(
+            array                 $config,
+            ContainerConfigurator $container,
+            ContainerBuilder      $builder,
+    ) : void
+    {
+        foreach ( self::PARAMETERS as $name => $value ) {
+            if ( \is_array( $value ) ) {
+                \assert(
+                // @phpstan-ignore-next-line | asserts are here to _assert_, we cannot assume type safety
+                        \is_string( $value[ 0 ] ) && \is_int( $value[ 1 ] ),
+                        self::class . '::PARAMETERS only accepts strings, or an array of [__DIR__, LEVEL]',
+                );
+                $value = \dirname( $value[ 0 ], $value[ 1 ] );
+            }
+            $container->parameters()->set( $name, $value );
+        }
+
+        \array_map( [ $container, 'import' ], $this::CONFIG );
     }
 }
