@@ -18,8 +18,11 @@
   "prefer-stable": true,
   "require": {
     "php": ">=8.3",
-    "symfony/framework-bundle": "@stable",
-    "northrook/pathfinder": "dev-main"
+    "ext-zend-opcache": "*",
+    "northrook/core": "dev-main",
+    "northrook/core-symfony": "dev-main",
+    "northrook/pathfinder": "dev-main",
+    "symfony/framework-bundle": "@stable"
   },
   "scripts": {
     "phpstan": "vendor/bin/phpstan analyse"

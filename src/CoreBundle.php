@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Core;
 
+use Core\CompilerPass\ApplicationInitializationPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
@@ -15,12 +16,6 @@ use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
  */
 final class CoreBundle extends AbstractBundle
 {
-    public function boot() : void
-    {
-        parent::boot();
-        dump( 'Hello there!' );
-    }
-
     /**
      * @param array<array-key, mixed> $config
      * @param ContainerConfigurator   $container
@@ -36,5 +31,15 @@ final class CoreBundle extends AbstractBundle
         $container->import( __DIR__.'/../config/application.php' );
         $container->import( __DIR__.'/../config/parameters.php' );
         $container->import( __DIR__.'/../config/pathfinder.php' );
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     *
+     * @return void
+     */
+    public function build( ContainerBuilder $container ) : void
+    {
+        $container->addCompilerPass( new ApplicationInitializationPass() );
     }
 }

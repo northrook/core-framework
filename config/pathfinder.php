@@ -15,7 +15,7 @@ return static function( ContainerConfigurator $container ) : void {
     // Cache
     $container->services()
         ->set( 'core.pathfinder_cache', LocalStorage::class )
-        // ->tag( 'monolog.logger', ['channel' => 'pathfinder'] )
+        ->tag( 'monolog.logger', ['channel' => 'pathfinder'] )
         ->args(
             [
                 '%kernel.cache_dir%/pathfinder.cache', // $filePath
@@ -27,7 +27,8 @@ return static function( ContainerConfigurator $container ) : void {
     // Pathfinder
     // Find and return registered paths
     $container->services()->set( Pathfinder::class )
-        // ->tag( 'monolog.logger', ['channel' => 'pathfinder'] )
+        ->tag( 'monolog.logger', ['channel' => 'pathfinder'] )
+        ->tag( 'controller.service_arguments' )
         ->args(
             [
                 [], // $parameters
