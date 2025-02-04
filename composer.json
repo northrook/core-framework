@@ -25,7 +25,9 @@
     "symfony/framework-bundle": "@stable",
     "symfony/monolog-bundle": "@stable",
     "symfony/profiler-pack": "@stable",
-    "symfony/debug-bundle": "@stable"
+    "symfony/debug-bundle": "@stable",
+    "symfony/serializer": "^7.2",
+    "northrook/view": "dev-main"
   },
   "scripts": {
     "phpstan": "vendor/bin/phpstan analyse"
