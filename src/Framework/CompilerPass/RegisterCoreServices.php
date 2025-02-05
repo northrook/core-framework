@@ -10,7 +10,10 @@ use Core\Symfony\DependencyInjection\CompilerPass;
 use Core\Symfony\Interface\ServiceContainerInterface;
 use function Support\implements_interface;
 
-final class RegisterCoreServicesPass extends CompilerPass
+/**
+ * @internal
+ */
+final class RegisterCoreServices extends CompilerPass
 {
     public function compile( ContainerBuilder $container ) : void
     {

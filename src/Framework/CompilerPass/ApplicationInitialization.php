@@ -13,7 +13,10 @@ use Symfony\Component\Finder\Finder;
 use SplFileInfo;
 use Exception, LogicException, InvalidArgumentException;
 
-final class ApplicationInitializationPass extends CompilerPass
+/**
+ * @internal
+ */
+final class ApplicationInitialization extends CompilerPass
 {
     protected readonly string $defaultsDirectory;
 

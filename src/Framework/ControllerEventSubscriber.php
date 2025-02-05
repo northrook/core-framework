@@ -2,32 +2,49 @@
 
 namespace Core\Framework;
 
-use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Core\Exception\{NotSupportedException};
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\{ControllerEvent};
+use BadMethodCallException;
+use LogicException;
 
-#[AsEventListener(
-    event  : 'kernel.request',
-    method : 'validateRequestController',
-)]
-abstract class ControllerEventSubscriber
+abstract class ControllerEventSubscriber implements EventSubscriberInterface
 {
-    protected bool $skipEvent;
+    // Skip by default
+    private bool $skipEvent;
 
-    final public function validateRequestController( RequestEvent $event ) : void
+    protected readonly Controller $controller;
+
+    final protected function skipEvent() : bool
     {
-        $controller = $event->getRequest()->attributes->get( '_controller' );
+        return $this->skipEvent ?? throw new BadMethodCallException(
+            __METHOD__." is only available after the 'kernel.controller' event.",
+        );
+    }
 
-        if ( \is_array( $controller ) ) {
-            [$controllerObject, $method] = $controller;
+    final public function validateRequestController( ControllerEvent $event ) : void
+    {
+        if ( isset( $this->skipEvent ) ) {
+            throw new LogicException( __METHOD__.' was already called.' );
+            // return;
         }
-        elseif ( \is_object( $controller ) ) {
-            $controllerObject = $controller;
+
+        if ( \is_array( $event->getController() ) ) {
+            /** @noinspection PhpParamsInspection - ignore false-negative */
+            $object = \current( $event->getController() );
+
+            if ( ! $object instanceof Controller ) {
+                $this->skipEvent = true;
+                return;
+            }
+
+            $this->skipEvent  = false;
+            $this->controller = $object;
         }
         else {
-            return;
+            throw new NotSupportedException(
+                '[TOOD] Non-array callables.',
+            );
         }
-
-        // Store the check for later events
-        $this->skipEvent = $controllerObject instanceof Controller;
     }
 }

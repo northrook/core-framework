@@ -5,7 +5,6 @@ namespace Core\Framework;
 use Core\Symfony\DependencyInjection\Autodiscover;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\{KernelEvent, RequestEvent, ResponseEvent, ViewEvent};
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Contracts\Cache\CacheInterface;
@@ -14,7 +13,7 @@ use Symfony\Contracts\Cache\CacheInterface;
     tag      : ['monolog.logger' => ['channel' => 'controller']],
     autowire : true,
 )]
-final class ControllerEventHandler extends ControllerEventSubscriber implements EventSubscriberInterface
+final class ControllerEventHandler extends ControllerEventSubscriber
 {
     public function __construct(
         #[Autowire( service : 'cache.core.http_event' )]
