@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Core\Framework\ControllerEventHandler;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 
 return static function( ContainerConfigurator $controller ) : void {
@@ -22,4 +23,6 @@ return static function( ContainerConfigurator $controller ) : void {
             ],
         )
         ->tag( 'cache.pool' );
+
+    // $controller->services()->set( ControllerEventHandler::class );
 };

@@ -34,43 +34,43 @@ final readonly class ClerkProfiler implements EventSubscriberInterface
     public function onKernelController() : void
     {
         $this->monitor->event( 'onKernelController', ClerkProfiler::class );
-        $this->monitor->event( 'onKernelRequest' )->stop();
+        $this->monitor->event( 'onKernelRequest' )?->stop();
     }
 
     public function onKernelControllerArguments() : void
     {
         $this->monitor->event( 'onKernelControllerArguments', ClerkProfiler::class );
-        $this->monitor->event( 'onKernelController' )->stop();
+        $this->monitor->event( 'onKernelController' )?->stop();
     }
 
     public function onKernelView() : void
     {
         $this->monitor->event( 'onKernelView', ClerkProfiler::class );
-        $this->monitor->event( 'onKernelControllerArguments' )->stop();
+        $this->monitor->event( 'onKernelControllerArguments' )?->stop();
     }
 
     public function onKernelResponse( ResponseEvent $event ) : void
     {
         $this->monitor->event( 'onKernelResponse', ClerkProfiler::class );
-        $this->monitor->event( 'onKernelView' )->stop();
+        $this->monitor->event( 'onKernelView' )?->stop();
     }
 
     public function onKernelFinishRequest() : void
     {
         $this->monitor->event( 'onKernelFinishRequest', ClerkProfiler::class );
-        $this->monitor->event( 'onKernelResponse' )->stop();
+        $this->monitor->event( 'onKernelResponse' )?->stop();
     }
 
     public function onKernelException( ExceptionEvent $event ) : void
     {
         $this->monitor->event( 'onKernelException', ClerkProfiler::class );
-        $this->monitor->event( 'onKernelFinishRequest' )->stop();
+        $this->monitor->event( 'onKernelFinishRequest' )?->stop();
     }
 
     public function onKernelTerminate( TerminateEvent $event ) : void
     {
         $this->monitor->event( 'onKernelTerminate', ClerkProfiler::class );
-        $this->monitor->event( 'onKernelException' )->stop();
+        $this->monitor->event( 'onKernelException' )?->stop();
 
         foreach ( $this->monitor->getEvents() as $event ) {
             $event->stop();
