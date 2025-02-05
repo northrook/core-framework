@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Core\Controller;
 
 use Core\Assets\AssetManager;
+use Core\Framework\Controller;
 use Core\Framework\Controller\Attribute\OnDocument;
 use Core\View\{ComponentFactory, Document};
 use Core\Pathfinder;
 use Symfony\Component\HttpFoundation\{Request, Response};
-// use Core\Action\{Toast};
-use Core\Framework\Controller;
 use Core\Framework\Controller\Template;
 use Symfony\Component\Routing\Attribute\Route;
 

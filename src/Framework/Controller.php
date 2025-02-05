@@ -15,7 +15,6 @@ use Core\Framework\Controller\ResponseMethods;
 use Northrook\Logger\Log;
 use ReflectionClass;
 use ReflectionException;
-use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class Controller implements ServiceContainerInterface

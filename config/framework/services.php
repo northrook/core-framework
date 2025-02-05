@@ -9,12 +9,14 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 // use Core\Action\Headers;
+use Core\Framework\Service\ToastService;
 use Core\View\{Document, Parameters};
 use Core\Pathfinder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\RouterInterface;
+
 // use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 // use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 // use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -22,6 +24,12 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 return static function( ContainerConfigurator $container ) : void {
     $services = $container->services();
+
+    $services
+            // Toast Flashbag Handler
+        ->set( ToastService::class )
+        ->args( [service( 'request_stack' )] )
+        ->tag( 'core.service_locator' );
 
     /** @used-by \Core\Symfony\DependencyInjection\ServiceContainer */
     $container->services()
