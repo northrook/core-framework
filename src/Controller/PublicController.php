@@ -6,11 +6,10 @@ namespace Core\Controller;
 
 use Core\Assets\AssetManager;
 use Core\Framework\Controller;
-use Core\Framework\Controller\Attribute\OnDocument;
+use Core\Framework\Controller\Attribute\{OnDocument, Template};
 use Core\View\{ComponentFactory, Document};
 use Core\Pathfinder;
 use Symfony\Component\HttpFoundation\{Request, Response};
-use Core\Framework\Controller\Template;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(
@@ -33,13 +32,6 @@ final class PublicController extends Controller
             // 'dynamic' => '/{route}',
         ], 'index', priority : -100 ),
         Template( 'welcome.latte' )
-        /*--
-        Document template - will be the wrapping template on full page requests
-
-        Doc:
-        DocumentView renders outer HTML, Template is within <body>
-
-         */
     ]
     public function index( Document $document, Request $request, Pathfinder $pathfinder ) : Response
     {
@@ -47,18 +39,26 @@ final class PublicController extends Controller
         $document( 'Index Demo Template' );
         return new Response(
             <<<HTML
-                <DOCTYPE html>
-                <html lang="en">
-                <head>
-                <title>Controller Index</title>
-                </head>
                 <body>
                 <h1>Hello there!</h1>
                 {$path}
                 </body>
-                </html>
                 HTML,
         );
+        // return new Response(
+        //     <<<HTML
+        //         <DOCTYPE html>
+        //         <html lang="en">
+        //         <head>
+        //         <title>Controller Index</title>
+        //         </head>
+        //         <body>
+        //         <h1>Hello there!</h1>
+        //         {$path}
+        //         </body>
+        //         </html>
+        //         HTML,
+        // );
     }
 
     #[

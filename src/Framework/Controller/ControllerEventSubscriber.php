@@ -3,12 +3,16 @@
 namespace Core\Framework\Controller;
 
 use Core\Framework\Controller;
-use Core\Exception\{NotSupportedException};
+use Core\Framework\Controller\Attribute\Template;
+use Core\Exception\NotSupportedException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\{ControllerEvent};
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use LogicException;
 use BadMethodCallException;
+use ReflectionAttribute;
+use ReflectionClass;
 
 abstract class ControllerEventSubscriber implements EventSubscriberInterface
 {
@@ -17,6 +21,8 @@ abstract class ControllerEventSubscriber implements EventSubscriberInterface
     protected readonly LoggerInterface $logger;
 
     protected readonly Controller $controller;
+
+    protected readonly ?Template $template;
 
     /**
      * @return bool
@@ -50,8 +56,18 @@ abstract class ControllerEventSubscriber implements EventSubscriberInterface
     final public function validateRequestController( ControllerEvent $event ) : void
     {
         if ( isset( $this->skipEvent ) ) {
+            if ( $event->getRequestType() === HttpKernelInterface::SUB_REQUEST ) {
+                return;
+            }
+
             throw new LogicException( __METHOD__.' was already called.' );
             // return;
+        }
+
+        // Only parse GET requests
+        if ( $event->getRequest()->isMethod( 'GET' ) === false ) {
+            $this->skipEvent = true;
+            return;
         }
 
         if ( \is_array( $event->getController() ) ) {
@@ -71,5 +87,26 @@ abstract class ControllerEventSubscriber implements EventSubscriberInterface
                 '[TOOD] Non-array callables.',
             );
         }
+
+        $this->template = $this->resolveTemplateAttribute( $event );
+    }
+
+    protected function resolveTemplateAttribute( ControllerEvent $event ) : ?Template
+    {
+        foreach ( $event->getControllerReflector()->getAttributes(
+            Template::class,
+            ReflectionAttribute::IS_INSTANCEOF,
+        ) as $attribute ) {
+            return $attribute->newInstance();
+        }
+
+        foreach ( ( new ReflectionClass( $this->controller ) )->getAttributes(
+            Template::class,
+            ReflectionAttribute::IS_INSTANCEOF,
+        ) as $attribute ) {
+            return $attribute->newInstance();
+        }
+
+        return null;
     }
 }

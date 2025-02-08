@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Core\Assets\{AssetFactory, AssetManager};
+use Core\Framework\ResponseView;
 use Core\Interface\IconProviderInterface;
 use Core\Pathfinder;
 use Core\View\{ComponentFactory,
@@ -27,6 +29,31 @@ return static function( ContainerConfigurator $container ) : void {
         ->set( 'view.component_locator' )
         ->tag( 'container.service_locator' )
         ->args( CompilerPass::PLACEHOLDER_ARGS );
+
+    $container->services()
+        ->set( AssetManager::class )
+        ->args(
+            [
+                service( AssetFactory::class ),
+                null, // cache
+                service( 'logger' ),
+            ],
+        )
+        ->tag( 'core.service_locator' );
+
+    $container->services()
+        ->set( ResponseView::class )
+        ->args(
+            [
+                service( DocumentView::class ),
+                service( TemplateEngine::class ),
+                service( ComponentFactory::class ),
+                service( AssetManager::class ),
+                service( 'logger' ),
+            ],
+        )
+        ->tag( 'monolog.logger', ['channel' => 'view'] )
+        ->lazy();
 
     $container->services()
         ->set( IconSet::class )
