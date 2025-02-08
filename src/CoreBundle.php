@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Core;
 
+use Core\View\Compiler\RegisterViewComponentsPass;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -49,6 +50,7 @@ final class CoreBundle extends AbstractBundle
         $container
             ->addCompilerPass( new AutodiscoverServicesPass(), priority : 1_024 )
             ->addCompilerPass( new RegisterCoreServices() )
+            ->addCompilerPass( new RegisterViewComponentsPass() )
             ->addCompilerPass( new ApplicationInitialization() )
             ->addCompilerPass( new RegisterEventSubscribers() );
     }

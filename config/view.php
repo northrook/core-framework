@@ -42,10 +42,10 @@ return static function( ContainerConfigurator $container ) : void {
         ->set( ComponentFactory::class )
         ->args(
             [
-                service( 'view.component_locator' ),
-                abstract_arg( ComponentBag::class ),
-                abstract_arg( 'ComponentProperties::tagged' ),
-                service( 'logger' )->nullOnInvalid(),
+                '$locator'    => service( 'view.component_locator' ),
+                '$components' => abstract_arg( ComponentBag::class ),
+                '$tags'       => abstract_arg( 'ComponentProperties::tagged' ),
+                '$logger'     => service( 'logger' )->nullOnInvalid(),
             ],
         )
         ->private(); // ->lazy()
