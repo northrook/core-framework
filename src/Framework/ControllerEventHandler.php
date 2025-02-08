@@ -7,7 +7,7 @@ namespace Core\Framework;
 use Core\Framework\Controller\ControllerEventSubscriber;
 use Core\View\DocumentView;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpKernel\Event\{ResponseEvent, ViewEvent};
+use Symfony\Component\HttpKernel\Event\{ControllerEvent, ResponseEvent, ViewEvent};
 use Symfony\Component\HttpKernel\KernelEvents;
 
 final class ControllerEventHandler extends ControllerEventSubscriber
@@ -20,11 +20,21 @@ final class ControllerEventHandler extends ControllerEventSubscriber
     public static function getSubscribedEvents() : array
     {
         return [
-            KernelEvents::VIEW     => 'onKernelView',
-            KernelEvents::RESPONSE => ['onKernelResponse', 32],
+            KernelEvents::CONTROLLER => 'onKernelController',
+            KernelEvents::VIEW       => 'onKernelView',
+            KernelEvents::RESPONSE   => ['onKernelResponse', 32],
             // KernelEvents::EXCEPTION => 'onKernelException',
             // KernelEvents::TERMINATE => 'onKernelTerminate',
         ];
+    }
+
+    public function onKernelController( ControllerEvent $event ) : void
+    {
+        if ( $this->skipEvent() ) {
+            return;
+        }
+
+        dump( $event->getController() );
     }
 
     public function onKernelView( ViewEvent $event ) : void
