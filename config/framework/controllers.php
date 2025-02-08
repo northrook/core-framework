@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Core\Framework\ControllerEventHandler;
+use Core\View\DocumentView;
 use Core\Controller\{FaviconController, PublicController, SecurityController};
 
 return static function( ContainerConfigurator $container ) : void {
@@ -16,6 +17,7 @@ return static function( ContainerConfigurator $container ) : void {
         ->set( ControllerEventHandler::class )
         ->args(
             [
+                service( DocumentView::class ),
                 service( 'logger' ),
             ],
         )

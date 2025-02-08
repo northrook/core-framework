@@ -32,11 +32,19 @@ final class PublicController extends Controller
             'default' => '/',
             // 'dynamic' => '/{route}',
         ], 'index', priority : -100 ),
-        // Template( 'welcome.latte' ) // content template
+        Template( 'welcome.latte' )
+        /*--
+        Document template - will be the wrapping template on full page requests
+
+        Doc:
+        DocumentView renders outer HTML, Template is within <body>
+
+         */
     ]
     public function index( Document $document, Request $request, Pathfinder $pathfinder ) : Response
     {
         $path = $pathfinder( 'dir.root' );
+        $document( 'Index Demo Template' );
         return new Response(
             <<<HTML
                 <DOCTYPE html>

@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Core\Framework;
 
 use Core\Framework\Controller\ControllerEventSubscriber;
+use Core\View\DocumentView;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpKernel\Event\{KernelEvent, ResponseEvent, ViewEvent};
+use Symfony\Component\HttpKernel\Event\{ResponseEvent, ViewEvent};
 use Symfony\Component\HttpKernel\KernelEvents;
 
 final class ControllerEventHandler extends ControllerEventSubscriber
 {
     public function __construct(
+        protected readonly DocumentView    $documentView,
         protected readonly LoggerInterface $logger,
     ) {}
 
@@ -30,7 +32,7 @@ final class ControllerEventHandler extends ControllerEventSubscriber
         if ( $this->skipEvent() ) {
             return;
         }
-        dump( $event, $this->eventPath( $event ) );
+        dump( $event, $this );
     }
 
     public function onKernelResponse( ResponseEvent $event ) : void
@@ -38,12 +40,6 @@ final class ControllerEventHandler extends ControllerEventSubscriber
         if ( $this->skipEvent() ) {
             return;
         }
-        dump( $event, $this->eventPath( $event ) );
-    }
-
-    protected function eventPath( KernelEvent $event ) : string
-    {
-        dump( \spl_object_id( $this ), \spl_object_id( $event ) );
-        return $event->getRequest()->getRequestUri();
+        dump( $event, $this );
     }
 }
