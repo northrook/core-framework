@@ -19,6 +19,7 @@ return static function( ContainerConfigurator $container ) : void {
                 service( 'logger' ),
             ],
         )
+        ->tag( 'kernel.event_subscriber' )
         ->tag( 'monolog.logger', ['channel' => 'request'] );
 
     $framework = $container->services()

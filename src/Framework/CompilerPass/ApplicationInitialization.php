@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Framework\CompilerPass;
 
-use Core\Symfony\Console\Output;
+use Core\Symfony\Console\{ListReport, Output};
 use Core\Symfony\DependencyInjection\CompilerPass;
 use Support\{Filesystem, Normalize, Time};
 use JetBrains\PhpStorm\Language;
@@ -36,6 +36,7 @@ final class ApplicationInitialization extends CompilerPass
 
     protected function initializeDefaultConfiguration() : void
     {
+        $log          = new ListReport( __METHOD__ );
         $app_defaults = new Finder();
 
         $app_defaults->files()->in( $this->defaultsDirectory )->name( ['*.php', '*.yaml'] );
@@ -44,15 +45,24 @@ final class ApplicationInitialization extends CompilerPass
             $project_path = $this->getProjectPath( $default );
 
             if ( ! $this->overrideExistingFile( $project_path ) ) {
-                $this->console->info( 'Skipping existing file: '.$project_path );
+                $log->note( 'skipping '.$project_path );
 
                 continue;
             }
 
+            $log->item( $project_path );
             $config = $this->createPhpConfig( $default->getRealPath() );
 
-            \file_put_contents( $project_path, $config );
+            $status = \file_put_contents( $project_path, $config );
+
+            if ( $status ) {
+                $log->note( 'generated' );
+            }
+
+            $log->note( 'file_put_contents failed' );
+
         }
+        $log->output();
     }
 
     protected function createPhpConfig( string $source, bool $canEdit = true ) : string
@@ -203,7 +213,7 @@ final class ApplicationInitialization extends CompilerPass
 
         $stream = \fopen( $path, 'r' );
 
-        if ( false === $stream ) {
+        if ( $stream === false ) {
             $message = __CLASS__.' is unable to open file : '.$path;
             throw new InvalidArgumentException( $message );
         }

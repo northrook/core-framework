@@ -5,10 +5,10 @@ namespace Core\Framework\Controller;
 use Core\Framework\Controller;
 use Core\Exception\{NotSupportedException};
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\{ControllerEvent};
 use LogicException;
+use BadMethodCallException;
 
 abstract class ControllerEventSubscriber implements EventSubscriberInterface
 {
@@ -18,6 +18,9 @@ abstract class ControllerEventSubscriber implements EventSubscriberInterface
 
     protected readonly Controller $controller;
 
+    /**
+     * @return bool
+     */
     final protected function skipEvent() : bool
     {
         if ( isset( $this->skipEvent ) ) {
@@ -26,13 +29,24 @@ abstract class ControllerEventSubscriber implements EventSubscriberInterface
 
         $this->logger->error(
             '{method} is only available after the {even} event.',
-            ['method' => __METHOD__, 'even' => 'kernel.controller'],
+            [
+                'method'    => __METHOD__,
+                'even'      => 'kernel.controller',
+                'exception' => new BadMethodCallException(),
+            ],
         );
 
-        return false;
+        // Always skip early calls
+        return true;
     }
 
-    #[AsEventListener( 'kernel.controller' )]
+    /**
+     * Configured by {@see RegisterEventSubscribers::controllerEventSubscriber}.
+     *
+     * @param ControllerEvent $event
+     *
+     * @return void
+     */
     final public function validateRequestController( ControllerEvent $event ) : void
     {
         if ( isset( $this->skipEvent ) ) {

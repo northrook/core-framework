@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\Framework\CompilerPass;
 
-use Core\Framework\Controller\ControllerEventSubscriber;
 use Core\Symfony\DependencyInjection\CompilerPass;
-use InvalidArgumentException;
 use Symfony\Component\DependencyInjection\{ContainerBuilder, Reference};
+use Core\Framework\Controller\ControllerEventSubscriber;
+use InvalidArgumentException;
 
 /**
  * @internal
@@ -14,14 +16,17 @@ final class RegisterEventSubscribers extends CompilerPass
 {
     public function compile( ContainerBuilder $container ) : void
     {
-        if ( ! $container->has( 'event_dispatcher' ) ) {
-            return;
+        if ( $container->has( 'event_dispatcher' ) ) {
+            $this->controllerEventSubscriber();
         }
+    }
 
-        $dispatcher = $container->findDefinition( 'event_dispatcher' );
+    private function controllerEventSubscriber() : void
+    {
+        $dispatcher = $this->container->findDefinition( 'event_dispatcher' );
 
-        foreach ( $container->findTaggedServiceIds( 'kernel.event_subscriber' ) as $id => $tags ) {
-            $definition = $container->getDefinition( $id );
+        foreach ( $this->container->findTaggedServiceIds( 'kernel.event_subscriber' ) as $id => $tags ) {
+            $definition = $this->container->getDefinition( $id );
 
             $class = $definition->getClass() ?? throw new InvalidArgumentException(
                 $id.' does not have an referenced class.',
@@ -36,10 +41,8 @@ final class RegisterEventSubscribers extends CompilerPass
                     'addListener',
                     [
                         'kernel.controller',
-                        [
-                            new Reference( $id ),
-                            'validateRequestController',
-                        ],
+                        [new Reference( $id ), 'validateRequestController'],
+                        128,
                     ],
                 );
             }
