@@ -1,6 +1,6 @@
 # Core Framework
 
-> [!IMPORTANT]
+> [!CAUTION]
 > Do not use
 > 
 > Work in progress

@@ -8,9 +8,19 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Core\Framework\ControllerEventHandler;
 use Core\Controller\{FaviconController, PublicController, SecurityController};
 
 return static function( ContainerConfigurator $container ) : void {
+    $container->services()
+        ->set( ControllerEventHandler::class )
+        ->args(
+            [
+                service( 'logger' ),
+            ],
+        )
+        ->tag( 'monolog.logger', ['channel' => 'request'] );
+
     $framework = $container->services()
         ->defaults()
         ->tag( 'controller.service_arguments' )

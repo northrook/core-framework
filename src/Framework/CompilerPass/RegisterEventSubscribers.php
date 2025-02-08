@@ -2,7 +2,7 @@
 
 namespace Core\Framework\CompilerPass;
 
-use Core\Framework\ControllerEventSubscriber;
+use Core\Framework\Controller\ControllerEventSubscriber;
 use Core\Symfony\DependencyInjection\CompilerPass;
 use InvalidArgumentException;
 use Symfony\Component\DependencyInjection\{ContainerBuilder, Reference};

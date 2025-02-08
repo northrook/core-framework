@@ -17,8 +17,8 @@ final class RegisterCoreServices extends CompilerPass
 {
     public function compile( ContainerBuilder $container ) : void
     {
-        if ( ! $container->hasDefinition( 'core.service_locator' ) ) {
-            $this->console->error( $this::class." cannot find required 'core.service_locator' definition." );
+        if ( ! $container->hasDefinition( 'core.service_arguments' ) ) {
+            $this->console->error( $this::class." cannot find required 'core.service_arguments' definition." );
             return;
         }
 
@@ -28,9 +28,9 @@ final class RegisterCoreServices extends CompilerPass
 
     private function registerTaggedServices( ContainerBuilder $container ) : void
     {
-        $serviceLocatorArguments = $container->getDefinition( 'core.service_locator' )->getArguments()[0] ?? [];
+        $serviceLocatorArguments = $container->getDefinition( 'core.service_arguments' )->getArguments()[0] ?? [];
 
-        foreach ( $container->findTaggedServiceIds( 'core.service_locator' ) as $id => $unused ) {
+        foreach ( $container->findTaggedServiceIds( 'core.service_arguments' ) as $id => $unused ) {
             $taggedService = $container->getDefinition( $id );
             $serviceId     = $taggedService->innerServiceId ?? $taggedService->getClass();
             if ( $serviceId ) {
@@ -38,17 +38,17 @@ final class RegisterCoreServices extends CompilerPass
             }
             else {
                 $this->console->error(
-                    $this::class." could not find a serviceId for '{$id}' when parsing services tagged with 'core.service_locator'.",
+                    $this::class." could not find a serviceId for '{$id}' when parsing services tagged with 'core.service_arguments'.",
                 );
             }
         }
 
-        $container->getDefinition( 'core.service_locator' )->setArguments( [$serviceLocatorArguments] );
+        $container->getDefinition( 'core.service_arguments' )->setArguments( [$serviceLocatorArguments] );
     }
 
     private function injectServiceLocator( ContainerBuilder $container ) : void
     {
-        $coreServiceLocator = $container->getDefinition( 'core.service_locator' );
+        $coreServiceLocator = $container->getDefinition( 'core.service_arguments' );
         $registeredServices = new ListReport( __METHOD__ );
 
         foreach ( $this->getDeclaredClasses() as $class ) {

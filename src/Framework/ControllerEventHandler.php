@@ -2,23 +2,14 @@
 
 namespace Core\Framework;
 
-use Core\Symfony\DependencyInjection\Autodiscover;
+use Core\Framework\Controller\ControllerEventSubscriber;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\Event\{KernelEvent, RequestEvent, ResponseEvent, ViewEvent};
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Contracts\Cache\CacheInterface;
 
-#[Autodiscover(
-    tag      : ['monolog.logger' => ['channel' => 'controller']],
-    autowire : true,
-)]
 final class ControllerEventHandler extends ControllerEventSubscriber
 {
     public function __construct(
-        #[Autowire( service : 'cache.core.http_event' )]
-        protected readonly CacheInterface  $cache,
-        // #[Autowire( service : 'logger' )] // autodiscover
         protected readonly LoggerInterface $logger,
     ) {}
 
@@ -43,22 +34,26 @@ final class ControllerEventHandler extends ControllerEventSubscriber
      */
     public function onKernelRequest( RequestEvent $event ) : void
     {
+        if ( $this->skipEvent() ) {
+            return;
+        }
         dump( $event, $this->eventPath( $event ) );
     }
 
     public function onKernelView( ViewEvent $event ) : void
     {
+        if ( $this->skipEvent() ) {
+            return;
+        }
         dump( $event, $this->eventPath( $event ) );
     }
 
     public function onKernelResponse( ResponseEvent $event ) : void
     {
+        if ( $this->skipEvent() ) {
+            return;
+        }
         dump( $event, $this->eventPath( $event ) );
-    }
-
-    private function cacheEvent() : string
-    {
-        return $this->cache->get( 'ControllerEvent', fn() => __CLASS__ );
     }
 
     protected function eventPath( KernelEvent $event ) : string

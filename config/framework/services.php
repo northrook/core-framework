@@ -29,11 +29,11 @@ return static function( ContainerConfigurator $container ) : void {
             // Toast Flashbag Handler
         ->set( ToastService::class )
         ->args( [service( 'request_stack' )] )
-        ->tag( 'core.service_locator' );
+        ->tag( 'core.service_arguments' );
 
     /** @used-by \Core\Symfony\DependencyInjection\ServiceContainer */
     $container->services()
-        ->set( 'core.service_locator' )
+        ->set( 'core.service_arguments' )
         ->tag( 'container.service_locator' )
         ->args(
             [
