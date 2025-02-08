@@ -28,7 +28,9 @@
     "symfony/debug-bundle": "@stable",
     "symfony/serializer": "^7.2",
     "northrook/view": "dev-main",
-    "northrook/view-document": "dev-main"
+    "northrook/view-element": "dev-main",
+    "northrook/view-document": "dev-main",
+    "northrook/view-icons": "dev-main"
   },
   "scripts": {
     "phpstan": "vendor/bin/phpstan analyse"
