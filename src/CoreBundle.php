@@ -34,8 +34,8 @@ final class CoreBundle extends AbstractBundle
         $container->import( __DIR__.'/../config/parameters.php' );
         $container->import( __DIR__.'/../config/pathfinder.php' );
         $container->import( __DIR__.'/../config/view.php' );
+        $container->import( __DIR__.'/../config/framework/assets.php' );
         $container->import( __DIR__.'/../config/framework/controllers.php' );
-        // $container->import( __DIR__.'/../config/framework/http.php' );
         $container->import( __DIR__.'/../config/framework/profiler.php' );
         $container->import( __DIR__.'/../config/framework/services.php' );
     }

@@ -31,17 +31,6 @@ return static function( ContainerConfigurator $container ) : void {
         ->args( CompilerPass::PLACEHOLDER_ARGS );
 
     $container->services()
-        ->set( AssetManager::class )
-        ->args(
-            [
-                service( AssetFactory::class ),
-                null, // cache
-                service( 'logger' ),
-            ],
-        )
-        ->tag( 'core.service_locator' );
-
-    $container->services()
         ->set( ResponseView::class )
         ->args(
             [
