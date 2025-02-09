@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace Core\Framework;
 
 use Core\Framework\Controller\ControllerEventSubscriber;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Event\{ResponseEvent, ViewEvent};
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Psr\Log\LoggerInterface;
+use Stringable;
 use ReflectionClass;
 use ReflectionException;
-use Stringable;
 
 final class ControllerEventHandler extends ControllerEventSubscriber
 {
     public function __construct(
-        protected readonly ResponseView    $responseView,
-        protected readonly LoggerInterface $logger,
+        protected readonly ResponseRenderer $responseRenderer,
+        protected readonly LoggerInterface  $logger,
     ) {}
 
     public static function getSubscribedEvents() : array
@@ -85,6 +85,15 @@ final class ControllerEventHandler extends ControllerEventSubscriber
         if ( $this->skipEvent() ) {
             return;
         }
-        dump( $event, $this );
+
+        $template = $this->responseRenderer->templateEngine->render(
+            $this->template->document,
+        );
+
+        $document = $this->responseRenderer->documentEngine
+            ->setInnerHtml( $template )
+            ->renderDocument();
+
+        $event->setResponse( new Response( $document ) );
     }
 }

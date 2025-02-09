@@ -8,14 +8,15 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\Assets\{AssetFactory, AssetManager};
-use Core\Framework\ResponseView;
+use Core\Assets\{AssetManager};
+use Core\Framework\ResponseRenderer;
+use Core\Framework\Service\ToastService;
 use Core\Interface\IconProviderInterface;
 use Core\Pathfinder;
 use Core\View\{ComponentFactory,
     ComponentFactory\ComponentBag,
     Document,
-    DocumentView,
+    DocumentEngine,
     IconSet,
     Latte\ViewComponentExtension,
     Parameters,
@@ -24,36 +25,37 @@ use Core\View\{ComponentFactory,
 use Core\Symfony\DependencyInjection\CompilerPass;
 
 return static function( ContainerConfigurator $container ) : void {
+    //
     // Component Service Locator
     $container->services()
         ->set( 'view.component_locator' )
         ->tag( 'container.service_locator' )
         ->args( CompilerPass::PLACEHOLDER_ARGS );
-
+    //
     $container->services()
-        ->set( ResponseView::class )
+        ->set( ResponseRenderer::class )
         ->args(
             [
-                service( DocumentView::class ),
+                service( DocumentEngine::class ),
                 service( TemplateEngine::class ),
                 service( ComponentFactory::class ),
                 service( AssetManager::class ),
+                service( ToastService::class ),
                 service( 'logger' ),
             ],
         )
         ->tag( 'monolog.logger', ['channel' => 'view'] )
         ->lazy();
-
+    //
     $container->services()
         ->set( IconSet::class )
         ->alias( IconProviderInterface::class, IconSet::class );
-
+    //
     $services = $container->services();
     // ->defaults()
     // ->autoconfigure();
-
+    //
     // IconSet
-
     $services
         ->set( ComponentFactory::class )
         ->args(
@@ -95,7 +97,8 @@ return static function( ContainerConfigurator $container ) : void {
             ],
         );
 
-    $view = $container->services()->defaults()
+    $view = $container->services()
+        ->defaults()
         ->tag( 'monolog.logger', ['channel' => 'view'] );
 
     $view
@@ -106,7 +109,7 @@ return static function( ContainerConfigurator $container ) : void {
         ->autowire();
 
     $view
-        ->set( DocumentView::class )
+        ->set( DocumentEngine::class )
         ->args(
             [
                 service( Document::class ),

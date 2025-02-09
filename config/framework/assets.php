@@ -23,7 +23,7 @@ return static function( ContainerConfigurator $container ) : void {
     $container->services()
         ->set( AssetManifest::class )
         ->args( [param( 'path.asset_manifest' )] )
-        ->tag( 'monolog.logger', ['channel' => 'asset_manager'] )
+        ->tag( 'monolog.logger', ['channel' => 'assets'] )
         ->alias( AssetManifestInterface::class, AssetManifest::class );
 
     $container->services()
@@ -41,7 +41,7 @@ return static function( ContainerConfigurator $container ) : void {
                 service( 'logger' ),
             ],
         );
-        // ->call( ...CoreStyle::callback( 'style.core' ) );
+    // ->call( ...CoreStyle::callback( 'style.core' ) );
 
     $container->services()
             //
@@ -54,5 +54,5 @@ return static function( ContainerConfigurator $container ) : void {
                 service( 'logger' ),
             ],
         )
-        ->tag( 'core.service_locator' );
+        ->tag( 'core.service_arguments' );
 };

@@ -1,18 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\Framework\Controller;
 
 use Core\Framework\Controller;
 use Core\Framework\Controller\Attribute\Template;
 use Core\Exception\NotSupportedException;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use LogicException;
-use BadMethodCallException;
-use ReflectionAttribute;
-use ReflectionClass;
+use Psr\Log\LoggerInterface;
+use LogicException, BadMethodCallException;
+use ReflectionAttribute, ReflectionClass;
 
 abstract class ControllerEventSubscriber implements EventSubscriberInterface
 {

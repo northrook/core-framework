@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\Framework\{ControllerEventHandler, ResponseView};
+use Core\Framework\{ControllerEventHandler, ResponseRenderer};
 use Core\Controller\{FaviconController, PublicController, SecurityController};
 
 return static function( ContainerConfigurator $container ) : void {
@@ -16,8 +16,8 @@ return static function( ContainerConfigurator $container ) : void {
         ->set( ControllerEventHandler::class )
         ->args(
             [
-                service( ResponseView::class ),
-                service( 'logger' ),
+                    service( ResponseRenderer::class ),
+                    service( 'logger' ),
             ],
         )
         ->tag( 'kernel.event_subscriber' )

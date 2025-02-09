@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\Framework;
 
 use Core\Assets\AssetManager;
 use Core\Framework\Service\ToastService;
-use Core\View\{ComponentFactory, DocumentView, TemplateEngine};
+use Core\View\{ComponentFactory, DocumentEngine, TemplateEngine};
 use Psr\Log\LoggerInterface;
 
-class ResponseView
+class ResponseRenderer
 {
-    private ?string $content = null;
+    protected ?string $content = null;
 
     public function __construct(
-        public readonly DocumentView       $view,
+        public readonly DocumentEngine     $documentEngine,
         public readonly TemplateEngine     $templateEngine,
         public readonly ComponentFactory   $componentFactory,
         public readonly AssetManager       $assetManager,
