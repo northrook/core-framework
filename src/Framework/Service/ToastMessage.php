@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Core\Framework\Service;
 
 use Core\Interface\DataInterface;
-use Core\View\Html\Tag;
+use Core\View\Element\Tag;
 use Support\{Escape, Time};
 use Throwable, InvalidArgumentException;
 
@@ -95,7 +95,7 @@ final class ToastMessage implements DataInterface
 
     public function getTimeout() : ?int
     {
-        return 'danger' === $this->status ? null : $this->timeout;
+        return $this->status === 'danger' ? null : $this->timeout;
     }
 
     /**

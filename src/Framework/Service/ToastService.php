@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Core\Framework\Service;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation as Http;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Stringable;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Session\{FlashBagAwareSessionInterface};
 
 final readonly class ToastService
 {
-    public function __construct( private Http\RequestStack $requestStack ) {}
+    public function __construct( private Http\RequestStack $requestStack, private LoggerInterface $logger ) {}
 
     /**
      * @param 'danger'|'info'|'notice'|'success'|'warning' $status
@@ -74,13 +77,55 @@ final readonly class ToastService
             }
             else {
                 foreach ( $message as $title ) {
-                    $id            = \hash( 'xxh3', $keyOrType.$title );
-                    $messages[$id] = new ToastMessage( $id, $keyOrType, $title );
+                    $title         = $this->resolveTitle( $title );
+                    $status        = $this->resolveStatus( $keyOrType );
+                    $id            = \hash( 'xxh3', $status.$title );
+                    $messages[$id] = new ToastMessage(
+                        $id,
+                        $status,
+                        $title,
+                    );
                 }
             }
         }
 
         return $messages;
+    }
+
+    private function resolveTitle( mixed $title ) : string
+    {
+        if ( $title instanceof Stringable ) {
+            $title = (string) $title;
+        }
+
+        if ( \is_string( $title ) ) {
+            return \trim( $title );
+        }
+
+        throw new InvalidArgumentException(
+            $this::class.' unsupported title type: '.\gettype( $title ),
+        );
+    }
+
+    /**
+     * @param string $string
+     *
+     * @return 'danger'|'info'|'notice'|'success'|'warning'
+     */
+    private function resolveStatus( string $string ) : string
+    {
+        $string = \strtolower( $string );
+
+        if ( \in_array( $string, ['success', 'info', 'warning', 'danger', 'notice'], true ) ) {
+            return $string;
+        }
+
+        $this->logger->warning(
+            'Unsupported status {status} provided. Returned {return}',
+            ['status' => $string, 'return' => 'notice'],
+        );
+
+        return 'notice';
     }
 
     public function hasMessages() : bool

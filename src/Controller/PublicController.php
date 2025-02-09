@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Core\Controller;
 
+use Core\Pathfinder;
 use Core\Assets\AssetManager;
 use Core\Framework\Controller;
 use Core\Framework\Controller\Attribute\{OnDocument, Template};
 use Core\View\{ComponentFactory, Document};
-use Core\Pathfinder;
 use Symfony\Component\HttpFoundation\{Request, Response};
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -35,30 +35,20 @@ final class PublicController extends Controller
     ]
     public function index( Document $document, Request $request, Pathfinder $pathfinder ) : Response
     {
-        $path = $pathfinder( 'dir.root' );
-        $document( 'Index Demo Template' );
+        $path = $pathfinder(
+            'dir.root',
+        );
+        $document(
+            'Index Demo Template',
+        );
         return new Response(
             <<<HTML
                 <body>
-                <h1>Hello there!</h1>
-                {$path}
+                    <h1>Hello there!</h1>
+                    {$path}
                 </body>
                 HTML,
         );
-        // return new Response(
-        //     <<<HTML
-        //         <DOCTYPE html>
-        //         <html lang="en">
-        //         <head>
-        //         <title>Controller Index</title>
-        //         </head>
-        //         <body>
-        //         <h1>Hello there!</h1>
-        //         {$path}
-        //         </body>
-        //         </html>
-        //         HTML,
-        // );
     }
 
     #[
@@ -85,6 +75,7 @@ final class PublicController extends Controller
         ComponentFactory $componentFactory,
     ) : string {
         dump( $assetManager );
+
         // $assetManager->factory->locator()->scan();
         $document( 'Index Demo Template' );
 
