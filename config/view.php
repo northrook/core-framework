@@ -40,6 +40,7 @@ return static function( ContainerConfigurator $container ) : void {
                 service( TemplateEngine::class ),
                 service( ComponentFactory::class ),
                 service( AssetManager::class ),
+                service( Document::class ),
                 service( ToastService::class ),
                 service( 'logger' ),
             ],

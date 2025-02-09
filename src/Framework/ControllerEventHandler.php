@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Core\Framework;
 
 use Core\Framework\Controller\ControllerEventSubscriber;
-use Symfony\Component\HttpKernel\Event\{ResponseEvent, ViewEvent};
+use Symfony\Component\HttpKernel\Event\{ControllerArgumentsEvent, ResponseEvent, ViewEvent};
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Psr\Log\LoggerInterface;
@@ -23,11 +23,33 @@ final class ControllerEventHandler extends ControllerEventSubscriber
     public static function getSubscribedEvents() : array
     {
         return [
-            KernelEvents::VIEW     => 'onKernelView',
-            KernelEvents::RESPONSE => ['onKernelResponse', 32],
+            KernelEvents::CONTROLLER_ARGUMENTS => 'handleControllerMethods',
+            KernelEvents::VIEW                 => 'onKernelView',
+            KernelEvents::RESPONSE             => ['onKernelResponse', 32],
             // KernelEvents::EXCEPTION => 'onKernelException',
             // KernelEvents::TERMINATE => 'onKernelTerminate',
         ];
+    }
+
+    /**
+     * Call {@see Controller} methods annotated with {@see OnContent::class} or {@see OnDocument::class}.
+     *
+     * @param ControllerArgumentsEvent $event
+     */
+    public function handleControllerMethods( ControllerArgumentsEvent $event ) : void
+    {
+        if ( $this->skipEvent() ) {
+            return;
+        }
+
+        try {
+            ( new ReflectionClass( $this->controller ) )
+                ->getMethod( 'controllerResponseMethods' )
+                ->invoke( $this->controller );
+        }
+        catch ( ReflectionException $exception ) {
+            $this->logger->error( $exception->getMessage(), ['exception' => $exception] );
+        }
     }
 
     /**
@@ -41,18 +63,6 @@ final class ControllerEventHandler extends ControllerEventSubscriber
     {
         if ( $this->skipEvent() ) {
             return;
-        }
-
-        /**
-         * Call methods annotated with {@see OnContent::class} or {@see OnDocument::class}.
-         */
-        try {
-            ( new ReflectionClass( $this->controller ) )
-                ->getMethod( 'controllerResponseMethods' )
-                ->invoke( $this->controller );
-        }
-        catch ( ReflectionException $exception ) {
-            $this->logger->error( $exception->getMessage(), ['exception' => $exception] );
         }
 
         $content = $event->getControllerResult();
@@ -86,14 +96,18 @@ final class ControllerEventHandler extends ControllerEventSubscriber
             return;
         }
 
-        $template = $this->responseRenderer->templateEngine->render(
-            $this->template->document,
+        $this->responseRenderer
+            ->templateEngine
+            ->clearTemplateCache();
+
+        $this->responseRenderer
+            ->setResponseContent(
+                $event,
+                $this->template,
+            );
+
+        $event->setResponse(
+            $this->responseRenderer->getResponse(),
         );
-
-        $document = $this->responseRenderer->documentEngine
-            ->setInnerHtml( $template )
-            ->renderDocument();
-
-        $event->setResponse( new Response( $document ) );
     }
 }

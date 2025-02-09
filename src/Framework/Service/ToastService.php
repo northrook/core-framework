@@ -13,7 +13,10 @@ use Symfony\Component\HttpFoundation\Session\{FlashBagAwareSessionInterface};
 
 final readonly class ToastService
 {
-    public function __construct( private Http\RequestStack $requestStack, private LoggerInterface $logger ) {}
+    public function __construct(
+        private Http\RequestStack $requestStack,
+        private LoggerInterface   $logger,
+    ) {}
 
     /**
      * @param 'danger'|'info'|'notice'|'success'|'warning' $status

@@ -17,6 +17,12 @@ use Core\Assets\{AssetFactory,
 use Core\Pathfinder;
 
 return static function( ContainerConfigurator $container ) : void {
+    $assets = $container->services()
+        ->defaults()
+        ->tag( 'core.asset' );
+
+    $assets->set( '' );
+
     /**
      * Register AssetManifest as a service
      */

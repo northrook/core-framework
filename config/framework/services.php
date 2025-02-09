@@ -28,7 +28,12 @@ return static function( ContainerConfigurator $container ) : void {
     $services
             // Toast Flashbag Handler
         ->set( ToastService::class )
-        ->args( [service( 'request_stack' )] )
+        ->args(
+            [
+                service( 'request_stack' ),
+                service( 'logger' ),
+            ],
+        )
         ->tag( 'core.service_arguments' );
 
     /** @used-by \Core\Symfony\DependencyInjection\ServiceContainer */
