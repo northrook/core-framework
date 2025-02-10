@@ -4,7 +4,7 @@
 // config\framework\application
 // -------------------------------------------------------------------
 
-declare( strict_types = 1 );
+declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 

@@ -16,8 +16,8 @@ return static function( ContainerConfigurator $container ) : void {
         ->set( ControllerEventHandler::class )
         ->args(
             [
-                    service( ResponseRenderer::class ),
-                    service( 'logger' ),
+                service( ResponseRenderer::class ),
+                service( 'logger' ),
             ],
         )
         ->tag( 'kernel.event_subscriber' )

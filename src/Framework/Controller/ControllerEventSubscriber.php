@@ -8,6 +8,7 @@ use Core\Framework\Controller;
 use Core\Framework\Controller\Attribute\Template;
 use Core\Exception\NotSupportedException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Controller\ErrorController;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Psr\Log\LoggerInterface;
@@ -70,6 +71,17 @@ abstract class ControllerEventSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // Set Request attributes
+        $htmx = $event->getRequest()->headers->has( 'hx-request' );
+        $event->getRequest()->attributes->set( 'hx-request', $htmx );
+        $event->getRequest()->attributes->set( 'http-type', $htmx ? 'XMLHttpRequest' : 'HttpRequest' );
+        $event->getRequest()->attributes->set( 'view-type', $htmx ? 'content' : 'document' );
+
+        if ( $event->getController() instanceof ErrorController ) {
+            $this->skipEvent = true;
+            return;
+        }
+
         if ( \is_array( $event->getController() ) ) {
             /** @noinspection PhpParamsInspection - ignore false-negative */
             $object = \current( $event->getController() );
@@ -83,8 +95,11 @@ abstract class ControllerEventSubscriber implements EventSubscriberInterface
             $this->controller = $object;
         }
         else {
-            throw new NotSupportedException(
-                '[TOOD] Non-array callables.',
+            dd(
+                $event,
+                new NotSupportedException(
+                    '[TODO] Non-array callables.',
+                ),
             );
         }
 

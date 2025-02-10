@@ -11,13 +11,13 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use Core\Assets\{AssetManager};
 use Core\Framework\ResponseRenderer;
 use Core\Framework\Service\ToastService;
-use Core\Interface\IconProviderInterface;
 use Core\Pathfinder;
 use Core\View\{ComponentFactory,
     ComponentFactory\ComponentBag,
     Document,
     DocumentEngine,
     IconSet,
+    Interface\IconProviderInterface,
     Latte\ViewComponentExtension,
     Parameters,
     TemplateEngine
