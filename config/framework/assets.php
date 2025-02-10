@@ -8,20 +8,19 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\Assets\{AssetFactory,
+use Core\Assets\{
+    AssetFactory,
     AssetManager,
     AssetManifest,
-    // CoreStyle,
     Interface\AssetManifestInterface
 };
+use Core\Framework\Assets\CoreStyle;
 use Core\Pathfinder;
 
 return static function( ContainerConfigurator $container ) : void {
     $assets = $container->services()
         ->defaults()
         ->tag( 'core.asset' );
-
-    $assets->set( '' );
 
     /**
      * Register AssetManifest as a service
@@ -46,8 +45,8 @@ return static function( ContainerConfigurator $container ) : void {
                 ],
                 service( 'logger' ),
             ],
-        );
-    // ->call( ...CoreStyle::callback( 'style.core' ) );
+        )
+        ->call( ...CoreStyle::callback( 'style.core' ) );
 
     $container->services()
             //

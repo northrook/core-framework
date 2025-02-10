@@ -30,7 +30,8 @@
     "northrook/view": "dev-main",
     "northrook/view-element": "dev-main",
     "northrook/view-document": "dev-main",
-    "northrook/view-icons": "dev-main"
+    "northrook/view-icons": "dev-main",
+    "northrook/design-system": "dev-main"
   },
   "scripts": {
     "phpstan": "vendor/bin/phpstan analyse"
