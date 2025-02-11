@@ -12,11 +12,13 @@ use Core\Pathfinder;
 
 return static function( ContainerConfigurator $container ) : void {
     foreach ( [
-        'dir.root'     => '%kernel.project_dir%',
-        'dir.var'      => '%dir.root%/var',
-        'dir.public'   => '%dir.root%/public',
-        'dir.core'     => [__DIR__, 1],
-        'dir.core_src' => '%dir.core%/src',
+        'dir.root'        => '%kernel.project_dir%',
+        'dir.config'      => '%dir.root%/config',
+        'dir.var'         => '%dir.root%/var',
+        'dir.public'      => '%dir.root%/public',
+        'dir.core'        => [__DIR__, 1],
+        'dir.core.src'    => '%dir.core%/src',
+        'dir.core.config' => '%dir.core%/config',
 
         // Assets
         'dir.assets'        => '%dir.root%/assets',
