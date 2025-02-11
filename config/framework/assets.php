@@ -18,9 +18,9 @@ use Core\Framework\Assets\CoreStyle;
 use Core\Pathfinder;
 
 return static function( ContainerConfigurator $container ) : void {
-    $assets = $container->services()
-        ->defaults()
-        ->tag( 'core.asset' );
+    // $assets = $container->services()
+    //     ->defaults()
+    //     ->tag( 'core.asset' );
 
     /**
      * Register AssetManifest as a service

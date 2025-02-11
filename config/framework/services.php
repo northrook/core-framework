@@ -10,7 +10,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 // use Core\Action\Headers;
 use Core\Framework\Service\ToastService;
-use Core\View\{Document, Parameters};
+use Core\View\Parameters;
 use Core\Pathfinder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;

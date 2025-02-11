@@ -12,7 +12,7 @@ return static function( AssetConfig $config ) : void {
     $config->register
         ->style(
             'core',
-            ['/style/core.css', '/style/core/*.js'],
+            ['/style/core.css', '/style/core/*.css'],
         )
         ->script(
             'core',
