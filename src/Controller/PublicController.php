@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Core\Controller;
 
+use Core\Action\Toast;
 use Core\Pathfinder;
-use Core\Assets\AssetManager;
 use Core\Framework\Controller;
 use Core\Framework\Controller\Attribute\{OnDocument, Template};
 use Core\View\{ComponentFactory, Document};
@@ -70,14 +70,14 @@ final class PublicController extends Controller
     ]
     public function demo(
         Document         $document,
-        // Toast            $toast,
-        AssetManager     $assetManager,
+        Toast            $toast,
         ComponentFactory $componentFactory,
     ) : string {
-        dump( $assetManager );
 
         // $assetManager->factory->locator()->scan();
         $document( 'Index Demo Template' );
+
+        dump( \get_defined_vars() );
 
         // $toast(
         //     'info',

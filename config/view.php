@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\Assets\{AssetManager};
 use Core\Framework\ResponseRenderer;
 use Core\Framework\Service\ToastService;
 use Core\Pathfinder;
@@ -39,7 +38,7 @@ return static function( ContainerConfigurator $container ) : void {
                 service( DocumentEngine::class ),
                 service( TemplateEngine::class ),
                 service( ComponentFactory::class ),
-                service( AssetManager::class ),
+                // service( AssetManager::class ),
                 service( Document::class ),
                 service( ToastService::class ),
                 service( 'logger' ),

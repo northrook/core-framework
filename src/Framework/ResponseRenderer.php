@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Framework;
 
-use Core\Assets\AssetManager;
+// use Core\Assets\AssetManager;
 use Core\Framework\Controller\Attribute\Template;
 use Core\Framework\Service\ToastService;
 use Core\View\{ComponentFactory, Document, DocumentEngine, TemplateEngine};
@@ -22,7 +22,7 @@ class ResponseRenderer
         public readonly DocumentEngine     $documentEngine,
         public readonly TemplateEngine     $templateEngine,
         public readonly ComponentFactory   $componentFactory,
-        public readonly AssetManager       $assetManager,
+        // public readonly AssetManager       $assetManager,
         protected readonly Document        $document,
         protected readonly ToastService    $toastService,
         protected readonly LoggerInterface $logger,
@@ -107,13 +107,14 @@ class ResponseRenderer
     final protected function handleEnqueuedAssets() : void
     {
         foreach ( $this->document->assets->getEnqueuedAssets() as $assetKey ) {
-            $assetModel = $this->assetManager->getAssetHtml( $assetKey );
-            if ( ! $assetModel ) {
-                $this->logger->warning( \sprintf( 'Asset %s not found', $assetKey ) );
-            }
-            else {
-                $this->document->head->injectHtml( $assetModel, $assetKey );
-            }
+            dump( $assetKey );
+            // $assetModel = $this->assetManager->getAssetHtml( $assetKey );
+            // if ( ! $assetModel ) {
+            //     $this->logger->warning( \sprintf( 'Asset %s not found', $assetKey ) );
+            // }
+            // else {
+            //     $this->document->head->injectHtml( $assetModel, $assetKey );
+            // }
         }
     }
 }

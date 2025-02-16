@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\Pathfinder;
+use function Support\normalizePath;
 
 return static function( ContainerConfigurator $container ) : void {
     foreach ( [
@@ -58,6 +58,6 @@ return static function( ContainerConfigurator $container ) : void {
             );
             $value = \dirname( $dir, $level );
         }
-        $container->parameters()->set( $key, Pathfinder::normalize( $value ) );
+        $container->parameters()->set( $key, normalizePath( $value ) );
     }
 };
