@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Core;
 
-use Core\AssetManager\Compiler\AssetManagerConfigurationPass;
 use Core\View\Compiler\RegisterViewComponentsPass;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -54,10 +52,6 @@ final class CoreBundle extends AbstractBundle
             ->addCompilerPass( new RegisterCoreServices() )
             ->addCompilerPass( new RegisterViewComponentsPass() )
             ->addCompilerPass( new ApplicationInitialization() )
-            ->addCompilerPass(
-                new AssetManagerConfigurationPass(),
-                PassConfig::TYPE_BEFORE_REMOVING,
-            )
             ->addCompilerPass( new RegisterEventSubscribers() );
     }
 }
