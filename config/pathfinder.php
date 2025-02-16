@@ -10,6 +10,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Cache\LocalStorage;
 use Core\{Pathfinder, Interface\PathfinderInterface};
+use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 
 return static function( ContainerConfigurator $container ) : void {
     // Cache
@@ -24,16 +25,29 @@ return static function( ContainerConfigurator $container ) : void {
             ],
         );
 
+    $container->services()
+        ->set( 'cache.pathfinder', PhpFilesAdapter::class )
+        ->tag( 'cache.pool' )
+        ->args(
+            [
+                'pathfinder',  // $namespace
+                0,             // $defaultLifetime
+                '%kernel.cache_dir%', // $directory
+                true,          // $appendOnly
+            ],
+        );
+
     // Pathfinder
     // Find and return registered paths
-    $container->services()->set( Pathfinder::class )
+    $container->services()
+        ->set( Pathfinder::class )
         ->tag( 'monolog.logger', ['channel' => 'pathfinder'] )
         ->tag( 'controller.service_arguments' )
         ->args(
             [
                 [], // $parameters
                 service( 'parameter_bag' ),  // $parameterBag
-                service( 'core.pathfinder_cache' ),                    // $cache
+                service( 'cache.pathfinder' ),                    // $cache
                 service( 'logger' ),                // $logger
             ],
         )
