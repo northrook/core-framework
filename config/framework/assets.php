@@ -13,18 +13,6 @@ use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 
 return static function( ContainerConfigurator $container ) : void {
     $container->services()
-        ->set( 'cache.asset_manager', PhpFilesAdapter::class )
-        ->tag( 'cache.pool' )
-        ->args(
-            [
-                'asset_manager',  // $namespace
-                0,             // $defaultLifetime
-                '%kernel.cache_dir%', // $directory
-                true,          // $appendOnly
-            ],
-        );
-
-    $container->services()
         ->set( 'cache.asset_pool', PhpFilesAdapter::class )
         ->tag( 'cache.pool' )
         ->args(
@@ -36,15 +24,15 @@ return static function( ContainerConfigurator $container ) : void {
             ],
         );
 
+    // Create a ServiceLocator for ServicePasses
+    $container->services()->set( 'asset.service_locator' )
+        ->tag( 'container.service_locator' )
+        ->args( CompilerPass::PLACEHOLDER_ARGS );
+
     $service = $container->services()
         ->defaults()
         ->tag( 'monolog.logger', ['channel' => 'assets'] )
         ->autoconfigure();
-
-    // Create a ServiceLocator for ServicePasses
-    $service->set( 'asset.service_locator' )
-        ->tag( 'container.service_locator' )
-        ->args( CompilerPass::PLACEHOLDER_ARGS );
 
     //
     $service->set( 'core.asset_config', AssetManager\AssetConfig::class )
