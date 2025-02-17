@@ -4,24 +4,30 @@ declare(strict_types=1);
 
 namespace Core\Framework\Assets;
 
-use Core\Assets\Factory\Asset\StyleAsset;
-use Core\Assets\Factory\Compiler\AssetArgument;
+use Core\AssetManager\Interface\{AssetInterface, AssetServiceInterface};
+use Northrook\DesignSystem;
 
 /**
  * @internal
  */
-final class CoreStyle extends AssetArgument
+final readonly class CoreStyle implements AssetServiceInterface
 {
-    public static function filter( StyleAsset $model ) : StyleAsset
+    private DesignSystem $designSystem;
+
+    public function __construct(
+        ?DesignSystem $designSystem = null,
+    ) {
+        $this->designSystem = $designSystem ?? new DesignSystem();
+    }
+
+    public function __invoke( AssetInterface $asset ) : AssetInterface
     {
-        $ds = new \Northrook\DesignSystem();
+        $styles = $this->designSystem->generateStyles();
 
-        $styles = $ds->generateStyles();
+        // $model->addSource( $styles, true );
+        //
+        // $model->prefersInline();
 
-        $model->addSource( $styles, true );
-
-        $model->prefersInline();
-
-        return $model;
+        return $asset;
     }
 }

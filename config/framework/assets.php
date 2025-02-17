@@ -8,7 +8,12 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\{AssetManager, Interface\PathfinderInterface, Pathfinder, Symfony\DependencyInjection\CompilerPass};
+use Core\{AssetManager,
+    Framework\Assets\CoreStyle,
+    Interface\PathfinderInterface,
+    Pathfinder,
+    Symfony\DependencyInjection\CompilerPass
+};
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 
 return static function( ContainerConfigurator $container ) : void {
@@ -33,6 +38,9 @@ return static function( ContainerConfigurator $container ) : void {
         ->defaults()
         ->tag( 'monolog.logger', ['channel' => 'assets'] )
         ->autoconfigure();
+
+    $service->set( CoreStyle::class )
+        ->tag( 'asset.service_locator' );
 
     //
     $service->set( 'core.asset_config', AssetManager\AssetConfig::class )
