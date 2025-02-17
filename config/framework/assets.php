@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\{AssetManager, Interface\PathfinderInterface, Pathfinder};
+use Core\{AssetManager, Interface\PathfinderInterface, Pathfinder, Symfony\DependencyInjection\CompilerPass};
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 
 return static function( ContainerConfigurator $container ) : void {
@@ -36,49 +36,38 @@ return static function( ContainerConfigurator $container ) : void {
             ],
         );
 
-    $configFiles = [
-        'dir.config/assets.php',
-        'dir.core.config/assets.php',
-    ];
-    $assetDirectories = [];
-
-    // $assets = $container->services()
-    //     ->defaults()
-    //     ->tag( 'core.asset' );
-
     $service = $container->services()
         ->defaults()
         ->tag( 'monolog.logger', ['channel' => 'assets'] )
         ->autoconfigure();
 
-    $service->set( AssetManager\AssetConfig::class )
+    // Create a ServiceLocator for ServicePasses
+    $service->set( 'asset.service_locator' )
+        ->tag( 'container.service_locator' )
+        ->args( CompilerPass::PLACEHOLDER_ARGS );
+
+    //
+    $service->set( 'core.asset_config', AssetManager\AssetConfig::class )
         ->args(
             [
                 service( PathfinderInterface::class ),
-                param( 'kernel.build_dir' ),
-                ['dir.assets', 'dir.core.assets'],
-                ['dir.config/assets.php', 'dir.core.config/assets.php'],
+                ['dir.assets', 'dir.core.assets'], // $assetDirectories
+                ['dir.config/assets.php', 'dir.core.config/assets.php'], // $configFiles
             ],
         );
 
     $service->set( AssetManager::class )
         ->args(
             [
-                $configFiles,
-                $assetDirectories,
-                '%kernel.cache_dir%/assets',
+                service( 'core.asset_config' ),
                 service( Pathfinder::class ),
                 service( 'asset.service_locator' ),
-                service( 'cache.asset_manager' ),
                 service( 'cache.asset_pool' ),
                 service( 'logger' )->nullOnInvalid(),
             ],
         )
         ->autowire()
         ->public();
-
-    $service->set( 'asset.service_locator' )
-        ->tag( 'container.service_locator' );
 
     /**
      * Register AssetManifest as a service
