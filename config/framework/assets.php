@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\{AssetManager, Pathfinder};
+use Core\{AssetManager, Interface\PathfinderInterface, Pathfinder};
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 
 return static function( ContainerConfigurator $container ) : void {
@@ -36,7 +36,7 @@ return static function( ContainerConfigurator $container ) : void {
             ],
         );
 
-    $configDirectories = [
+    $configFiles = [
         'dir.config/assets.php',
         'dir.core.config/assets.php',
     ];
@@ -51,10 +51,20 @@ return static function( ContainerConfigurator $container ) : void {
         ->tag( 'monolog.logger', ['channel' => 'assets'] )
         ->autoconfigure();
 
+    $service->set( AssetManager\AssetConfig::class )
+        ->args(
+            [
+                service( PathfinderInterface::class ),
+                param( 'kernel.build_dir' ),
+                ['dir.assets', 'dir.core.assets'],
+                ['dir.config/assets.php', 'dir.core.config/assets.php'],
+            ],
+        );
+
     $service->set( AssetManager::class )
         ->args(
             [
-                $configDirectories,
+                $configFiles,
                 $assetDirectories,
                 '%kernel.cache_dir%/assets',
                 service( Pathfinder::class ),
