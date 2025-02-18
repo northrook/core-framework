@@ -8,9 +8,8 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Cache\LocalStorage;
+use Cache\{LocalStorage, LocalStoragePool};
 use Core\{Pathfinder, Interface\PathfinderInterface};
-use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 
 return static function( ContainerConfigurator $container ) : void {
     // Cache
@@ -26,16 +25,9 @@ return static function( ContainerConfigurator $container ) : void {
         );
 
     $container->services()
-        ->set( 'cache.pathfinder', PhpFilesAdapter::class )
+        ->set( 'cache.pathfinder', LocalStoragePool::class )
         ->tag( 'cache.pool' )
-        ->args(
-            [
-                'pathfinder',  // $namespace
-                0,             // $defaultLifetime
-                '%kernel.cache_dir%', // $directory
-                true,          // $appendOnly
-            ],
-        );
+        ->args( ['%kernel.cache_dir%/pathfinder_cache.php'] );
 
     // Pathfinder
     // Find and return registered paths
