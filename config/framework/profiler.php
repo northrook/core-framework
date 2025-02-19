@@ -8,9 +8,8 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-// use Core\Framework\Settings;
 use Northrook\Clerk;
-use Core\Framework\Profiler\{CacheProfiler, ClerkProfiler, ParameterSettingsCollector, PipelineCollector};
+use Core\Framework\Profiler\{ClerkProfiler, ParameterSettingsCollector, PipelineCollector};
 use Symfony\Component\Stopwatch\Stopwatch;
 
 return static function( ContainerConfigurator $container ) : void {
@@ -23,11 +22,6 @@ return static function( ContainerConfigurator $container ) : void {
                 param( 'kernel.debug' ), // enabled when debugging, regardless of env
             ],
         )
-
-            // CacheDataInjector
-        ->set( CacheProfiler::class )
-        ->tag( 'kernel.event_subscriber' )
-        ->args( [service( 'data_collector.cache' )] )
 
             // TelemetryEventSubscriber
         ->set( ClerkProfiler::class )
