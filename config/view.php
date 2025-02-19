@@ -8,10 +8,9 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\AssetManager;
+use Core\{AssetManager, Pathfinder};
 use Core\Framework\ResponseRenderer;
 use Core\Framework\Service\ToastService;
-use Core\Pathfinder;
 use Core\View\{ComponentFactory,
     ComponentFactory\ComponentBag,
     Document,
@@ -22,7 +21,7 @@ use Core\View\{ComponentFactory,
     Parameters,
     TemplateEngine
 };
-use Core\Symfony\DependencyInjection\CompilerPass;
+use const Support\PLACEHOLDER_ARGS;
 
 return static function( ContainerConfigurator $container ) : void {
     //
@@ -30,7 +29,7 @@ return static function( ContainerConfigurator $container ) : void {
     $container->services()
         ->set( 'view.component_locator' )
         ->tag( 'container.service_locator' )
-        ->args( CompilerPass::PLACEHOLDER_ARGS );
+        ->args( PLACEHOLDER_ARGS );
     //
     $container->services()
         ->set( ResponseRenderer::class )

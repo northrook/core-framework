@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Core\Framework;
 
-// use Core\Action\Headers;
 use Core\Symfony\DependencyInjection\{ServiceContainer};
 use Core\Symfony\Interface\ServiceContainerInterface;
 use Core\Pathfinder;

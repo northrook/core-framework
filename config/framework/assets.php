@@ -10,11 +10,10 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Core\{AssetManager,
     Framework\Assets\CoreStyle,
-    Interface\PathfinderInterface,
-    Pathfinder,
-    Symfony\DependencyInjection\CompilerPass
+    Pathfinder
 };
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
+use const Support\PLACEHOLDER_ARGS;
 
 return static function( ContainerConfigurator $container ) : void {
     $container->services()
@@ -32,7 +31,7 @@ return static function( ContainerConfigurator $container ) : void {
     // Create a ServiceLocator for ServicePasses
     $container->services()->set( 'asset.service_locator' )
         ->tag( 'container.service_locator' )
-        ->args( CompilerPass::PLACEHOLDER_ARGS );
+        ->args( PLACEHOLDER_ARGS );
 
     $service = $container->services()
         ->defaults()
@@ -46,7 +45,7 @@ return static function( ContainerConfigurator $container ) : void {
     $service->set( 'core.asset_config', AssetManager\AssetConfig::class )
         ->args(
             [
-                service( PathfinderInterface::class ),
+                service( Pathfinder::class ),
                 ['dir.assets', 'dir.core.assets'], // $assetDirectories
                 ['dir.config/assets.php', 'dir.core.config/assets.php'], // $configFiles
             ],

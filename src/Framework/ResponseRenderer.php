@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Core\Framework;
 
-// use Core\Assets\AssetManager;
 use Core\AssetManager;
 use Core\Framework\Controller\Attribute\Template;
 use Core\Framework\Service\ToastService;
