@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Core\Framework\Assets;
 
 use Core\AssetManager\Interface\{AssetInterface, AssetServiceInterface};
+use Core\AssetManager\Compiler\AssetService;
 use Northrook\DesignSystem;
 
 /**
  * @internal
  */
+#[AssetService( 'style.core' )]
 final readonly class CoreStyle implements AssetServiceInterface
 {
     private DesignSystem $designSystem;
