@@ -46,7 +46,10 @@ final class PublicController extends Controller
             'Index Demo Template',
         );
 
-        dump( $assetManager );
+        dump(
+            $assetManager->getAsset( 'style.core' ),
+            $assetManager,
+        );
 
         return new Response(
             <<<HTML
