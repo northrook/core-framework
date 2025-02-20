@@ -27,7 +27,7 @@ class ResponseRenderer
         protected readonly ToastService    $toastService,
         protected readonly LoggerInterface $logger,
     ) {
-        dump( $this );
+        //     dump( $this );
     }
 
     final public function setResponseContent( ResponseEvent $event, ?Template $template = null ) : self
