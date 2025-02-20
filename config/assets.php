@@ -14,15 +14,15 @@ return static function( AssetConfig $config ) : void {
     $config->register
         ->style(
             'core',
-            ['/style/core.css', '/style/core/*.css'],
+            ['/styles/core.css', '/styles/core/*.css'],
             CoreStyle::class,
         )
         ->script(
             'core',
-            '/script/core.js',
+            '/scripts/core.js',
         )
         ->script(
             'htmx',
-            '/script/htmx.js',
+            '/scripts/htmx.js',
         );
 };
