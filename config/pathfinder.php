@@ -8,14 +8,14 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Cache\LocalStoragePool;
+use Cache\LocalStorage;
 use Core\Pathfinder;
 use const Support\PLACEHOLDER_ARRAY;
 
 return static function( ContainerConfigurator $container ) : void {
     // Cache
     $container->services()
-        ->set( 'cache.pathfinder', LocalStoragePool::class )
+        ->set( 'cache.pathfinder', LocalStorage::class )
         ->tag( 'monolog.logger', ['channel' => 'cache'] )
         ->args( ['%kernel.cache_dir%/pathfinder_cache.php'] );
 

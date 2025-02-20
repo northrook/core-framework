@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Core\Controller;
 
 use Core\Action\Toast;
-use Core\Pathfinder;
+use Core\{AssetManager, Pathfinder};
 use Core\Framework\Controller;
 use Core\Framework\Controller\Attribute\{OnDocument, Template};
 use Core\View\{ComponentFactory, Document};
@@ -33,14 +33,21 @@ final class PublicController extends Controller
         ], 'index', priority : -100 ),
         Template( 'welcome.latte' )
     ]
-    public function index( Document $document, Request $request, Pathfinder $pathfinder ) : Response
-    {
+    public function index(
+        Document     $document,
+        Request      $request,
+        Pathfinder   $pathfinder,
+        AssetManager $assetManager,
+    ) : Response {
         $path = $pathfinder(
             'dir.root',
         );
         $document(
             'Index Demo Template',
         );
+
+        dump( $assetManager );
+
         return new Response(
             <<<HTML
                 <body>
@@ -73,7 +80,6 @@ final class PublicController extends Controller
         Toast            $toast,
         ComponentFactory $componentFactory,
     ) : string {
-
         // $assetManager->factory->locator()->scan();
         $document( 'Index Demo Template' );
 
