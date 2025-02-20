@@ -8,10 +8,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\{AssetManager,
-    Framework\Assets\CoreStyle,
-    Pathfinder
-};
+use Core\{AssetManager, AssetManager\Compiler\RegisterAssetServices, Framework\Assets\CoreStyle, Pathfinder};
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 use const Support\PLACEHOLDER_ARGS;
 
@@ -29,7 +26,7 @@ return static function( ContainerConfigurator $container ) : void {
         );
 
     // Create a ServiceLocator for ServicePasses
-    $container->services()->set( 'asset.service_locator' )
+    $container->services()->set( RegisterAssetServices::ID )
         ->tag( 'container.service_locator' )
         ->args( PLACEHOLDER_ARGS );
 
@@ -37,9 +34,6 @@ return static function( ContainerConfigurator $container ) : void {
         ->defaults()
         ->tag( 'monolog.logger', ['channel' => 'assets'] )
         ->autoconfigure();
-
-    $service->set( CoreStyle::class )
-        ->tag( 'asset.service_locator' );
 
     //
     $service->set( 'core.asset_config', AssetManager\AssetConfig::class )
@@ -56,7 +50,7 @@ return static function( ContainerConfigurator $container ) : void {
             [
                 service( 'core.asset_config' ),
                 service( Pathfinder::class ),
-                service( 'asset.service_locator' ),
+                service( RegisterAssetServices::ID ),
                 service( 'cache.asset_pool' ),
                 service( 'logger' )->nullOnInvalid(),
             ],

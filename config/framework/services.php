@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 // use Core\Action\Headers;
+use Core\Framework\CompilerPass\RegisterCoreServices;
 use Core\Framework\Service\ToastService;
 use Core\View\Parameters;
 use Core\Pathfinder;
@@ -34,11 +35,11 @@ return static function( ContainerConfigurator $container ) : void {
                 service( 'logger' ),
             ],
         )
-        ->tag( 'core.service_arguments' );
+        ->tag( RegisterCoreServices::ID );
 
     /** @used-by \Core\Symfony\DependencyInjection\ServiceContainer */
     $container->services()
-        ->set( 'core.service_arguments' )
+        ->set( RegisterCoreServices::ID )
         ->tag( 'container.service_locator' )
         ->args(
             [

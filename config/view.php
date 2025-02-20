@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\{AssetManager, Pathfinder};
+use Core\{AssetManager, Framework\CompilerPass\RegisterCoreServices, Pathfinder};
 use Core\Framework\ResponseRenderer;
 use Core\Framework\Service\ToastService;
 use Core\View\{ComponentFactory,
@@ -80,7 +80,7 @@ return static function( ContainerConfigurator $container ) : void {
     $container->services()
             //
         ->set( TemplateEngine::class )
-        ->tag( 'core.service_arguments' )
+        ->tag( RegisterCoreServices::ID )
         ->args(
             [
                 param( 'dir.cache.view' ),
@@ -105,7 +105,7 @@ return static function( ContainerConfigurator $container ) : void {
         ->set( Document::class )
         ->arg( 0, service( 'logger' )->nullOnInvalid() )
         ->tag( 'controller.service_arguments' )
-        ->tag( 'core.service_arguments' )
+        ->tag( RegisterCoreServices::ID )
         ->autowire();
 
     $view
