@@ -24,11 +24,12 @@ final readonly class CoreStyle implements AssetServiceInterface
 
     public function __invoke( AssetInterface $asset ) : AssetInterface
     {
-        $styles = $this->designSystem->generateStyles();
-
-        // $model->addSource( $styles, true );
+        dump( $asset );
+        // $styles = $this->designSystem->generateStyles();
         //
-        // $model->prefersInline();
+        // // $model->addSource( $styles, true );
+        // //
+        // // $model->prefersInline();
 
         return $asset;
     }
