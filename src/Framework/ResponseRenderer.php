@@ -108,15 +108,11 @@ class ResponseRenderer
 
     final protected function handleEnqueuedAssets() : void
     {
-        // foreach ( $this->document->assets->getEnqueuedAssets() as $assetKey ) {
-        //     // dump( $assetKey );
-        //     // $assetModel = $this->assetManager->getAssetHtml( $assetKey );
-        //     // if ( ! $assetModel ) {
-        //     //     $this->logger->warning( \sprintf( 'Asset %s not found', $assetKey ) );
-        //     // }
-        //     // else {
-        //     //     $this->document->head->injectHtml( $assetModel, $assetKey );
-        //     // }
-        // }
+        foreach ( $this->document->assets->getEnqueuedAssets() as $assetKey ) {
+            if ( $asset = $this->assetManager->getAsset( $assetKey ) ) {
+                dump( $asset );
+                $this->document->head->injectHtml( $asset, $assetKey );
+            }
+        }
     }
 }
