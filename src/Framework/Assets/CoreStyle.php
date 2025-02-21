@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Core\Framework\Assets;
 
 use Core\AssetManager\Interface\{AssetInterface, AssetServiceInterface};
+use Core\Asset\Style;
 use Core\AssetManager\Compiler\AssetService;
 use Northrook\DesignSystem;
+use InvalidArgumentException;
 
 /**
  * @internal
@@ -22,14 +24,20 @@ final readonly class CoreStyle implements AssetServiceInterface
         $this->designSystem = $designSystem ?? new DesignSystem();
     }
 
+    /**
+     * @param AssetInterface $asset
+     *
+     * @return AssetInterface
+     */
     public function __invoke( AssetInterface $asset ) : AssetInterface
     {
-        dump( $asset );
-        // $styles = $this->designSystem->generateStyles();
-        //
-        // // $model->addSource( $styles, true );
-        // //
-        // // $model->prefersInline();
+        if ( ! $asset instanceof Style ) {
+            throw new InvalidArgumentException( 'Asset must be an instance of '.Style::class );
+        }
+        $styles = $this->designSystem->generateStyles();
+
+        $asset->addSource( $styles, true );
+        $asset->prefersInline();
 
         return $asset;
     }
