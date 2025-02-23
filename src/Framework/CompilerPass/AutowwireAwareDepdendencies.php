@@ -8,7 +8,7 @@ use Core\Symfony\DependencyInjection\CompilerPass;
 use JetBrains\PhpStorm\Deprecated;
 use Psr\Log\LoggerAwareInterface;
 use ReflectionClass;
-use ReflectionException;
+use Throwable;
 use Symfony\Component\DependencyInjection\{ContainerBuilder, Reference};
 
 /**
@@ -30,7 +30,7 @@ final class AutowwireAwareDepdendencies extends CompilerPass
                 try {
                     $reflect = new ReflectionClass( $class );
                 }
-                catch ( ReflectionException $e ) {
+                catch ( Throwable $e ) {
                     $this->console->error( $e->getMessage() );
 
                     continue;

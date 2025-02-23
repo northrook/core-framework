@@ -8,7 +8,9 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\{AssetManager, AssetManager\Compiler\RegisterAssetServices, Framework\Assets\CoreStyle, Pathfinder};
+use Core\{AssetManager, Pathfinder};
+use Core\AssetManager\AssetConfig;
+use Core\AssetManager\Compiler\RegisterAssetServices;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 use const Support\PLACEHOLDER_ARGS;
 
@@ -36,7 +38,7 @@ return static function( ContainerConfigurator $container ) : void {
         ->autoconfigure();
 
     //
-    $service->set( 'core.asset_config', AssetManager\AssetConfig::class )
+    $service->set( 'core.asset_config', AssetConfig::class )
         ->args(
             [
                 service( Pathfinder::class ),

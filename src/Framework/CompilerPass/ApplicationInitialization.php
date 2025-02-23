@@ -6,12 +6,13 @@ namespace Core\Framework\CompilerPass;
 
 use Core\Symfony\Console\{ListReport, Output};
 use Core\Symfony\DependencyInjection\CompilerPass;
-use Support\{Filesystem, Normalize, Time};
+use Support\{Filesystem, Time};
 use JetBrains\PhpStorm\Language;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Finder\Finder;
 use SplFileInfo;
 use Exception, LogicException, InvalidArgumentException;
+use function Support\normalizePath;
 
 /**
  * @internal
@@ -22,7 +23,7 @@ final class ApplicationInitialization extends CompilerPass
 
     public function __construct( protected bool $override = false )
     {
-        $this->defaultsDirectory = Normalize::path( \dirname( __DIR__, 3 ).'/config.app' );
+        $this->defaultsDirectory = normalizePath( \dirname( __DIR__, 3 ).'/config.app' );
     }
 
     public function compile( ContainerBuilder $container ) : void
@@ -60,7 +61,6 @@ final class ApplicationInitialization extends CompilerPass
             }
 
             $log->note( 'file_put_contents failed' );
-
         }
         $log->output();
     }
@@ -166,7 +166,7 @@ final class ApplicationInitialization extends CompilerPass
 
                 // Normalize and report
                 try {
-                    $value = Normalize::path( $value );
+                    $value = normalizePath( $value );
                     $this->parameterBag->set( $key, $value );
                 }
                 catch ( Exception $e ) {
@@ -185,7 +185,7 @@ final class ApplicationInitialization extends CompilerPass
 
         $relativePath = \substr( $path->getRealPath(), \strlen( $this->defaultsDirectory ) );
 
-        return Normalize::path( [$this->projectDirectory, $relativePath] );
+        return normalizePath( $this->projectDirectory, $relativePath );
     }
 
     private function overrideExistingFile( string $path ) : bool

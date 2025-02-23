@@ -8,7 +8,6 @@ use Symfony\Component\DependencyInjection\{ContainerBuilder, Reference};
 use Core\Symfony\Console\{ListReport};
 use Core\Symfony\DependencyInjection\CompilerPass;
 use Core\Symfony\Interface\ServiceContainerInterface;
-use function Support\implements_interface;
 
 /**
  * @internal
@@ -57,7 +56,7 @@ final class RegisterCoreServices extends CompilerPass
 
         foreach ( $this->getDeclaredClasses() as $class ) {
             if (
-                implements_interface( $class, ServiceContainerInterface::class )
+                \is_subclass_of( $class, ServiceContainerInterface::class )
                 && $container->hasDefinition( $class )
             ) {
                 $registeredServices->item( $class );
