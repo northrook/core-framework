@@ -34,6 +34,7 @@ final readonly class CoreStyle implements AssetServiceInterface
         if ( ! $asset instanceof Style ) {
             throw new InvalidArgumentException( 'Asset must be an instance of '.Style::class );
         }
+
         $styles = $this->designSystem->generateStyles();
 
         $asset->addSource( $styles, true );
