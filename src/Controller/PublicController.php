@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Core\Controller;
 
 use Core\Action\Toast;
-use Core\{AssetManager, Pathfinder};
+use Core\{Pathfinder};
 use Core\Framework\Controller;
 use Core\Framework\Controller\Attribute\{OnDocument, Template};
 use Core\View\{ComponentFactory, Document};
@@ -34,21 +34,15 @@ final class PublicController extends Controller
         Template( 'welcome.latte' )
     ]
     public function index(
-        Document     $document,
-        Request      $request,
-        Pathfinder   $pathfinder,
-        AssetManager $assetManager,
+        Document   $document,
+        Request    $request,
+        Pathfinder $pathfinder,
     ) : Response {
         $path = $pathfinder(
             'dir.root',
         );
         $document(
             'Index Demo Template',
-        );
-
-        dump(
-            $assetManager->getAsset( 'style.core' ),
-            $assetManager,
         );
 
         return new Response(
