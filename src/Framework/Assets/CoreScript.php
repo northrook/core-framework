@@ -19,7 +19,7 @@ final readonly class CoreScript implements AssetServiceInterface
             throw new InvalidArgumentException( 'Asset must be an instance of '.Script::class );
         }
 
-        $asset->compile( true );
+        $asset->mergeImportStatements();
 
         return $asset;
     }
