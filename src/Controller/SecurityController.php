@@ -2,21 +2,85 @@
 
 namespace Core\Controller;
 
+use Core\Framework\Controller;
+use Core\Framework\Controller\Attribute\Template;
+use Core\Symfony\DependencyInjection\SettingsAccessor;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(
-    name     : 'security:',
-    priority : 1,
+    name     : 'security.',
+    methods  : ['GET', 'POST'],
+    schemes  : 'https',
+    priority : 64,
 )]
-final class SecurityController
+final class SecurityController extends Controller
 {
+    use SettingsAccessor;
+
+    #[Route( path : '/login', name : 'login', ), ]
+    #[Template( 'security/login.latte' )]
+    public function login(
+        ?string $_route,
+    ) : Response {
+        dump( [__METHOD__, ...\get_defined_vars()] );
+        return new Response( __METHOD__."->{$_route}" );
+    }
+
     #[Route(
-        path : '/login',
-        name : 'login',
+        path : '/login/onboarding/{token}',
+        name : 'onboarding',
     )]
-    public function login() : Response
+    public function onboarding(
+        ?string $_route,
+        string  $token,
+    ) : Response {
+        dump( [__METHOD__, ...\get_defined_vars()] );
+        if ( ! $this->settings( 'auth.onboarding' ) ) {
+            // Do this earlier, but only allow onboarding when enabled
+            // First boot / no users registered defaults to auth.onboarding = true
+        }
+
+        return new Response( __METHOD__."->{$_route}" );
+    }
+
+    #[Route(
+        path : '/login/verify/{token}',
+        name : 'verify',
+    )]
+    public function verify(
+        ?string $_route,
+        string  $token,
+    ) : Response {
+        dump( [__METHOD__, ...\get_defined_vars()] );
+
+        return new Response( __METHOD__."->{$_route}" );
+    }
+
+    #[Route(
+        path : '/auth/recover/{token}',
+        name : 'recovery',
+    )]
+    public function recovery(
+        ?string $_route,
+        string  $token,
+    ) : Response {
+        dump( [__METHOD__, ...\get_defined_vars()] );
+
+        return new Response( __METHOD__."->{$_route}" );
+    }
+
+    #[Route(
+        path    : [
+            'recover' => '/password-recovery',
+            'verify'  => '/_auth/verify/{token}',
+        ],
+        name    : 'user',
+        methods : ['GET', 'POST'],
+        schemes : 'https',
+    )]
+    public function user( string $_route ) : Response
     {
-        return new Response( __METHOD__ );
+        return new Response( __METHOD__."->{$_route}" );
     }
 }

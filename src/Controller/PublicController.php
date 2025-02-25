@@ -9,12 +9,12 @@ use Core\{Pathfinder};
 use Core\Framework\Controller;
 use Core\Framework\Controller\Attribute\{OnDocument, Template};
 use Core\View\{ComponentFactory, Document};
-use Symfony\Component\HttpFoundation\{Request, Response};
+use Symfony\Component\HttpFoundation\{Request};
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(
     path : '/',
-    name : 'public:',
+    name : 'public.',
 )]
 final class PublicController extends Controller
 {
@@ -27,17 +27,15 @@ final class PublicController extends Controller
     }
 
     #[
-        Route( [
-            'default' => '/',
-            // 'dynamic' => '/{route}',
-        ], 'index', priority : -100 ),
+        Route( path : '{$route}', name : 'index', priority : -100 ),
         Template( 'welcome.latte' )
     ]
     public function index(
+        ?string    $route,
         Document   $document,
         Request    $request,
         Pathfinder $pathfinder,
-    ) : Response {
+    ) : string {
         $path = $pathfinder(
             'dir.root',
         );
@@ -45,18 +43,16 @@ final class PublicController extends Controller
             'Index Demo Template',
         );
 
-        return new Response(
-            <<<HTML
-                <body>
-                    <h1>Hello there!</h1>
-                    {$path}
-                </body>
-                HTML,
-        );
+        return <<<HTML
+            <body>
+                <h1>Hello there!</h1>
+                {$path}
+            </body>
+            HTML;
     }
 
     #[
-        Route( '/tailwind', 'tailwind' ),
+        Route( 'tailwind', 'tailwind_demo' ),
         Template( 'demo.latte' ) // content template
     ]
     public function tailwind(
@@ -69,7 +65,7 @@ final class PublicController extends Controller
     }
 
     #[
-        Route( '/demo', 'demo' ),
+        Route( 'demo', 'view_demo' ),
         Template( 'demo.latte' ) // content template
     ]
     public function demo(
@@ -105,7 +101,7 @@ final class PublicController extends Controller
         return 'demo.latte';
     }
 
-    #[Route( 'hello', 'boilerplate' )]
+    #[Route( 'hello', 'html_boilerplate' )]
     public function boilerplate() : string
     {
         return <<<'HTML'

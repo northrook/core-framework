@@ -8,4 +8,9 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-return static function( ContainerConfigurator $container ) : void {};
+use Core\Framework\Events\RequestAttributeHandler;
+
+return static function( ContainerConfigurator $container ) : void {
+    $container->services()->set( RequestAttributeHandler::class )
+        ->tag( 'kernel.event_listener' );
+};
