@@ -110,7 +110,7 @@ class ResponseRenderer
     {
         foreach ( $this->document->assets->getEnqueuedAssets() as $assetKey ) {
             if ( $asset = $this->assetManager->getAsset( $assetKey ) ) {
-                dump( $asset );
+                // dump( $asset );
                 $this->document->head->injectHtml( $asset, $assetKey );
             }
         }

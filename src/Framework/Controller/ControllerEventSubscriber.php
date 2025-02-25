@@ -71,11 +71,6 @@ abstract class ControllerEventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // Set Request attributes
-        $htmx = $event->getRequest()->headers->has( 'hx-request' );
-        $event->getRequest()->attributes->set( 'hx-request', $htmx );
-        $event->getRequest()->attributes->set( 'http-type', $htmx ? 'XMLHttpRequest' : 'HttpRequest' );
-        $event->getRequest()->attributes->set( 'view-type', $htmx ? 'content' : 'document' );
 
         if ( $event->getController() instanceof ErrorController ) {
             $this->skipEvent = true;

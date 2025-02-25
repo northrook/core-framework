@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Core\Framework;
+namespace Core\Framework\Events;
 
 use Core\Framework\Controller\ControllerEventSubscriber;
 use Symfony\Component\HttpKernel\Event\{ControllerArgumentsEvent, ResponseEvent, ViewEvent};
+use Core\Framework\ResponseRenderer;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Psr\Log\LoggerInterface;

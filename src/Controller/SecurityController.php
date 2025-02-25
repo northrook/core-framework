@@ -21,10 +21,11 @@ final class SecurityController extends Controller
     #[Route( path : '/login', name : 'login', ), ]
     #[Template( 'security/login.latte' )]
     public function login(
-        ?string $_route,
+        ?string $_path,
+        ?string $token = null,
     ) : Response {
         dump( [__METHOD__, ...\get_defined_vars()] );
-        return new Response( __METHOD__."->{$_route}" );
+        return new Response( __METHOD__."->{$_path}" );
     }
 
     #[Route(
@@ -32,16 +33,17 @@ final class SecurityController extends Controller
         name : 'onboarding',
     )]
     public function onboarding(
-        ?string $_route,
-        string  $token,
+        ?string $_path,
+        ?string $token = null,
     ) : Response {
         dump( [__METHOD__, ...\get_defined_vars()] );
         if ( ! $this->settings( 'auth.onboarding' ) ) {
             // Do this earlier, but only allow onboarding when enabled
             // First boot / no users registered defaults to auth.onboarding = true
+            throw $this->notFoundException();
         }
 
-        return new Response( __METHOD__."->{$_route}" );
+        return new Response( __METHOD__."->{$_path}" );
     }
 
     #[Route(
@@ -49,12 +51,12 @@ final class SecurityController extends Controller
         name : 'verify',
     )]
     public function verify(
-        ?string $_route,
-        string  $token,
+        ?string $_path,
+        ?string $token = null,
     ) : Response {
         dump( [__METHOD__, ...\get_defined_vars()] );
 
-        return new Response( __METHOD__."->{$_route}" );
+        return new Response( __METHOD__."->{$_path}" );
     }
 
     #[Route(
@@ -62,12 +64,12 @@ final class SecurityController extends Controller
         name : 'recovery',
     )]
     public function recovery(
-        ?string $_route,
-        string  $token,
+        ?string $_path,
+        ?string $token = null,
     ) : Response {
         dump( [__METHOD__, ...\get_defined_vars()] );
 
-        return new Response( __METHOD__."->{$_route}" );
+        return new Response( __METHOD__."->{$_path}" );
     }
 
     #[Route(
