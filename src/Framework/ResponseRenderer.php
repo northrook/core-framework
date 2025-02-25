@@ -47,23 +47,23 @@ class ResponseRenderer
             return $this;
         }
 
-        if ( ! $template ) {
+        if ( ! $this->content && ! $template ) {
             $this->logger->error(
-                '{method} expected a Template, but none was provided.',
-                ['method' => __METHOD__, 'event' => $event],
+                '{route} expected a Template, but none was provided.',
+                ['route' => $event->getRequest()->getRequestUri(), 'event' => $event],
             );
             return $this;
         }
 
         $contentOnly = $event->getRequest()->headers->has( 'hx-request' );
 
-        $view = $contentOnly ? $template->content : $template->document;
+        $view = $contentOnly ? $template?->content : $template?->document;
 
-        if ( ! $view ) {
+        if ( ! $this->content && ! $view ) {
             $this->logger->error(
-                '{method} expected a Template, an object was provided, but no templates were set.',
+                '{route} expected a Template, an object was provided, but no templates were set.',
                 [
-                    'method'   => __METHOD__,
+                    'route'    => $event->getRequest()->getRequestUri(),
                     'event'    => $event,
                     'template' => $template,
                 ],
@@ -71,7 +71,9 @@ class ResponseRenderer
             return $this;
         }
 
-        $this->content = $this->templateEngine->render( $view );
+        if ( $view ) {
+            $this->content = $this->templateEngine->render( $view );
+        }
 
         $this->documentEngine->setInnerHtml( $this->content );
 

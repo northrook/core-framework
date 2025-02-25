@@ -3,8 +3,9 @@
 namespace Core\Controller;
 
 use Core\Framework\Controller;
-use Core\Framework\Controller\Attribute\Template;
+use Core\Framework\Controller\Attribute\{OnDocument, Template};
 use Core\Symfony\DependencyInjection\SettingsAccessor;
+use Core\View\{Document, Parameters};
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -14,49 +15,77 @@ use Symfony\Component\Routing\Attribute\Route;
     schemes  : 'https',
     priority : 64,
 )]
+#[Template( 'security.latte' )]
 final class SecurityController extends Controller
 {
     use SettingsAccessor;
 
-    #[Route( path : '/login', name : 'login', ), ]
-    #[Template( 'security/login.latte' )]
-    public function login(
-        ?string $_path,
-        ?string $token = null,
-    ) : Response {
-        dump( [__METHOD__, ...\get_defined_vars()] );
-        return new Response( __METHOD__."->{$_path}" );
+    #[OnDocument]
+    public function onDocument( Document $document ) : void
+    {
+        $document->assets( 'style.core', 'script.core', 'script.htmx' );
     }
 
+    #[Route( path : '/login/{$token}', name : 'login', ), ]
+    #[Template( 'security/login.latte' )]
+    public function login(
+        Document   $document,
+        Parameters $parameters,
+        ?string    $token = null,
+    ) : void {
+        $document( 'Login' );
+        dump( \get_defined_vars() );
+    }
+
+    /**
+     * @param Document    $document
+     * @param Parameters  $parameters
+     * @param null|string $step
+     *
+     * @return void
+     */
     #[Route(
         path : '/login/onboarding/{token}',
         name : 'onboarding',
     )]
+    #[Template( 'security/onboarding.latte' )]
     public function onboarding(
-        ?string $_path,
-        ?string $token = null,
-    ) : Response {
-        dump( [__METHOD__, ...\get_defined_vars()] );
+        Document   $document,
+        Parameters $parameters,
+        ?string    $step = null,
+    ) : void {
+        // ! if auth.onboarding.disabled return [404]
+        // On first visit, $step is null, showing welcome screen
+        // .. a hx-request is sent with $step=sessionID - if valid start onboarding
+        // .. each $step will indicate state
+
+        dump( \get_defined_vars() );
         if ( ! $this->settings( 'auth.onboarding' ) ) {
             // Do this earlier, but only allow onboarding when enabled
             // First boot / no users registered defaults to auth.onboarding = true
             throw $this->notFoundException();
         }
-
-        return new Response( __METHOD__."->{$_path}" );
+        $document( 'Login' );
     }
 
+    /**
+     * @param Document   $document
+     * @param Parameters $parameters
+     * @param string     $token      [required] - generated magic token
+     *
+     * @return void
+     */
     #[Route(
         path : '/login/verify/{token}',
         name : 'verify',
     )]
     public function verify(
-        ?string $_path,
-        ?string $token = null,
-    ) : Response {
-        dump( [__METHOD__, ...\get_defined_vars()] );
-
-        return new Response( __METHOD__."->{$_path}" );
+        Document   $document,
+        Parameters $parameters,
+        string     $token,
+    ) : void {
+        $document( 'Email Verification' );
+        dump( \get_defined_vars() );
     }
 
     #[Route(
@@ -64,12 +93,12 @@ final class SecurityController extends Controller
         name : 'recovery',
     )]
     public function recovery(
-        ?string $_path,
-        ?string $token = null,
-    ) : Response {
-        dump( [__METHOD__, ...\get_defined_vars()] );
-
-        return new Response( __METHOD__."->{$_path}" );
+        Document   $document,
+        Parameters $parameters,
+        ?string    $token = null,
+    ) : void {
+        $document( 'Account Recovery' );
+        dump( \get_defined_vars() );
     }
 
     #[Route(
