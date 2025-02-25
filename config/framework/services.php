@@ -35,7 +35,7 @@ return static function( ContainerConfigurator $container ) : void {
                 service( 'logger' ),
             ],
         )
-        ->tag( RegisterCoreServices::ID );
+        ->tag( 'container.service_locator' );
 
     /** @used-by \Core\Symfony\DependencyInjection\ServiceContainer */
     $container->services()

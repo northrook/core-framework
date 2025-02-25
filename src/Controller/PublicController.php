@@ -13,8 +13,9 @@ use Symfony\Component\HttpFoundation\{Request};
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(
-    path : '/',
-    name : 'public.',
+    path     : '/',
+    name     : 'public.',
+    priority : -1,
 )]
 final class PublicController extends Controller
 {
@@ -26,10 +27,13 @@ final class PublicController extends Controller
             ->assets( 'style.core', 'script.core', 'script.htmx' );
     }
 
-    #[
-        Route( path : '{$route}', name : 'index', priority : -100 ),
-        Template( 'welcome.latte' )
-    ]
+    #[Route(
+        path     : '/',
+        name     : 'index',
+        defaults : ['route' => 'index'],
+        priority : -1_024,
+    ), ]
+    #[Template( 'welcome.latte' )]
     public function index(
         ?string    $route,
         Document   $document,
@@ -51,10 +55,8 @@ final class PublicController extends Controller
             HTML;
     }
 
-    #[
-        Route( 'tailwind', 'tailwind_demo' ),
-        Template( 'demo.latte' ) // content template
-    ]
+    #[Route( 'tailwind', 'tailwind_demo' )]
+    #[Template( 'demo.latte' )]
     public function tailwind(
         Document $document,
     ) : string {
@@ -64,10 +66,8 @@ final class PublicController extends Controller
         return 'tailwind.latte';
     }
 
-    #[
-        Route( 'demo', 'view_demo' ),
-        Template( 'demo.latte' ) // content template
-    ]
+    #[Route( 'demo', 'view_demo' )]
+    #[Template( 'demo.latte' )]
     public function demo(
         Document         $document,
         Toast            $toast,
