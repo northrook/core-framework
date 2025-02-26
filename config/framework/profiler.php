@@ -16,6 +16,7 @@ return static function( ContainerConfigurator $container ) : void {
     $services = $container->services();
 
     $services->set( ProfilerBar::class )
+        ->autowire()
         ->tag( 'kernel.event_listener' );
 
     $container->services()

@@ -8,7 +8,7 @@ use Core\Symfony\DependencyInjection\Autodiscover;
 use Core\Interface\ActionInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-#[Autodiscover]
+#[Autodiscover( autowire : true )]
 final readonly class UrlGenerator implements ActionInterface
 {
     public function __construct( private UrlGeneratorInterface $urlGenerator ) {}

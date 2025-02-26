@@ -8,7 +8,7 @@ use Core\Interface\ActionInterface;
 use Core\Symfony\DependencyInjection\Autodiscover;
 use Core\Framework\Service\ToastService;
 
-#[Autodiscover]
+#[Autodiscover( autowire : true )]
 final class Toast implements ActionInterface
 {
     public const string

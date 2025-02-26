@@ -26,7 +26,7 @@ final class SecurityController extends Controller
         $document->assets( 'style.core', 'script.core', 'script.htmx' );
     }
 
-    #[Route( path : '/login/{$token}', name : 'login', ), ]
+    #[Route( path : '/login/{token}', name : 'login' )]
     #[Template( 'security/login.latte' )]
     public function login(
         Document   $document,
