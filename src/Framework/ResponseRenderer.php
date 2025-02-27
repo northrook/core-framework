@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Core\Framework;
 
 use Core\AssetManager;
+use Core\AssetManager\Interface\MinifiedAssetInterface;
 use Core\Framework\Controller\Attribute\Template;
 use Core\View\{ComponentFactory, Document, DocumentEngine, TemplateEngine};
 use Core\Symfony\Service\ToastService;
@@ -83,6 +84,7 @@ class ResponseRenderer
     final public function getResponse() : Response
     {
         $this->handleEnqueuedAssets();
+        $this->handleToastMessages();
         $content = (string) $this->documentEngine;
         return new Response(
             $content,
@@ -112,7 +114,16 @@ class ResponseRenderer
     {
         foreach ( $this->document->assets->getEnqueuedAssets() as $assetKey ) {
             if ( $asset = $this->assetManager->getAsset( $assetKey ) ) {
-                // dump( $asset );
+                if ( $asset instanceof MinifiedAssetInterface
+                     && $asset->getMinifier()->usedCache()
+                ) {
+                    $this->toastService->addMessage(
+                        'info',
+                        $asset->getReference()->name,
+                        $asset->getMinifier()->getReport()->string,
+                    );
+                }
+
                 $this->document->head->injectHtml( $asset, $assetKey );
             }
         }
