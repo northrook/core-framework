@@ -6,8 +6,8 @@ namespace Core\Framework;
 
 use Core\AssetManager;
 use Core\Framework\Controller\Attribute\Template;
-use Core\Framework\Service\ToastService;
 use Core\View\{ComponentFactory, Document, DocumentEngine, TemplateEngine};
+use Core\Symfony\Service\ToastService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
