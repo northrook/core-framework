@@ -37,9 +37,6 @@ final class ProfilerBar
               position: fixed;
               bottom: 3px;
               right: 3px;
-              display: flex;
-              flex-direction: row;
-              gap: .25ch;
               color: var(--color);
               font-size: 12px;
               font-family: monospace;
@@ -47,28 +44,32 @@ final class ProfilerBar
               backdrop-filter: blur(2px);
               box-shadow: 0 1px 6px 0 var(--outline);
               overflow: clip;
-              /*outline: 1px solid deeppink;*/
             }
             profiler * {
               color: var(--color);
             }
             profiler a {
+              display: flex;
               font-family: monospace;
-              padding: 3px 5px;
               opacity: .75;
             }
-            profiler a > prefix {
-              --color: var(--status);
-              --background: hsla( from currentColor h calc(s - 25) calc(l + 25)  / 0.15 );
-              margin-inline-end: 1ch;
-              background: var(--background);
-              box-shadow: -.5ch 0 0 1ch var(--background);
+            profiler a[profiler-request] {
+              overflow: hidden;
             }
             profiler a > route {
-              opacity: .75;
+              color: var(--baseline-400);
+              display: inline-block;
+              max-width: 0;
+              transition: max-width 320ms ease-in-out;
+              z-index: -1;
+              overflow: hidden;
             } 
-            profiler a > path {
-              margin-inline-end: .5ch;
+            profiler a > route prefix {
+              --color: var(--status);
+              --background: hsla( from currentColor h calc(s - 25) calc(l + 25)  / 0.15 );
+              
+              margin-inline-end: 1ch;
+              background: var(--background);
             }
             
             profiler::before,
@@ -98,6 +99,10 @@ final class ProfilerBar
             profiler:hover a, profiler:focus-within a {
               opacity:1;
             }
+            profiler:hover a[profiler-request] route,
+            profiler:focus-within a[profiler-request] route {
+              max-width: 320px;
+            }
             profiler, profiler a,  profiler::before, profiler a::before {
               transition: opacity 200ms ease-in-out;
             }
@@ -125,7 +130,7 @@ final class ProfilerBar
         // );
 
         $html = <<<HTML
-            <profiler debug-token="{$x_debug_token}">
+            <profiler debug-token="{$x_debug_token}" class="flex align:center">
             <style>{$this->inlineStyles}</style>
             {$this->getRequestInfo()}
             {$this->getElapsedTime()}
@@ -153,15 +158,19 @@ final class ProfilerBar
 
         [$prefix, $route] = \explode( '.', $route, 2 );
 
-        $requestInfo = <<<HTML
-            <prefix>{$prefix}</prefix><route>{$route}</route>
-            HTML;
-
         // dd( get_defined_vars(), $this->event->getRequest() );
         return <<<HTML
-            <a href="/_profiler/{$this->token}?panel=request" target="_blank" {$status}>
-            {$requestInfo}
-            <path>{$path}</path>
+            <a profiler-request 
+                href="/_profiler/{$this->token}?panel=request" 
+                target="_blank"
+                class="flex align:center" 
+                {$status}
+            >
+            <route class="flex align:center">
+                <prefix class="ph:xs pv:us">{$prefix}</prefix>
+                {$route}
+            </route>
+            <path class="ph:xs pv:us">{$path}</path>
             </a>
             HTML;
     }
@@ -182,9 +191,11 @@ final class ProfilerBar
 
         return <<<HTML
             <a
+            profiler-time
             href="/_profiler/{$this->token}?panel=time"
-            style="{$this->css( $style )}"
             target="_blank"
+            class="ph:xs pv:us" 
+            style="{$this->css( $style )}"
             >
                 {$time}<span style="color: initial; opacity: .75; margin-inline-start: .5ch">ms</span>
             </a>

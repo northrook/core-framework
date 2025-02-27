@@ -24,13 +24,6 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 return static function( ContainerConfigurator $container ) : void {
-    $services = $container->services();
-
-    $services
-            // Toast Flashbag Handler
-        ->set( ToastService::class )
-        ->args( [service( 'request_stack' ), service( 'logger' )] )
-        ->tag( 'controller.service_arguments' );
 
     /** @used-by \Core\Symfony\DependencyInjection\ServiceContainer */
     $container->services()
@@ -46,7 +39,7 @@ return static function( ContainerConfigurator $container ) : void {
                     // Settings::class => service( Settings::class ),
 
                     // Symfony
-                    RequestStack::class          => service( 'request_stack' ),
+                    RequestStack::class          => service( 'service' ),
                     ParameterBagInterface::class => service( 'parameter_bag' ),
                     RouterInterface::class       => service( 'router' ),
                     HttpKernelInterface::class   => service( 'http_kernel' ),

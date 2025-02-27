@@ -33,13 +33,13 @@
     "northrook/view-icons": "dev-main",
     "northrook/design-system": "dev-main",
     "northrook/view-components": "dev-main",
-    "northrook/asset-manager": "dev-main"
+    "northrook/asset-manager": "dev-main",
+    "northrook/toast-bundle": "dev-main"
   },
   "scripts": {
     "phpstan": "vendor/bin/phpstan analyse"
   },
   "require-dev": {
-    "northrook/php-cs": "dev-main",
-    "jetbrains/phpstorm-attributes": "^1.2"
+    "northrook/dev": "dev-main"
   }
 }

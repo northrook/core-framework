@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Core\Controller;
 
-use Core\Action\Toast;
-use Core\{Pathfinder};
+use Core\Pathfinder;
+use Core\Symfony\Toast;
 use Core\Framework\Controller;
 use Core\Framework\Controller\Attribute\{OnDocument, Template};
 use Core\View\{ComponentFactory, Document};
