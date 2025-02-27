@@ -10,7 +10,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 // use Core\Action\Headers;
 use Core\Framework\CompilerPass\RegisterCoreServices;
-use Core\Framework\Service\ToastService;
 use Core\View\Parameters;
 use Core\Pathfinder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -39,7 +38,7 @@ return static function( ContainerConfigurator $container ) : void {
                     // Settings::class => service( Settings::class ),
 
                     // Symfony
-                    RequestStack::class          => service( 'service' ),
+                    RequestStack::class          => service( 'request_stack' ),
                     ParameterBagInterface::class => service( 'parameter_bag' ),
                     RouterInterface::class       => service( 'router' ),
                     HttpKernelInterface::class   => service( 'http_kernel' ),

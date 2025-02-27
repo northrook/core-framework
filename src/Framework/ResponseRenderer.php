@@ -99,10 +99,10 @@ class ResponseRenderer
 
         foreach ( $this->toastService->getAllMessages() as $message ) {
             $toasts[] = $message->message;
-            // $toasts[] = $this->componentFactory->render(
-            //     'view.component.toast',
-            //     $message->getArguments(),
-            // );
+            $toasts[] = $this->componentFactory->render(
+                'view.component.toast',
+                $message->getArguments(),
+            );
         }
 
         $this->document->body->content( $toasts, true );

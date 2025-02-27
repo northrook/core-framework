@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\{AssetManager, Framework\CompilerPass\RegisterCoreServices, Pathfinder};
+use Core\{AssetManager, Framework\CompilerPass\RegisterCoreServices, Pathfinder, Symfony\Service\ToastService};
 use Core\Framework\ResponseRenderer;
 use Core\View\{ComponentFactory,
     ComponentFactory\ComponentBag,
@@ -39,7 +39,7 @@ return static function( ContainerConfigurator $container ) : void {
                 service( ComponentFactory::class ),
                 service( AssetManager::class ),
                 service( Document::class ),
-                service( 'service.toast' ),
+                service( ToastService::class ),
                 service( 'logger' ),
             ],
         )
