@@ -8,18 +8,21 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\{AssetManager, Framework\CompilerPass\RegisterCoreServices, Pathfinder, Symfony\Service\ToastService};
+use Core\AssetManager;
+use Core\Framework\CompilerPass\RegisterCoreServices;
 use Core\Framework\ResponseRenderer;
 use Core\View\{ComponentFactory,
     ComponentFactory\ComponentBag,
     Document,
     DocumentEngine,
     IconSet,
-    Interface\IconProviderInterface,
     Latte\ViewComponentExtension,
     Parameters,
     TemplateEngine
 };
+use Core\Interface\IconProviderInterface;
+use Core\Pathfinder;
+use Core\Symfony\ToastService;
 use const Support\PLACEHOLDER_ARGS;
 
 return static function( ContainerConfigurator $container ) : void {

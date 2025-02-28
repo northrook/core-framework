@@ -9,7 +9,7 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Core\Framework\{Events\ControllerEventHandler, ResponseRenderer};
-use Core\Controller\{FaviconController, PublicController, SecurityController};
+use Core\Controller\{AssetController, PublicController, SecurityController};
 
 return static function( ContainerConfigurator $container ) : void {
     $container->services()
@@ -28,9 +28,9 @@ return static function( ContainerConfigurator $container ) : void {
         ->tag( 'controller.service_arguments' )
         ->tag( 'monolog.logger', ['channel' => 'request'] );
 
-    $framework->set( SecurityController::class );
+    $framework->set( AssetController::class );
 
-    $framework->set( FaviconController::class );
+    $framework->set( SecurityController::class );
 
     $framework->set( PublicController::class );
     // ->autowire();

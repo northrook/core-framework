@@ -8,7 +8,7 @@ use Core\AssetManager;
 use Core\AssetManager\Interface\MinifiedAssetInterface;
 use Core\Framework\Controller\Attribute\Template;
 use Core\View\{ComponentFactory, Document, DocumentEngine, TemplateEngine};
-use Core\Symfony\Service\ToastService;
+use Core\Symfony\ToastService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
@@ -27,9 +27,7 @@ class ResponseRenderer
         protected readonly Document        $document,
         protected readonly ToastService    $toastService,
         protected readonly LoggerInterface $logger,
-    ) {
-        //     dump( $this );
-    }
+    ) {}
 
     final public function setResponseContent( ResponseEvent $event, ?Template $template = null ) : self
     {
@@ -100,11 +98,11 @@ class ResponseRenderer
         $toasts = [];
 
         foreach ( $this->toastService->getAllMessages() as $message ) {
-            $toasts[] = $message->message;
-            $toasts[] = $this->componentFactory->render(
-                'view.component.toast',
-                $message->getArguments(),
-            );
+            $toasts[$message->id] ??= $message->getView();
+            // $toasts[$message->id] ??= $this->componentFactory->render(
+            //     'view.component.toast',
+            //     $message->getArguments(),
+            // );
         }
 
         $this->document->body->content( $toasts, true );
@@ -114,17 +112,16 @@ class ResponseRenderer
     {
         foreach ( $this->document->assets->getEnqueuedAssets() as $assetKey ) {
             if ( $asset = $this->assetManager->getAsset( $assetKey ) ) {
+                $html = $asset->getHtml();
+
                 if ( $asset instanceof MinifiedAssetInterface
-                     && $asset->getMinifier()->usedCache()
+                     && $asset->getMinifier()->usedCache() === false
                 ) {
-                    $this->toastService->addMessage(
-                        'info',
-                        $asset->getReference()->name,
-                        $asset->getMinifier()->getReport()->string,
-                    );
+                    $message = "The {$assetKey} was updated.";
+                    $this->toastService->addMessage( 'info', $message );
                 }
 
-                $this->document->head->injectHtml( $asset, $assetKey );
+                $this->document->head->injectHtml( $html, $assetKey );
             }
         }
     }
