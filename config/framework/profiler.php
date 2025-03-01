@@ -10,10 +10,13 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Northrook\Clerk;
 use Core\Framework\Profiler\{ClerkProfiler, ParameterSettingsCollector, PipelineCollector, ProfilerBar};
+use Symfony\Component\HttpKernel\Profiler\Profiler;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 return static function( ContainerConfigurator $container ) : void {
     $services = $container->services();
+
+    $services->alias( Profiler::class, 'profiler' );
 
     $services->set( ProfilerBar::class )
         ->autowire()

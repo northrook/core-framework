@@ -18,6 +18,6 @@ return static function( ContainerConfigurator $container ) : void {
         ->tag( 'kernel.event_listener' );
 
     $events->set( ToastMessageInjector::class )
-        ->tag( 'kernel.event_subscriber' )
-        ->args( [service( ToastService::class )] );
+        ->args( [service( ToastService::class )] )
+        ->tag( 'kernel.event_subscriber' );
 };

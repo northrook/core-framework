@@ -89,25 +89,6 @@ class ResponseRenderer
         );
     }
 
-    final protected function handleToastMessages() : void
-    {
-        if ( ! $this->toastService->hasMessages() ) {
-            return;
-        }
-
-        $toasts = [];
-
-        foreach ( $this->toastService->getAllMessages() as $message ) {
-            $toasts[$message->id] ??= $message->getView();
-            // $toasts[$message->id] ??= $this->componentFactory->render(
-            //     'view.component.toast',
-            //     $message->getArguments(),
-            // );
-        }
-
-        $this->document->body->content( $toasts, true );
-    }
-
     final protected function handleEnqueuedAssets() : void
     {
         foreach ( $this->document->assets->getEnqueuedAssets() as $assetKey ) {
