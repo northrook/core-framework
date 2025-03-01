@@ -34,7 +34,8 @@
     "northrook/design-system": "dev-main",
     "northrook/view-components": "dev-main",
     "northrook/asset-manager": "dev-main",
-    "northrook/toast-bundle": "dev-main"
+    "northrook/toast-bundle": "dev-main",
+    "northrook/view-image": "dev-main"
   },
   "scripts": {
     "phpstan": "vendor/bin/phpstan analyse"

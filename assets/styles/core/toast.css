@@ -37,13 +37,13 @@ toast::before {
   border-radius : .25rem;
   inset         : 0;
   background    : linear-gradient(-55deg, var(--background) 50%, var(--intent-light) 100%);
-  transition    : opacity 300ms ease-in-out;
-  opacity       : .50;
+  transition    : opacity 200ms ease-in-out;
+  opacity       : .5;
 }
 
 /* Background:Hover */
 toast:hover::before, toast:focus-within::before, toast:focus::before {
-  opacity : .95;
+  opacity : .85;
 }
 
 
