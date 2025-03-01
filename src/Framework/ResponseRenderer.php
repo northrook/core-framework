@@ -82,7 +82,7 @@ class ResponseRenderer
     final public function getResponse() : Response
     {
         $this->handleEnqueuedAssets();
-        $this->handleToastMessages();
+        // $this->handleToastMessages();
         $content = (string) $this->documentEngine;
         return new Response(
             $content,

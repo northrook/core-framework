@@ -8,9 +8,15 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\Framework\Events\RequestAttributeHandler;
+use Core\Symfony\ToastService;
+use Core\Framework\Events\{RequestAttributeHandler, ToastMessageInjector};
 
 return static function( ContainerConfigurator $container ) : void {
-    $container->services()->set( RequestAttributeHandler::class )
+    $events = $container->services()->defaults()
         ->tag( 'kernel.event_listener' );
+
+    $events->set( RequestAttributeHandler::class );
+
+    $events->set( ToastMessageInjector::class )
+        ->args( [service( ToastService::class )] );
 };
