@@ -12,11 +12,12 @@ use Core\Symfony\ToastService;
 use Core\Framework\Events\{RequestAttributeHandler, ToastMessageInjector};
 
 return static function( ContainerConfigurator $container ) : void {
-    $events = $container->services()->defaults()
+    $events = $container->services()->defaults();
+
+    $events->set( RequestAttributeHandler::class )
         ->tag( 'kernel.event_listener' );
 
-    $events->set( RequestAttributeHandler::class );
-
     $events->set( ToastMessageInjector::class )
+        ->tag( 'kernel.event_subscriber' )
         ->args( [service( ToastService::class )] );
 };
