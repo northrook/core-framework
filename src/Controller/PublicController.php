@@ -76,6 +76,8 @@ final class PublicController extends Controller
         // $assetManager->factory->locator()->scan();
         $document( 'Index Demo Template' );
 
+        $toast->info( 'Hello there, this is a toast.' );
+
         // $toast(
         //     'info',
         //     'Useful information Toast.',

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Core\Controller;
 
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\{BinaryFileResponse, Response};
+use Core\Symfony\Toast;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -18,11 +19,18 @@ final class AssetController
     // Listen for all /assets/any .. report 404
     // we could also handle this with an eventListener?
     //
-    #[Route( '/assets/{path}', 'core:favicon' )]
-    public function index( ?string $path ) : mixed
+    #[Route( '/assets/{path}', 'fallback', requirements : ['path' => '.+'] )]
+    public function index( ?string $path, Toast $toast ) : Response
     {
-        dump( \get_defined_vars() );
-        throw new NotFoundHttpException();
+        // dump( \get_defined_vars() );
+        // throw new NotFoundHttpException();
+
+        $toast->warning( 'Requested asset not found', $path );
+
+        return new Response(
+            'Requested asset not found: '.$path,
+            404,
+        );
     }
 
     #[Route( '/favicon.ico', 'favicon' )]
