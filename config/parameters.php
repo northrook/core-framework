@@ -12,22 +12,24 @@ use function Support\normalizePath;
 
 return static function( ContainerConfigurator $container ) : void {
     foreach ( [
-        'dir.root'        => '%kernel.project_dir%',
-        'dir.config'      => '%dir.root%/config',
-        'dir.var'         => '%dir.root%/var',
-        'dir.public'      => '%dir.root%/public',
-        'dir.core'        => [__DIR__, 1],
-        'dir.core.src'    => '%dir.core%/src',
-        'dir.core.config' => '%dir.core%/config',
+        'dir.root'          => '%kernel.project_dir%',
+        'dir.config'        => '%dir.root%/config',
+        'dir.var'           => '%dir.root%/var',
+        'dir.public'        => '%dir.root%/public',
+        'dir.public.assets' => '%dir.root%/public/assets',
 
         // Assets
         'dir.assets'        => '%dir.root%/assets',
-        'dir.assets.public' => '%dir.root%/public/assets',
         'dir.assets.build'  => '%dir.root%/assets/build',
-        'dir.core.assets'   => '%dir.core%/assets',
         'dir.assets.themes' => '%dir.core%/assets',
         'dir.assets.cache'  => __DIR__.'/var/assets',
-        //
+
+        // Core
+        'dir.core'        => [__DIR__, 1],
+        'dir.core.src'    => '%dir.core%/src',
+        'dir.core.config' => '%dir.core%/config',
+        'dir.core.assets' => '%dir.core%/assets',
+
         //
         'path.asset_manifest'   => '%dir.root%/var/asset.manifest',
         'path.pathfinder_cache' => '%dir.root%/var/pathfinder.cache',
