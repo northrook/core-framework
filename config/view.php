@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\AssetManager;
+use Core\{AssetManager, Pathfinder};
 use Core\Framework\CompilerPass\RegisterCoreServices;
 use Core\Framework\ResponseRenderer;
 use Core\View\{ComponentFactory,
@@ -21,7 +21,6 @@ use Core\View\{ComponentFactory,
     TemplateEngine
 };
 use Core\Interface\IconProviderInterface;
-use Core\Pathfinder;
 use Core\Symfony\ToastService;
 use const Support\PLACEHOLDER_ARGS;
 
@@ -53,10 +52,10 @@ return static function( ContainerConfigurator $container ) : void {
         ->set( IconSet::class )
         ->alias( IconProviderInterface::class, IconSet::class );
     //
-    $services = $container->services();
-    // ->defaults()
-    // ->autoconfigure();
-    //
+    $services = $container->services()
+        ->defaults()
+        ->tag( 'monolog.logger', ['channel' => 'view'] );
+
     // IconSet
     $services
         ->set( ComponentFactory::class )

@@ -22,7 +22,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Throwable, Exception;
-use function Support\get_class_name;
+use function Support\class_name;
 
 /**
  * @phpstan-require-implements ServiceContainerInterface
@@ -46,7 +46,7 @@ trait ResponseMethods
     final protected function isManagedRequest() : bool
     {
         return \is_subclass_of(
-            get_class_name( $this->getRequest()->attributes->get( '_controller' ) ),
+            class_name( $this->getRequest()->attributes->get( '_controller' ) ),
             Controller::class,
         );
     }

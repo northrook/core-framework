@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Core\Framework\Assets;
 
 use Core\AssetManager\Interface\{AssetInterface, AssetServiceInterface};
-use Core\Asset\Style;
+use Core\Asset\StyleAsset;
 use Core\AssetManager\Compiler\AssetService;
 use Northrook\DesignSystem;
 use InvalidArgumentException;
@@ -31,8 +31,8 @@ final readonly class CoreStyle implements AssetServiceInterface
      */
     public function __invoke( AssetInterface $asset ) : AssetInterface
     {
-        if ( ! $asset instanceof Style ) {
-            throw new InvalidArgumentException( 'Asset must be an instance of '.Style::class );
+        if ( ! $asset instanceof StyleAsset ) {
+            throw new InvalidArgumentException( 'Asset must be an instance of '.StyleAsset::class );
         }
 
         $styles = $this->designSystem->generateStyles();

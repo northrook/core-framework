@@ -6,7 +6,7 @@ namespace Core\Framework\CompilerPass;
 
 use Core\Symfony\Console\{ListReport, Output};
 use Core\Symfony\DependencyInjection\CompilerPass;
-use Support\{Filesystem, Time};
+use Support\Time;
 use JetBrains\PhpStorm\Language;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Finder\Finder;
@@ -191,7 +191,7 @@ final class ApplicationInitialization extends CompilerPass
     private function overrideExistingFile( string $path ) : bool
     {
         // Always create if no file is found
-        if ( ! Filesystem::exists( $path ) ) {
+        if ( ! \file_exists( $path ) ) {
             return true;
         }
 

@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\{AssetManager, Pathfinder};
+use Core\{AssetManager, AssetManager\AssetManifest, Pathfinder};
 use Core\AssetManager\AssetConfig;
 use Core\AssetManager\Compiler\RegisterAssetServices;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
@@ -47,12 +47,22 @@ return static function( ContainerConfigurator $container ) : void {
             ],
         );
 
+    $service->set( AssetManifest::class )
+        ->args(
+            [
+                service( 'core.asset_config' ),
+                service( 'cache.asset_pool' ),
+                service( 'logger' )->nullOnInvalid(),
+            ],
+        );
+
     $service->set( AssetManager::class )
         ->args(
             [
                 service( 'core.asset_config' ),
                 service( Pathfinder::class ),
                 service( RegisterAssetServices::ID ),
+                service( AssetManifest::class ),
                 service( 'cache.asset_pool' ),
                 service( 'logger' )->nullOnInvalid(),
             ],

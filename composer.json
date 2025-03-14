@@ -37,10 +37,10 @@
     "northrook/toast-bundle": "dev-main",
     "northrook/view-image": "dev-main"
   },
-  "scripts": {
-    "phpstan": "vendor/bin/phpstan analyse"
-  },
   "require-dev": {
     "northrook/dev": "dev-main"
+  },
+  "scripts": {
+    "phpstan": "vendor/bin/phpstan analyse src"
   }
 }
