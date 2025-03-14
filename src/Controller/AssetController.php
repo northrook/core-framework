@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Core\Controller;
 
-use Symfony\Component\HttpFoundation\{BinaryFileResponse, Response};
+use Symfony\Component\HttpFoundation\{BinaryFileResponse, Request};
+use Core\Asset\ImageAsset;
+use Core\AssetManager;
 use Core\Framework\Route;
 use Core\Symfony\Toast;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
 
 #[Route(
     name    : Route::ASSETS,
@@ -20,16 +23,26 @@ final class AssetController
     // report/log internally - periodically re-validate using CRON
     //
     #[Route( '/assets/{path}', 'fallback', requirements : ['path' => '.+'] )]
-    public function index( ?string $path, Toast $toast ) : void
-    {
-        // dump( \get_defined_vars() );
-        $toast->warning( 'Requested asset not found', $path );
-        throw new NotFoundHttpException();
+    public function index(
+        Request      $request,
+        Toast        $toast,
+        AssetManager $assetManager,
+    ) : void {
+        $path = $request->getRequestUri();
 
-        // return new Response(
-        //     'Requested asset not found: '.$path,
-        //     404,
-        // );
+        try {
+            $image = $assetManager->getAsset( $path );
+
+            \assert( $image instanceof ImageAsset );
+
+            $toast->notice( 'Generated asset:', $image->name );
+        }
+        catch ( Throwable $exception ) {
+            throw new NotFoundHttpException(
+                $exception->getMessage(),
+                $exception,
+            );
+        }
     }
 
     #[Route( '/favicon.ico', 'favicon' )]
