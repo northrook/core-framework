@@ -23,19 +23,19 @@ return static function( ContainerConfigurator $container ) : void {
         ->tag( 'kernel.event_listener' );
 
     $container->services()
-        ->set( Clerk::class )
-        ->args(
-            [
-                service( Stopwatch::class ),
-                service( 'logger' ),
-                param( 'kernel.debug' ), // enabled when debugging, regardless of env
-            ],
-        )
+        // ->set( Clerk::class )
+        // ->args(
+        //     [
+        //         service( Stopwatch::class ),
+        //         service( 'logger' ),
+        //         param( 'kernel.debug' ), // enabled when debugging, regardless of env
+        //     ],
+        // )
 
             // TelemetryEventSubscriber
-        ->set( ClerkProfiler::class )
-        ->tag( 'kernel.event_subscriber' )
-        ->args( [service( Clerk::class )] )
+        // ->set( ClerkProfiler::class )
+        // ->tag( 'kernel.event_subscriber' )
+        // ->args( [service( Clerk::class )] )
 
             // Profiler
         ->set( PipelineCollector::class )
