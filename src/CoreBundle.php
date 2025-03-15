@@ -10,12 +10,10 @@ use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Core\Framework\CompilerPass\{ApplicationInitialization,
-    AutowwireAwareDepdendencies,
     RegisterCoreServices,
     RegisterEventSubscribers
 };
-use Core\Symfony\Compiler\AutodiscoverServicesPass;
-
+use Core\Symfony\Compiler\{AutodiscoverServicesPass, AutowireInterfaceDependencies};
 /**
  * Core Symfony Framework.
  *
@@ -59,6 +57,6 @@ final class CoreBundle extends AbstractBundle
             ->addCompilerPass( new RegisterViewComponentsPass() )
             ->addCompilerPass( new ApplicationInitialization() )
             ->addCompilerPass( new RegisterEventSubscribers() )
-            ->addCompilerPass( new AutowwireAwareDepdendencies(), priority : -256 );
+            ->addCompilerPass( new AutowireInterfaceDependencies(), priority : -256 );
     }
 }
