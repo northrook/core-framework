@@ -6,7 +6,8 @@ namespace Core\Framework\Controller;
 
 use Core\Framework\Controller;
 use Core\Framework\Controller\Attribute\Template;
-use Core\Exception\NotSupportedException;
+use Core\Profiler\Interface\SettableProfilerInterface;
+use Core\Profiler\SettableStopwatchProfiler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Controller\ErrorController;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -14,9 +15,12 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Psr\Log\LoggerInterface;
 use LogicException, BadMethodCallException;
 use ReflectionAttribute, ReflectionClass;
+use Symfony\Component\Stopwatch\Stopwatch;
 
-abstract class ControllerEventSubscriber implements EventSubscriberInterface
+abstract class ControllerEventSubscriber implements EventSubscriberInterface, SettableProfilerInterface
 {
+    use SettableStopwatchProfiler;
+
     private bool $skipEvent;
 
     protected readonly LoggerInterface $logger;
@@ -24,6 +28,12 @@ abstract class ControllerEventSubscriber implements EventSubscriberInterface
     protected readonly Controller $controller;
 
     protected readonly ?Template $template;
+
+    final public function setProfiler( ?Stopwatch $stopwatch ) : void
+    {
+        $this->assignProfiler( $stopwatch );
+        $this->profiler?->event( __METHOD__ );
+    }
 
     /**
      * @return bool
@@ -65,40 +75,40 @@ abstract class ControllerEventSubscriber implements EventSubscriberInterface
             // return;
         }
 
+        $this->profiler?->event( __METHOD__ );
+
+        $this->skipEvent = $this->resolveControllerEvent( $event );
+
+        $this->template = $this->skipEvent
+                ? null
+                : $this->resolveTemplateAttribute( $event );
+
+        $this->profiler?->stop( __METHOD__ );
+    }
+
+    private function resolveControllerEvent( ControllerEvent $event ) : bool
+    {
         // Only parse GET requests
         if ( $event->getRequest()->isMethod( 'GET' ) === false ) {
-            $this->skipEvent = true;
-            return;
+            return true;
         }
 
-
         if ( $event->getController() instanceof ErrorController ) {
-            $this->skipEvent = true;
-            return;
+            return true;
         }
 
         if ( \is_array( $event->getController() ) ) {
             /** @noinspection PhpParamsInspection - ignore false-negative */
             $object = \current( $event->getController() );
 
-            if ( ! $object instanceof Controller ) {
-                $this->skipEvent = true;
-                return;
+            if ( $object instanceof Controller ) {
+                $this->controller = $object;
+                return false;
             }
-
-            $this->skipEvent  = false;
-            $this->controller = $object;
-        }
-        else {
-            dd(
-                $event,
-                new NotSupportedException(
-                    '[TODO] Non-array callables.',
-                ),
-            );
         }
 
-        $this->template = $this->resolveTemplateAttribute( $event );
+        $this->logger->alert( __METHOD__.' did not find a controller.' );
+        return true;
     }
 
     protected function resolveTemplateAttribute( ControllerEvent $event ) : ?Template

@@ -29,7 +29,9 @@ final class ToastMessageInjector extends ControllerEventSubscriber
             return;
         }
 
+        $this->profiler?->event( __METHOD__ );
         $this->messages = $this->toast->getAllMessages();
+        $this->profiler?->stop( __METHOD__ );
     }
 
     public function renderToastMessages( TerminateEvent $event ) : void

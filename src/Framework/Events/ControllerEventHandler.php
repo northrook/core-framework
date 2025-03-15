@@ -65,6 +65,7 @@ final class ControllerEventHandler extends ControllerEventSubscriber
         if ( $this->skipEvent() ) {
             return;
         }
+        $this->profiler?->event( __METHOD__ );
 
         $content = $event->getControllerResult();
 
@@ -89,6 +90,7 @@ final class ControllerEventHandler extends ControllerEventSubscriber
         \assert( \is_string( $content ) || \is_null( $content ) );
 
         $event->setResponse( new Response( $content ) );
+        $this->profiler?->stop( __METHOD__ );
     }
 
     public function onKernelResponse( ResponseEvent $event ) : void
@@ -96,6 +98,8 @@ final class ControllerEventHandler extends ControllerEventSubscriber
         if ( $this->skipEvent() ) {
             return;
         }
+
+        $this->profiler?->event( __METHOD__ );
 
         $this->responseRenderer
             ->templateEngine
@@ -110,5 +114,7 @@ final class ControllerEventHandler extends ControllerEventSubscriber
         $event->setResponse(
             $this->responseRenderer->getResponse(),
         );
+
+        $this->profiler?->stop( __METHOD__ );
     }
 }

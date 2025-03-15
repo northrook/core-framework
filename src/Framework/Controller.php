@@ -4,20 +4,23 @@ declare(strict_types=1);
 
 namespace Core\Framework;
 
-use Core\Symfony\DependencyInjection\{ServiceContainer};
-use Core\Symfony\Interface\ServiceContainerInterface;
-use Core\Pathfinder;
-use Core\View\Document;
-use Core\Framework\Controller\Attribute\{OnContent, OnDocument};
-use Core\Framework\Controller\ResponseMethods;
-use Northrook\Logger\Log;
-use ReflectionClass;
-use ReflectionException;
 use Symfony\Component\HttpFoundation\Response;
+use Core\Framework\Controller\ResponseMethods;
+use Core\Framework\Controller\Attribute\{OnContent, OnDocument};
+use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
+use Core\Profiler\SettableStopwatchProfiler;
+use Core\Profiler\Interface\SettableProfilerInterface;
+use Core\Symfony\DependencyInjection\{ServiceContainer, SettingsAccessor};
+use Core\Symfony\Interface\ServiceContainerInterface;
+use Exception, RuntimeException, ReflectionClass, ReflectionException;
 
-abstract class Controller implements ServiceContainerInterface
+abstract class Controller implements ServiceContainerInterface, SettableProfilerInterface, LoggerAwareInterface
 {
-    use ServiceContainer, ResponseMethods;
+    use ServiceContainer,
+        SettingsAccessor,
+        SettableStopwatchProfiler,
+        ResponseMethods,
+        LoggerAwareTrait;
 
     final protected function response( ?string $content = null ) : Response
     {
@@ -30,21 +33,19 @@ abstract class Controller implements ServiceContainerInterface
      */
     final protected function controllerResponseMethods() : void
     {
+        $this->profiler?->event( __METHOD__ );
+
         // Add invoked methods to the Request attributes
         $responseType = $this->isHtmxRequest()
                 ? OnContent::class
                 : OnDocument::class;
 
-        $autowire = [
-            // Headers::class,
-            Document::class,
-            Pathfinder::class,
-        ];
-
         foreach ( ( new ReflectionClass( $this ) )->getMethods() as $method ) {
             if ( ! $method->getAttributes( $responseType ) ) {
                 continue;
             }
+
+            $this->profiler?->event( $method->getName(), __METHOD__ );
 
             $parameters = [];
 
@@ -54,13 +55,15 @@ abstract class Controller implements ServiceContainerInterface
 
                 \assert( \is_string( $injectableClass ) );
 
-                if ( \in_array( $injectableClass, $autowire, true ) ) {
+                try {
                     $parameters[] = $this->serviceLocator->get( $injectableClass );
                 }
-                else {
-                    // TODO : Ensure appropriate exception is thrown on missing dependencies
-                    //        nullable parameters will not throw; log in [dev], ignore in [prod]
-                    dump( $method );
+                catch ( Exception $exception ) {
+                    if ( ! $this->logger ) {
+                        throw new RuntimeException( $exception->getMessage(), 500, $exception );
+                    }
+
+                    $this->logger->error( $exception->getMessage(), ['exception' => $exception] );
                 }
             }
 
@@ -68,11 +71,13 @@ abstract class Controller implements ServiceContainerInterface
             try {
                 $method->invoke( $this, ...$parameters );
             }
-            catch ( ReflectionException $e ) {
-                Log::exception( $e );
-
-                continue;
+            catch ( ReflectionException $exception ) {
+                $this->logger?->error( $exception->getMessage(), ['exception' => $exception] );
             }
+
+            $this->profiler?->stop( $method->getName() );
         }
+
+        $this->profiler?->stop( __METHOD__, __METHOD__ );
     }
 }
