@@ -95,9 +95,11 @@ final class ControllerEventHandler extends ControllerEventSubscriber
 
         $this->profiler?->event( __METHOD__, 'View' );
 
-        $this->responseRenderer
-            ->templateEngine
-            ->clearTemplateCache();
+        if ( $this->getSetting( 'view.template.clear_cache', false ) ) {
+            $this->responseRenderer
+                ->templateEngine
+                ->clearTemplateCache();
+        }
 
         $profileContent = $this->profiler?->event( 'Response Content', 'View' );
         $this->responseRenderer

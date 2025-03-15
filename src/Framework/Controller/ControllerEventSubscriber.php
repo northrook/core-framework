@@ -8,6 +8,7 @@ use Core\Framework\Controller;
 use Core\Framework\Controller\Attribute\Template;
 use Core\Profiler\Interface\SettableProfilerInterface;
 use Core\Profiler\SettableStopwatchProfiler;
+use Core\Symfony\DependencyInjection\SettingsAccessor;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Controller\ErrorController;
@@ -22,7 +23,9 @@ abstract class ControllerEventSubscriber implements
     SettableProfilerInterface,
     LoggerAwareInterface
 {
-    use SettableStopwatchProfiler, LoggerAwareTrait;
+    use SettingsAccessor,
+        SettableStopwatchProfiler,
+        LoggerAwareTrait;
 
     private bool $skipEvent;
 

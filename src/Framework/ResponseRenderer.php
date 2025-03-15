@@ -19,7 +19,8 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class ResponseRenderer implements LazyService, LoggerAwareInterface, SettableProfilerInterface
 {
-    use SettableStopwatchProfiler, LoggerAwareTrait;
+    use SettableStopwatchProfiler,
+        LoggerAwareTrait;
 
     protected ?string $content = null;
 

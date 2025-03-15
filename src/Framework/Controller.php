@@ -33,8 +33,6 @@ abstract class Controller implements ServiceContainerInterface, SettableProfiler
      */
     final protected function controllerResponseMethods() : void
     {
-        $this->profiler?->event( __METHOD__ );
-
         // Add invoked methods to the Request attributes
         $responseType = $this->isHtmxRequest()
                 ? OnContent::class
@@ -45,7 +43,7 @@ abstract class Controller implements ServiceContainerInterface, SettableProfiler
                 continue;
             }
 
-            $this->profiler?->event( $method->getName(), __METHOD__ );
+            $this->profiler?->event( $method->getName() );
 
             $parameters = [];
 
@@ -77,7 +75,5 @@ abstract class Controller implements ServiceContainerInterface, SettableProfiler
 
             $this->profiler?->stop( $method->getName() );
         }
-
-        $this->profiler?->stop( __METHOD__, __METHOD__ );
     }
 }
