@@ -4,7 +4,6 @@ namespace Core\Controller;
 
 use Core\Framework\Controller;
 use Core\Framework\Controller\Attribute\{OnDocument, Template};
-use Core\Symfony\DependencyInjection\SettingsAccessor;
 use Core\View\{Document, Parameters};
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -18,8 +17,6 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Template( 'security.latte' )]
 final class SecurityController extends Controller
 {
-    use SettingsAccessor;
-
     #[OnDocument]
     public function onDocument( Document $document ) : void
     {

@@ -8,31 +8,31 @@ use Core\Framework\Controller;
 use Core\Framework\Controller\Attribute\Template;
 use Core\Profiler\Interface\SettableProfilerInterface;
 use Core\Profiler\SettableStopwatchProfiler;
+use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Controller\ErrorController;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Psr\Log\LoggerInterface;
 use LogicException, BadMethodCallException;
 use ReflectionAttribute, ReflectionClass;
 use Symfony\Component\Stopwatch\Stopwatch;
 
-abstract class ControllerEventSubscriber implements EventSubscriberInterface, SettableProfilerInterface
+abstract class ControllerEventSubscriber implements
+    EventSubscriberInterface,
+    SettableProfilerInterface,
+    LoggerAwareInterface
 {
-    use SettableStopwatchProfiler;
+    use SettableStopwatchProfiler, LoggerAwareTrait;
 
     private bool $skipEvent;
-
-    protected readonly LoggerInterface $logger;
 
     protected readonly Controller $controller;
 
     protected readonly ?Template $template;
 
-    final public function setProfiler( ?Stopwatch $stopwatch ) : void
+    final public function setProfiler( ?Stopwatch $stopwatch, ?string $category = null ) : void
     {
-        $this->assignProfiler( $stopwatch );
-        $this->profiler?->event( __METHOD__ );
+        $this->assignProfiler( $stopwatch, 'Controller' );
     }
 
     /**
@@ -44,7 +44,7 @@ abstract class ControllerEventSubscriber implements EventSubscriberInterface, Se
             return $this->skipEvent;
         }
 
-        $this->logger->error(
+        $this->logger?->error(
             '{method} is only available after the {even} event.',
             [
                 'method'    => __METHOD__,
@@ -107,7 +107,8 @@ abstract class ControllerEventSubscriber implements EventSubscriberInterface, Se
             }
         }
 
-        $this->logger->alert( __METHOD__.' did not find a controller.' );
+        $this->logger?->alert( __METHOD__.' did not find a controller.', ['event' => $event] );
+
         return true;
     }
 

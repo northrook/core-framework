@@ -6,11 +6,14 @@ namespace Core\Framework\Events;
 
 use Core\Framework\Controller\ControllerEventSubscriber;
 use Core\Symfony\ToastService;
+use Core\Symfony\ToastService\{ToastMessage, ToastView};
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpKernel\Event\{FinishRequestEvent, TerminateEvent};
+use Generator;
+use Symfony\Component\HttpKernel\Event\{ResponseEvent, TerminateEvent};
 
 final class ToastMessageInjector extends ControllerEventSubscriber
 {
+    /** @var ToastMessage[] */
     protected array $messages = [];
 
     public function __construct( protected ToastService $toast ) {}
@@ -18,12 +21,12 @@ final class ToastMessageInjector extends ControllerEventSubscriber
     public static function getSubscribedEvents() : array
     {
         return [
-            KernelEvents::FINISH_REQUEST => 'parseSessionBag',
-            KernelEvents::TERMINATE      => ['renderToastMessages', 24],
+            KernelEvents::RESPONSE  => ['parseSessionBag', -64],
+            KernelEvents::TERMINATE => ['renderToastMessages', 24],
         ];
     }
 
-    public function parseSessionBag( FinishRequestEvent $event ) : void
+    public function parseSessionBag( ResponseEvent $event ) : void
     {
         if ( $this->skipEvent() || ! $this->toast->hasMessages() ) {
             return;
@@ -36,8 +39,18 @@ final class ToastMessageInjector extends ControllerEventSubscriber
 
     public function renderToastMessages( TerminateEvent $event ) : void
     {
+        foreach ( $this->printMessages() as $message ) {
+            echo $message;
+        }
+    }
+
+    /**
+     * @return Generator<ToastView>
+     */
+    private function printMessages() : Generator
+    {
         foreach ( $this->messages as $message ) {
-            echo $message->getView();
+            yield $message->getView();
         }
     }
 }

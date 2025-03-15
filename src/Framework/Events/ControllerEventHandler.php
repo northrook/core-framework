@@ -9,17 +9,13 @@ use Symfony\Component\HttpKernel\Event\{ControllerArgumentsEvent, ResponseEvent,
 use Core\Framework\ResponseRenderer;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Psr\Log\LoggerInterface;
 use Stringable;
 use ReflectionClass;
 use ReflectionException;
 
 final class ControllerEventHandler extends ControllerEventSubscriber
 {
-    public function __construct(
-        protected readonly ResponseRenderer $responseRenderer,
-        protected readonly LoggerInterface  $logger,
-    ) {}
+    public function __construct( protected readonly ResponseRenderer $responseRenderer ) {}
 
     public static function getSubscribedEvents() : array
     {
@@ -27,8 +23,6 @@ final class ControllerEventHandler extends ControllerEventSubscriber
             KernelEvents::CONTROLLER_ARGUMENTS => 'handleControllerMethods',
             KernelEvents::VIEW                 => 'onKernelView',
             KernelEvents::RESPONSE             => ['onKernelResponse', 32],
-            // KernelEvents::EXCEPTION => 'onKernelException',
-            // KernelEvents::TERMINATE => 'onKernelTerminate',
         ];
     }
 
@@ -49,7 +43,7 @@ final class ControllerEventHandler extends ControllerEventSubscriber
                 ->invoke( $this->controller );
         }
         catch ( ReflectionException $exception ) {
-            $this->logger->error( $exception->getMessage(), ['exception' => $exception] );
+            $this->logger?->error( $exception->getMessage(), ['exception' => $exception] );
         }
     }
 
@@ -74,7 +68,7 @@ final class ControllerEventHandler extends ControllerEventSubscriber
         }
 
         if ( ! ( \is_string( $content ) || \is_null( $content ) ) ) {
-            $this->logger->error(
+            $this->logger?->error(
                 message : 'Controller {controller} return value is {type}; {required}, {provided} provided as fallback.',
                 context : [
                     'controller' => $this->controller,
@@ -99,22 +93,26 @@ final class ControllerEventHandler extends ControllerEventSubscriber
             return;
         }
 
-        $this->profiler?->event( __METHOD__ );
+        $this->profiler?->event( __METHOD__, 'View' );
 
         $this->responseRenderer
             ->templateEngine
             ->clearTemplateCache();
 
+        $profileContent = $this->profiler?->event( 'Response Content', 'View' );
         $this->responseRenderer
             ->setResponseContent(
                 $event,
                 $this->template,
             );
+        $profileContent?->stop();
 
+        $profileRender = $this->profiler?->event( 'Render Response', 'View' );
         $event->setResponse(
             $this->responseRenderer->getResponse(),
         );
+        $profileRender?->stop();
 
-        $this->profiler?->stop( __METHOD__ );
+        $this->profiler?->stop( category : 'View' );
     }
 }

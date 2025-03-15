@@ -8,26 +8,36 @@ use Core\AssetManager;
 use Core\AssetManager\Interface\MinifiedAssetInterface;
 use Core\Framework\Controller\Attribute\Template;
 use Core\View\{ComponentFactory, Document, DocumentEngine, TemplateEngine};
+use Core\Interface\LazyService;
+use Core\Profiler\Interface\SettableProfilerInterface;
+use Core\Profiler\SettableStopwatchProfiler;
 use Core\Symfony\ToastService;
-use Psr\Log\LoggerInterface;
+use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\Stopwatch\Stopwatch;
 
-class ResponseRenderer
+class ResponseRenderer implements LazyService, LoggerAwareInterface, SettableProfilerInterface
 {
+    use SettableStopwatchProfiler, LoggerAwareTrait;
+
     protected ?string $content = null;
 
     public bool $clearTemplateCache = true;
 
     public function __construct(
-        public readonly DocumentEngine     $documentEngine,
-        public readonly TemplateEngine     $templateEngine,
-        public readonly ComponentFactory   $componentFactory,
-        public readonly AssetManager       $assetManager,
-        protected readonly Document        $document,
-        protected readonly ToastService    $toastService,
-        protected readonly LoggerInterface $logger,
+        public readonly DocumentEngine   $documentEngine,
+        public readonly TemplateEngine   $templateEngine,
+        public readonly ComponentFactory $componentFactory,
+        public readonly AssetManager     $assetManager,
+        protected readonly Document      $document,
+        protected readonly ToastService  $toastService,
     ) {}
+
+    final public function setProfiler( ?Stopwatch $stopwatch, ?string $category = null ) : void
+    {
+        $this->assignProfiler( $stopwatch, 'View' );
+    }
 
     final public function setResponseContent( ResponseEvent $event, ?Template $template = null ) : self
     {
@@ -47,7 +57,7 @@ class ResponseRenderer
         }
 
         if ( ! $this->content && ! $template ) {
-            $this->logger->error(
+            $this->logger?->error(
                 '{route} expected a Template, but none was provided.',
                 ['route' => $event->getRequest()->getRequestUri(), 'event' => $event],
             );
@@ -59,7 +69,7 @@ class ResponseRenderer
         $view = $contentOnly ? $template?->content : $template?->document;
 
         if ( ! $this->content && ! $view ) {
-            $this->logger->error(
+            $this->logger?->error(
                 '{route} expected a Template, an object was provided, but no templates were set.',
                 [
                     'route'    => $event->getRequest()->getRequestUri(),
@@ -92,18 +102,20 @@ class ResponseRenderer
     final protected function handleEnqueuedAssets() : void
     {
         foreach ( $this->document->assets->getEnqueuedAssets() as $assetKey ) {
-            if ( $asset = $this->assetManager->getAsset( $assetKey ) ) {
-                $html = $asset->getHtml();
+            $this->profiler?->event( $assetKey, 'Asset' );
+            $asset = $this->assetManager->getAsset( $assetKey );
 
-                if ( $asset instanceof MinifiedAssetInterface
-                     && $asset->getMinifier()->usedCache() === false
-                ) {
-                    $message = "The {$assetKey} was updated.";
-                    $this->toastService->addMessage( 'info', $message );
-                }
+            $html = $asset->getHtml();
 
-                $this->document->head->injectHtml( $html, $assetKey );
+            if ( $asset instanceof MinifiedAssetInterface
+                 && $asset->getMinifier()->usedCache() === false
+            ) {
+                $message = "The {$assetKey} was updated.";
+                $this->toastService->addMessage( 'info', $message );
             }
+
+            $this->document->head->injectHtml( $html, $assetKey );
+            $this->profiler?->stop( $assetKey );
         }
     }
 }
