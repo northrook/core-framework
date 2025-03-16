@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Core\Controller;
 
-use Symfony\Component\HttpFoundation\{BinaryFileResponse, RedirectResponse, Request};
+use Symfony\Component\HttpFoundation\{BinaryFileResponse, Request};
 use Core\Asset\ImageAsset;
-use Core\{AssetManager, Pathfinder};
+use Core\{AssetManager, Framework\Exception\HttpNotFoundException, Pathfinder};
 use Core\Framework\Route;
 use Core\Symfony\Toast;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Support\Image;
 use Throwable;
 
 #[Route(
@@ -19,45 +19,48 @@ use Throwable;
 )]
 final class AssetController
 {
-    // Listen for all /assets/any .. report 404
-    // report/log internally - periodically re-validate using CRON
-    //
     #[Route( '/assets/{path}', 'fallback', requirements : ['path' => '.+'] )]
     public function index(
         Request      $request,
         Toast        $toast,
         AssetManager $assetManager,
         Pathfinder   $pathfinder,
-    ) : RedirectResponse {
+    ) : BinaryFileResponse {
         $path = $request->getRequestUri();
 
         try {
             $image = $assetManager->getAsset( $path );
-
             \assert( $image instanceof ImageAsset );
-
-            $toast->notice( 'Generated asset:', $image->name );
         }
         catch ( Throwable $exception ) {
-            throw new NotFoundHttpException(
-                $exception->getMessage(),
-                $exception,
+            throw new HttpNotFoundException(
+                message     : "Unable to locate or generate asset: '{$path}'.",
+                description : $exception->getMessage(),
+                previous    : $exception,
             );
         }
 
-        if ( ! \str_contains( $path, '~' ) ) {
-            $path = $image->getSourceUrl();
+        $toast->notice( 'Generated asset:', $image->name );
+
+        $filePath = $image->generateImage( $path );
+
+        if ( ! \file_exists( $filePath ) ) {
+            throw new HttpNotFoundException(
+                'Unable to locate or generate asset: '.$path,
+                "The file '{$filePath}' does not exist.",
+            );
         }
 
-        $sourceUrl = $pathfinder->get( "dir.public/{$path}" );
-
-        if ( \file_exists( $sourceUrl ) ) {
-            return new RedirectResponse( $path );
-        }
-
-        throw new NotFoundHttpException(
-            'Unable to locate or generate asset: '.$path,
+        $response = new BinaryFileResponse(
+            file               : $filePath,
+            status             : 200,
+            headers            : [
+                'Content-Type' => Image::mimeType( $filePath ),
+            ],
+            contentDisposition : 'inline',
         );
+
+        return $response;
     }
 
     #[Route( '/favicon.ico', 'favicon' )]

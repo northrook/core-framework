@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Core\Framework\Controller;
 
 use Core\Framework\Controller;
+use Core\Framework\Exception\HttpNotFoundException;
 use Core\Symfony\DependencyInjection\ServiceContainer;
 use Core\Symfony\Interface\ServiceContainerInterface;
 use Symfony\Component\Finder\SplFileInfo;
@@ -16,12 +17,11 @@ use Symfony\Component\HttpFoundation\{BinaryFileResponse,
     Response,
     ResponseHeaderBag
 };
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-use Throwable, Exception;
+use Exception;
 use function Support\class_name;
 
 /**
@@ -91,35 +91,8 @@ trait ResponseMethods
             );
         }
         catch ( Exception $exception ) {
-            throw $this->notFoundException( previous : $exception );
+            throw new HttpNotFoundException( previous : $exception );
         }
-    }
-
-    /**
-     * Returns a RedirectResponse to the given URL.
-     *
-     * @param non-empty-string $url
-     * @param int              $status [302] The HTTP status code
-     *
-     * @return RedirectResponse
-     */
-    protected function redirectResponse(
-        string $url,
-        int    $status = 302,
-    ) : RedirectResponse {
-        // TODO: [route] to URL
-        // TODO: Validate $url->exists - update $status
-        // TODO: Log failing redirects
-
-        // if ( \is_string( $url ) ) {
-        //     $url = new FileI( $url );
-        // }
-
-        // if ( ! $url->exists() ) {
-        //     throw $this->notFoundException();
-        // }
-
-        return new RedirectResponse( $url, $status );
     }
 
     /**
@@ -133,11 +106,11 @@ trait ResponseMethods
      */
     protected function redirectToRoute( string $route, array $parameters = [], int $status = 302 ) : RedirectResponse
     {
-        // TODO : Log redirects
+        // TODO : [md] Log redirects
 
         $url = $this->serviceLocator( RouterInterface::class )->generate( $route, $parameters );
 
-        return $this->redirectResponse( $url, $status );
+        return new RedirectResponse( $url, $status );
     }
 
     /**
@@ -162,7 +135,7 @@ trait ResponseMethods
         array                          $context = [],
         SerializerInterface|null|false $serializer = null,
     ) : JsonResponse {
-        if ( false !== $serializer ) {
+        if ( $serializer !== false ) {
             $serializer ??= $this->serviceLocator( SerializerInterface::class );
             $context = \array_merge( ['json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS], $context );
             $json    = $serializer->serialize( $data, 'json', $context );
@@ -192,25 +165,6 @@ trait ResponseMethods
         $fileName ??= $response->getFile()->getFilename();
 
         return $response->setContentDisposition( $disposition, $fileName );
-    }
-
-    /**
-     * Returns a NotFoundHttpException.
-     *
-     * This will result in a 404 response code. Usage example:
-     *
-     *     throw $this->createNotFoundException('Page not found!');
-     *
-     * @param string     $message
-     * @param ?Throwable $previous
-     *
-     * @return NotFoundHttpException
-     */
-    final protected function notFoundException(
-        string     $message = 'Not Found',
-        ?Throwable $previous = null,
-    ) : NotFoundHttpException {
-        return new NotFoundHttpException( $message, $previous );
     }
 
     private function urlGenerator() : UrlGeneratorInterface

@@ -3,6 +3,7 @@
 namespace Core\Controller;
 
 use Core\Framework\Controller;
+use Core\Framework\Exception\HttpNotFoundException;
 use Core\Framework\Controller\Attribute\{OnDocument, Template};
 use Core\View\{Document, Parameters};
 use Symfony\Component\HttpFoundation\Response;
@@ -60,7 +61,9 @@ final class SecurityController extends Controller
         if ( ! $this->settings( 'auth.onboarding' ) ) {
             // Do this earlier, but only allow onboarding when enabled
             // First boot / no users registered defaults to auth.onboarding = true
-            throw $this->notFoundException();
+            throw new HttpNotFoundException(
+                'Onboarding is disabled. Please contact your administrator.',
+            );
         }
         $document( 'Login' );
     }
