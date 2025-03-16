@@ -27,15 +27,14 @@
     "symfony/profiler-pack": "@stable",
     "symfony/debug-bundle": "@stable",
     "symfony/serializer": "^7.2",
+    "northrook/design-system": "dev-main",
+    "northrook/asset-manager": "dev-main",
     "northrook/view": "dev-main",
     "northrook/view-element": "dev-main",
     "northrook/view-document": "dev-main",
     "northrook/view-icons": "dev-main",
-    "northrook/design-system": "dev-main",
     "northrook/view-components": "dev-main",
-    "northrook/asset-manager": "dev-main",
-    "northrook/toast-bundle": "dev-main",
-    "northrook/view-image": "dev-main"
+    "northrook/toast-bundle": "dev-main"
   },
   "require-dev": {
     "northrook/dev": "dev-main"

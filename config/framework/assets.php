@@ -64,7 +64,6 @@ return static function( ContainerConfigurator $container ) : void {
                 service( RegisterAssetServices::ID ),
                 service( AssetManifest::class ),
                 service( 'cache.asset_pool' ),
-                service( 'logger' )->nullOnInvalid(),
             ],
         )
         ->autowire()

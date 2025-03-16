@@ -9,18 +9,17 @@ use Core\AssetManager\Interface\MinifiedAssetInterface;
 use Core\Framework\Controller\Attribute\Template;
 use Core\View\{ComponentFactory, Document, DocumentEngine, TemplateEngine};
 use Core\Interface\LazyService;
-use Core\Profiler\Interface\SettableProfilerInterface;
-use Core\Profiler\SettableStopwatchProfiler;
+use Core\Profiler\{ProfilerTrait};
+use Core\Profiler\Interface\{Profilable};
 use Core\Symfony\ToastService;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\Stopwatch\Stopwatch;
 
-class ResponseRenderer implements LazyService, LoggerAwareInterface, SettableProfilerInterface
+class ResponseRenderer implements LazyService, Profilable, LoggerAwareInterface
 {
-    use SettableStopwatchProfiler,
-        LoggerAwareTrait;
+    use ProfilerTrait, LoggerAwareTrait;
 
     protected ?string $content = null;
 

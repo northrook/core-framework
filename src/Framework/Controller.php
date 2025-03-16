@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Core\Framework;
 
+use Core\Profiler\Interface\Profilable;
+use Core\Profiler\ProfilerTrait;
 use Symfony\Component\HttpFoundation\Response;
 use Core\Framework\Controller\ResponseMethods;
 use Core\Framework\Controller\Attribute\{OnContent, OnDocument};
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
-use Core\Profiler\SettableStopwatchProfiler;
-use Core\Profiler\Interface\SettableProfilerInterface;
 use Core\Symfony\DependencyInjection\{ServiceContainer, SettingsAccessor};
 use Core\Symfony\Interface\ServiceContainerInterface;
 use Exception, RuntimeException, ReflectionClass, ReflectionException;
 
-abstract class Controller implements ServiceContainerInterface, SettableProfilerInterface, LoggerAwareInterface
+abstract class Controller implements ServiceContainerInterface, Profilable, LoggerAwareInterface
 {
     use ServiceContainer,
         SettingsAccessor,
-        SettableStopwatchProfiler,
+        ProfilerTrait,
         ResponseMethods,
         LoggerAwareTrait;
 

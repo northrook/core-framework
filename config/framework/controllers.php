@@ -14,12 +14,7 @@ use Core\Controller\{AssetController, PublicController, SecurityController};
 return static function( ContainerConfigurator $container ) : void {
     $container->services()
         ->set( ControllerEventHandler::class )
-        ->args(
-            [
-                service( ResponseRenderer::class ),
-                service( 'logger' ),
-            ],
-        )
+        ->args( [service( ResponseRenderer::class )] )
         ->tag( 'kernel.event_subscriber' )
         ->tag( 'monolog.logger', ['channel' => 'request'] );
 

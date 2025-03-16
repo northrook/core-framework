@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Core\Controller;
 
-use Symfony\Component\HttpFoundation\{BinaryFileResponse, Request};
+use Symfony\Component\HttpFoundation\{BinaryFileResponse, RedirectResponse, Request};
 use Core\Asset\ImageAsset;
-use Core\AssetManager;
+use Core\{AssetManager, Pathfinder};
 use Core\Framework\Route;
 use Core\Symfony\Toast;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -27,7 +27,8 @@ final class AssetController
         Request      $request,
         Toast        $toast,
         AssetManager $assetManager,
-    ) : void {
+        Pathfinder   $pathfinder,
+    ) : RedirectResponse {
         $path = $request->getRequestUri();
 
         try {
@@ -43,6 +44,20 @@ final class AssetController
                 $exception,
             );
         }
+
+        if ( ! \str_contains( $path, '~' ) ) {
+            $path = $image->getSourceUrl();
+        }
+
+        $sourceUrl = $pathfinder->get( "dir.public/{$path}" );
+
+        if ( \file_exists( $sourceUrl ) ) {
+            return new RedirectResponse( $path );
+        }
+
+        throw new NotFoundHttpException(
+            'Unable to locate or generate asset: '.$path,
+        );
     }
 
     #[Route( '/favicon.ico', 'favicon' )]

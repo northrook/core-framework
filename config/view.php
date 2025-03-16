@@ -42,7 +42,6 @@ return static function( ContainerConfigurator $container ) : void {
                 service( AssetManager::class ),
                 service( Document::class ),
                 service( ToastService::class ),
-                service( 'logger' ),
             ],
         )
         ->tag( 'monolog.logger', ['channel' => 'view'] )
@@ -64,7 +63,6 @@ return static function( ContainerConfigurator $container ) : void {
                 '$locator'    => service( 'view.component_locator' ),
                 '$components' => abstract_arg( ComponentBag::class ),
                 '$tags'       => abstract_arg( 'ComponentProperties::tagged' ),
-                '$logger'     => service( 'logger' )->nullOnInvalid(),
             ],
         )
         ->private(); // ->lazy()
@@ -87,7 +85,6 @@ return static function( ContainerConfigurator $container ) : void {
                 param( 'dir.cache.view' ),
                 service( Parameters::class ),
                 service( Pathfinder::class ),
-                service( 'logger' ),
                 [
                     param( 'dir.templates' ),
                     param( 'dir.core.templates' ),
