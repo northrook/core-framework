@@ -25,6 +25,8 @@ abstract class ControllerAwareEvent implements
         ProfilerTrait,
         LoggerAwareTrait;
 
+    protected const string CATEGORY = 'Controller';
+
     private bool $skipEvent;
 
     protected readonly Controller $controller;
@@ -33,7 +35,7 @@ abstract class ControllerAwareEvent implements
 
     final public function setProfiler( ?Stopwatch $stopwatch, ?string $category = null ) : void
     {
-        $this->assignProfiler( $stopwatch, 'Controller' );
+        $this->assignProfiler( $stopwatch, $this::CATEGORY );
     }
 
     /**

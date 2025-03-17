@@ -10,6 +10,8 @@ use Core\Framework\ResponseRenderer;
 
 final class ControllerEventHandler extends ControllerAwareEvent
 {
+    protected const string CATEGORY = 'Response';
+
     public function __construct( protected readonly ResponseRenderer $responseRenderer ) {}
 
     public function __invoke( ResponseEvent $event ) : void
@@ -18,7 +20,7 @@ final class ControllerEventHandler extends ControllerAwareEvent
             return;
         }
 
-        $this->profiler?->event( __METHOD__, 'View' );
+        $this->profiler?->event( $this::class );
 
         if ( $this->getSetting( 'view.template.clear_cache', false ) ) {
             $this->responseRenderer
@@ -26,7 +28,7 @@ final class ControllerEventHandler extends ControllerAwareEvent
                 ->clearTemplateCache();
         }
 
-        $profileContent = $this->profiler?->event( 'Response Content', 'View' );
+        $profileContent = $this->profiler?->event( 'Response Content' );
         $this->responseRenderer
             ->setResponseContent(
                 $event,
@@ -34,12 +36,12 @@ final class ControllerEventHandler extends ControllerAwareEvent
             );
         $profileContent?->stop();
 
-        $profileRender = $this->profiler?->event( 'Render Response', 'View' );
+        $profileRender = $this->profiler?->event( 'Render Response' );
         $event->setResponse(
             $this->responseRenderer->getResponse(),
         );
         $profileRender?->stop();
 
-        $this->profiler?->stop( category : 'View' );
+        $this->profiler?->stop( $this::class );
     }
 }

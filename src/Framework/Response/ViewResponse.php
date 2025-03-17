@@ -12,6 +12,12 @@ class ViewResponse extends Response
 {
     protected ?string $charset = 'UTF-8';
 
+    /**
+     * @param View                             $view
+     * @param null|false|string|Stringable     $content
+     * @param int                              $status
+     * @param array<string, list<null|string>> $headers
+     */
     public function __construct(
         public readonly View         $view,
         null|false|string|Stringable $content = '',

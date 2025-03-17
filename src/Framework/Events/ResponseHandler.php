@@ -14,6 +14,8 @@ use Stringable;
 
 final class ResponseHandler extends ControllerAwareEvent implements EventSubscriberInterface
 {
+    protected const string CATEGORY = 'Response';
+
     public static function getSubscribedEvents() : array
     {
         return [
@@ -71,12 +73,10 @@ final class ResponseHandler extends ControllerAwareEvent implements EventSubscri
         }
 
         $this->profiler?->stop( __METHOD__ );
-        dump( $event );
     }
 
     public function onKernelResponse( ResponseEvent $event ) : void
     {
-        $this->profiler?->event( __METHOD__ );
         if ( $this->skipEvent() ) {
             return;
         }
@@ -84,6 +84,8 @@ final class ResponseHandler extends ControllerAwareEvent implements EventSubscri
         if ( $event->getResponse() instanceof ViewResponse ) {
             return;
         }
+
+        $this->profiler?->event( __METHOD__ );
 
         $_response_view = $event->getRequest()->attributes->get( '_response' );
 
@@ -102,6 +104,5 @@ final class ResponseHandler extends ControllerAwareEvent implements EventSubscri
         }
 
         $this->profiler?->stop( __METHOD__ );
-        dump( $event );
     }
 }
