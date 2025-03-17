@@ -9,8 +9,20 @@ use ReflectionClass;
 use ReflectionException;
 use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
 
+/**
+ * {@see ControllerArgumentsEvent}
+ *
+ * Calls {@see Controller} methods annotated with {@see OnContent::class} or {@see OnDocument::class}.
+ *
+ * @internal
+ *
+ * @author Martin Nielsen <mn@northrook.com>
+ */
 final class ControllerActionInvoker extends ControllerAwareEvent
 {
+    /**
+     * @param ControllerArgumentsEvent $event
+     */
     public function __invoke( ControllerArgumentsEvent $event ) : void
     {
         if ( $this->skipEvent() ) {

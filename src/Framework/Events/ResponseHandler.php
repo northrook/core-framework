@@ -20,32 +20,10 @@ final class ResponseHandler extends ControllerAwareEvent implements EventSubscri
     public static function getSubscribedEvents() : array
     {
         return [
-            // KernelEvents::CONTROLLER_ARGUMENTS => 'handleControllerMethods',
             KernelEvents::VIEW     => ['onKernelView', 32],
             KernelEvents::RESPONSE => ['onKernelResponse', 32],
         ];
     }
-
-    // /**
-    //  * Call {@see Controller} methods annotated with {@see OnContent::class} or {@see OnDocument::class}.
-    //  *
-    //  * @param ControllerArgumentsEvent $event
-    //  */
-    // public function handleControllerMethods( ControllerArgumentsEvent $event ) : void
-    // {
-    //     if ( $this->skipEvent() ) {
-    //         return;
-    //     }
-    //
-    //     try {
-    //         ( new ReflectionClass( $this->controller ) )
-    //             ->getMethod( 'controllerResponseMethods' )
-    //             ->invoke( $this->controller );
-    //     }
-    //     catch ( ReflectionException $exception ) {
-    //         $this->logger?->error( $exception->getMessage(), ['exception' => $exception] );
-    //     }
-    // }
 
     /**
      * Generate and set an appropriate {@see Response}.

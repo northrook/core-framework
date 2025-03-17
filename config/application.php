@@ -16,6 +16,7 @@ use Core\Framework\Events\{ControllerActionInvoker,
     ResponseHandler,
     ToastMessageInjector
 };
+use Symfony\Component\HttpKernel\Event\{ControllerArgumentsEvent, RequestEvent, ResponseEvent, ViewEvent};
 
 return static function( ContainerConfigurator $container ) : void {
     $subscriber = $container->services()
@@ -26,15 +27,26 @@ return static function( ContainerConfigurator $container ) : void {
         ->defaults()
         ->tag( 'kernel.event_listener' );
 
-    $listener->set( ControllerActionInvoker::class );
-
+    /**
+     * {@see RequestEvent}.
+     */
     $listener->set( RequestAttributeHandler::class );
 
-    $subscriber->set( ControllerEventHandler::class )
-        ->args( [service( ResponseRenderer::class )] )
-        ->tag( 'monolog.logger', ['channel' => 'request'] );
+    /**
+     * {@see ControllerArgumentsEvent}.
+     */
+    $listener->set( ControllerActionInvoker::class );
 
+    /**
+     * Prepares content for {@see ViewEvent} and {@see ResponseEvent}.
+     */
     $subscriber->set( ResponseHandler::class );
+
+    /**
+     * {@see ResponseEvent}
+     */
+    $listener->set( ControllerEventHandler::class )
+        ->args( [service( ResponseRenderer::class )] );
 
     $subscriber->set( ToastMessageInjector::class )
         ->args( [service( ToastService::class )] );

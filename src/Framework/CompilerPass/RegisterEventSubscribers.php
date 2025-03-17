@@ -25,7 +25,7 @@ final class RegisterEventSubscribers extends CompilerPass
     {
         $dispatcher = $this->container->findDefinition( 'event_dispatcher' );
 
-        foreach ( $this->container->findTaggedServiceIds( 'kernel.event_subscriber' ) as $id => $tags ) {
+        foreach ( $this->taggedServiceIds( 'kernel.event_subscriber', 'kernel.event_listener' ) as $id ) {
             $definition = $this->container->getDefinition( $id );
 
             $class = $definition->getClass() ?? throw new InvalidArgumentException(

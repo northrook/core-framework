@@ -4,18 +4,20 @@ declare(strict_types=1);
 
 namespace Core\Framework\Events;
 
-use Core\Framework\Controller\ControllerAwareEvent;
 use Core\Framework\Response\{DocumentResponse, ViewResponse};
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
-final class RequestAttributeHandler extends ControllerAwareEvent
+/**
+ * @see RequestEvent
+ *
+ * @internal
+ *
+ * @author Martin Nielsen <mn@northrook.com>
+ */
+final class RequestAttributeHandler
 {
     public function __invoke( RequestEvent $event ) : void
     {
-        if ( $this->skipEvent() ) {
-            return;
-        }
-
         $htmx      = $event->getRequest()->headers->has( 'hx-request' );
         $_path     = $event->getRequest()->getRequestUri();
         $_response = $htmx ? ViewResponse::class : DocumentResponse::class;
