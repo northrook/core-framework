@@ -6,7 +6,7 @@ namespace Core\Framework;
 
 use Core\Profiler\Interface\Profilable;
 use Core\Profiler\ProfilerTrait;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\{Request, Response};
 use Core\Framework\Controller\ResponseMethods;
 use Core\Framework\Controller\Attribute\{OnContent, OnDocument};
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
@@ -22,9 +22,15 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
         ResponseMethods,
         LoggerAwareTrait;
 
+    protected Request $request;
+
+    final public function setCurrentRequest( Request $request ) : void
+    {
+        $this->request = $request;
+    }
+
     final protected function response( ?string $content = null ) : Response
     {
-        $this->controllerResponseMethods();
         return new Response( $content );
     }
 
@@ -37,6 +43,8 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
         $responseType = $this->isHtmxRequest()
                 ? OnContent::class
                 : OnDocument::class;
+
+        $calledMethods = [];
 
         foreach ( ( new ReflectionClass( $this ) )->getMethods() as $method ) {
             if ( ! $method->getAttributes( $responseType ) ) {
@@ -65,6 +73,8 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
                 }
             }
 
+            $calledMethods[$method->getName()] = $parameters;
+
             // Inject requested services
             try {
                 $method->invoke( $this, ...$parameters );
@@ -75,5 +85,7 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
 
             $this->profiler?->stop( $method->getName() );
         }
+
+        $this->request->attributes->set( '_controller_methods', $calledMethods );
     }
 }

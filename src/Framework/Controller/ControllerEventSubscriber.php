@@ -106,6 +106,7 @@ abstract class ControllerEventSubscriber implements
 
             if ( $object instanceof Controller ) {
                 $this->controller = $object;
+                $this->controller->setCurrentRequest( $event->getRequest() );
                 return false;
             }
         }
