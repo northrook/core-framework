@@ -22,13 +22,15 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
 {
     protected const string CATEGORY = 'Controller';
 
-    use ServiceContainer,
+    use ResponseMethods,
+        ServiceContainer,
         SettingsAccessor,
         StopwatchProfiler,
-        ResponseMethods,
         LoggerAwareTrait;
 
     protected Request $request;
+
+    final public function setRequiredServices() : void {}
 
     final public function setProfiler( ?Stopwatch $stopwatch, ?string $category = null ) : void
     {
@@ -86,7 +88,7 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
         }
 
         // Add invoked methods to the Request attributes
-        $responseType = $this->isHtmxRequest()
+        $responseType = $this->request->attributes->get( 'htmx', false )
                 ? OnContent::class
                 : OnDocument::class;
 
