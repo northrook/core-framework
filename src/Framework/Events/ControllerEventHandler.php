@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace Core\Framework\Events;
 
-use Core\Framework\Controller\ControllerEventSubscriber;
+use Core\Framework\Controller\ControllerAwareEvent;
 use Symfony\Component\HttpKernel\Event\{ControllerArgumentsEvent, ResponseEvent, ViewEvent};
 use Core\Framework\ResponseRenderer;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Stringable;
 use ReflectionClass;
 use ReflectionException;
 
-final class ControllerEventHandler extends ControllerEventSubscriber
+final class ControllerEventHandler extends ControllerAwareEvent implements EventSubscriberInterface
 {
     public function __construct( protected readonly ResponseRenderer $responseRenderer ) {}
 

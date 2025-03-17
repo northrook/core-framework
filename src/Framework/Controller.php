@@ -39,6 +39,10 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
      */
     final protected function controllerResponseMethods() : void
     {
+        if ( $this->request->attributes->has( '_controller_actions' ) ) {
+            return;
+        }
+
         // Add invoked methods to the Request attributes
         $responseType = $this->isHtmxRequest()
                 ? OnContent::class
@@ -51,7 +55,9 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
                 continue;
             }
 
-            $this->profiler?->event( $method->getName() );
+            $action = $method->getName();
+
+            $this->profiler?->event( $action );
 
             $parameters = [];
 
@@ -62,7 +68,10 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
                 \assert( \is_string( $injectableClass ) );
 
                 try {
-                    $parameters[] = $this->serviceLocator->get( $injectableClass );
+                    $argument = $this->serviceLocator->get( $injectableClass );
+                    \assert( \is_object( $argument ) );
+                    $calledMethods[$action][] = $argument::class;
+                    $parameters[]             = $argument;
                 }
                 catch ( Exception $exception ) {
                     if ( ! $this->logger ) {
@@ -73,8 +82,6 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
                 }
             }
 
-            $calledMethods[$method->getName()] = $parameters;
-
             // Inject requested services
             try {
                 $method->invoke( $this, ...$parameters );
@@ -83,9 +90,9 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
                 $this->logger?->error( $exception->getMessage(), ['exception' => $exception] );
             }
 
-            $this->profiler?->stop( $method->getName() );
+            $this->profiler?->stop( $action );
         }
 
-        $this->request->attributes->set( '_controller_methods', $calledMethods );
+        $this->request->attributes->set( '_controller_actions', $calledMethods );
     }
 }

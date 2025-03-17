@@ -10,7 +10,6 @@ use Core\Profiler\Interface\Profilable;
 use Core\Profiler\ProfilerTrait;
 use Core\Symfony\DependencyInjection\SettingsAccessor;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Controller\ErrorController;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -18,8 +17,7 @@ use LogicException, BadMethodCallException;
 use ReflectionAttribute, ReflectionClass;
 use Symfony\Component\Stopwatch\Stopwatch;
 
-abstract class ControllerEventSubscriber implements
-    EventSubscriberInterface,
+abstract class ControllerAwareEvent implements
     Profilable,
     LoggerAwareInterface
 {

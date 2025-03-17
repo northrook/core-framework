@@ -6,7 +6,7 @@ namespace Core\Framework\CompilerPass;
 
 use Core\Symfony\DependencyInjection\CompilerPass;
 use Symfony\Component\DependencyInjection\{ContainerBuilder, Reference};
-use Core\Framework\Controller\ControllerEventSubscriber;
+use Core\Framework\Controller\ControllerAwareEvent;
 use InvalidArgumentException;
 
 /**
@@ -36,7 +36,7 @@ final class RegisterEventSubscribers extends CompilerPass
                 $this->console->error( __METHOD__." {$id} {$class} does not exist" );
             }
 
-            if ( \is_subclass_of( $class, ControllerEventSubscriber::class ) ) {
+            if ( \is_subclass_of( $class, ControllerAwareEvent::class ) ) {
                 $dispatcher->addMethodCall(
                     'addListener',
                     [

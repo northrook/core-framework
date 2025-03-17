@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Core\Framework\Events;
 
-use Core\Framework\Controller\ControllerEventSubscriber;
+use Core\Framework\Controller\ControllerAwareEvent;
 use Core\Symfony\ToastService;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Core\Symfony\ToastService\{ToastMessage, ToastView};
 use Symfony\Component\HttpKernel\KernelEvents;
 use Generator;
 use Symfony\Component\HttpKernel\Event\{ResponseEvent, TerminateEvent};
 
-final class ToastMessageInjector extends ControllerEventSubscriber
+final class ToastMessageInjector extends ControllerAwareEvent implements EventSubscriberInterface
 {
     /** @var ToastMessage[] */
     protected array $messages = [];

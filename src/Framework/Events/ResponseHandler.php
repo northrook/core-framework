@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Core\Framework\Events;
 
-use Core\Framework\Controller\ControllerEventSubscriber;
+use Core\Framework\Controller\ControllerAwareEvent;
 use Symfony\Component\HttpKernel\Event\{ControllerArgumentsEvent, ResponseEvent, ViewEvent};
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelEvents;
 use ReflectionClass;
 use ReflectionException;
 use Stringable;
 
-final class ResponseHandler extends ControllerEventSubscriber
+final class ResponseHandler extends ControllerAwareEvent implements EventSubscriberInterface
 {
     public function __construct() {}
 
@@ -25,28 +26,26 @@ final class ResponseHandler extends ControllerEventSubscriber
         ];
     }
 
-    /**
-     * Call {@see Controller} methods annotated with {@see OnContent::class} or {@see OnDocument::class}.
-     *
-     * @param ControllerArgumentsEvent $event
-     */
-    public function handleControllerMethods( ControllerArgumentsEvent $event ) : void
-    {
-        if ( $this->skipEvent()
-             || $event->getRequest()->attributes->has( '_controller_methods' )
-        ) {
-            return;
-        }
-
-        try {
-            ( new ReflectionClass( $this->controller ) )
-                ->getMethod( 'controllerResponseMethods' )
-                ->invoke( $this->controller );
-        }
-        catch ( ReflectionException $exception ) {
-            $this->logger?->error( $exception->getMessage(), ['exception' => $exception] );
-        }
-    }
+    // /**
+    //  * Call {@see Controller} methods annotated with {@see OnContent::class} or {@see OnDocument::class}.
+    //  *
+    //  * @param ControllerArgumentsEvent $event
+    //  */
+    // public function handleControllerMethods( ControllerArgumentsEvent $event ) : void
+    // {
+    //     if ( $this->skipEvent() ) {
+    //         return;
+    //     }
+    //
+    //     try {
+    //         ( new ReflectionClass( $this->controller ) )
+    //             ->getMethod( 'controllerResponseMethods' )
+    //             ->invoke( $this->controller );
+    //     }
+    //     catch ( ReflectionException $exception ) {
+    //         $this->logger?->error( $exception->getMessage(), ['exception' => $exception] );
+    //     }
+    // }
 
     /**
      * Generate and set an appropriate {@see Response}.

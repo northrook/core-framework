@@ -8,20 +8,34 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Core\Framework\ResponseRenderer;
 use Core\Symfony\ToastService;
-use Core\Framework\Events\{RequestAttributeHandler, ResponseHandler, ToastMessageInjector};
+use Core\Framework\Events\{ControllerActionInvoker,
+    ControllerEventHandler,
+    RequestAttributeHandler,
+    ResponseHandler,
+    ToastMessageInjector
+};
 
 return static function( ContainerConfigurator $container ) : void {
-    $events = $container->services()->defaults();
+    $subscriber = $container->services()
+        ->defaults()
+        ->tag( 'kernel.event_subscriber' );
 
-    $events->set( RequestAttributeHandler::class )
+    $listener = $container->services()
+        ->defaults()
         ->tag( 'kernel.event_listener' );
 
-    $events->set( ResponseHandler::class )
-            // ->args( [service( ToastService::class )] )
-        ->tag( 'kernel.event_subscriber' );
+    $listener->set( ControllerActionInvoker::class );
 
-    $events->set( ToastMessageInjector::class )
-        ->args( [service( ToastService::class )] )
-        ->tag( 'kernel.event_subscriber' );
+    $listener->set( RequestAttributeHandler::class );
+
+    $subscriber->set( ControllerEventHandler::class )
+        ->args( [service( ResponseRenderer::class )] )
+        ->tag( 'monolog.logger', ['channel' => 'request'] );
+
+    $subscriber->set( ResponseHandler::class );
+
+    $subscriber->set( ToastMessageInjector::class )
+        ->args( [service( ToastService::class )] );
 };
