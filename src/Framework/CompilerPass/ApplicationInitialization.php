@@ -28,8 +28,6 @@ final class ApplicationInitialization extends CompilerPass
 
     public function compile( ContainerBuilder $container ) : void
     {
-        // $this->override ??= (bool) $this->parameterBag->get( 'kernel.debug' );
-
         $this->normalizePathParameters();
 
         $this->initializeDefaultConfiguration();

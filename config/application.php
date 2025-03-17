@@ -43,7 +43,7 @@ return static function( ContainerConfigurator $container ) : void {
     $subscriber->set( ResponseHandler::class );
 
     /**
-     * {@see ResponseEvent}
+     * @see ResponseEvent
      */
     $listener->set( ControllerEventHandler::class )
         ->args( [service( ResponseRenderer::class )] );

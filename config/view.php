@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Core\{AssetManager, Pathfinder};
-use Core\Framework\CompilerPass\RegisterCoreServices;
 use Core\Framework\ResponseRenderer;
 use Core\View\{ComponentFactory,
     ComponentFactory\ComponentBag,
@@ -17,7 +16,6 @@ use Core\View\{ComponentFactory,
     DocumentEngine,
     IconSet,
     Latte\ViewComponentExtension,
-    Parameters,
     TemplateEngine
 };
 use Core\Interface\IconProviderInterface;
@@ -76,14 +74,11 @@ return static function( ContainerConfigurator $container ) : void {
             ],
         );
 
-    $container->services()
-            //
+    $services
         ->set( TemplateEngine::class )
-        ->tag( RegisterCoreServices::ID )
         ->args(
             [
                 param( 'dir.cache.view' ),
-                service( Parameters::class ),
                 service( Pathfinder::class ),
                 [
                     param( 'dir.templates' ),
@@ -95,24 +90,8 @@ return static function( ContainerConfigurator $container ) : void {
             ],
         );
 
-    $view = $container->services()
-        ->defaults()
-        ->tag( 'monolog.logger', ['channel' => 'view'] );
-
-    $view
-        ->set( Document::class )
-        ->arg( 0, service( 'logger' )->nullOnInvalid() )
-        ->tag( 'controller.service_arguments' )
-        ->tag( RegisterCoreServices::ID )
-        ->autowire();
-
-    $view
+    $services
         ->set( DocumentEngine::class )
-        ->args(
-            [
-                service( Document::class ),
-                service( 'logger' )->nullOnInvalid(),
-            ],
-        )
+        ->args( [service( Document::class )] )
         ->lazy();
 };

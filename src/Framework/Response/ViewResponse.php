@@ -7,6 +7,7 @@ namespace Core\Framework\Response;
 use Stringable;
 
 use Symfony\Component\HttpFoundation\{Response, ResponseHeaderBag};
+use const Support\AUTO;
 
 class ViewResponse extends Response
 {
@@ -15,18 +16,18 @@ class ViewResponse extends Response
     /**
      * @param View                             $view
      * @param null|false|string|Stringable     $content
-     * @param int                              $status
+     * @param null|int                         $status
      * @param array<string, list<null|string>> $headers
      */
     public function __construct(
         public readonly View         $view,
         null|false|string|Stringable $content = '',
-        int                          $status = 200,
+        ?int                         $status = AUTO,
         array                        $headers = [],
     ) {
         parent::__construct(
             content : ( (string) $content ) ?: null,
-            status  : $status,
+            status  : $status ?? Response::HTTP_OK,
             headers : $headers,
         );
     }

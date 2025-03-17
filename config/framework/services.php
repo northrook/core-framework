@@ -10,7 +10,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 // use Core\Action\Headers;
 use Core\Framework\CompilerPass\RegisterCoreServices;
-use Core\View\Parameters;
 use Core\Pathfinder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -23,7 +22,6 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 return static function( ContainerConfigurator $container ) : void {
-
     /** @used-by \Core\Symfony\DependencyInjection\ServiceContainer */
     $container->services()
         ->set( RegisterCoreServices::ID )
@@ -33,7 +31,7 @@ return static function( ContainerConfigurator $container ) : void {
                 [
                     Pathfinder::class => service( Pathfinder::class ),
                     // Document::class   => service( Document::class ),
-                    Parameters::class => service( Parameters::class ),
+                    // Parameters::class => service( Parameters::class ),
                     // Headers::class    => service( Headers::class ),
                     // Settings::class => service( Settings::class ),
 

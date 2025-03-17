@@ -5,9 +5,20 @@ declare(strict_types=1);
 namespace Core\Framework\Events;
 
 use Core\Framework\Controller\ControllerAwareEvent;
-use Symfony\Component\HttpKernel\Event\{ResponseEvent};
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Core\Framework\ResponseRenderer;
 
+/**
+ * {@see ResponseEvent}
+ *
+ * Uses the {@see ResponseRenderer} to generate the content `HTML`.
+ *
+ * @internal
+ *
+ * @author Martin Nielsen <mn@northrook.com>
+ *
+ * @final  ✅
+ */
 final class ControllerEventHandler extends ControllerAwareEvent
 {
     protected const string CATEGORY = 'Response';

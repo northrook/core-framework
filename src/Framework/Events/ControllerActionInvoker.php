@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Core\Framework\Events;
 
 use Core\Framework\Controller\ControllerAwareEvent;
-use ReflectionClass;
-use ReflectionException;
 use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
+use ReflectionClass, ReflectionException;
 
 /**
  * {@see ControllerArgumentsEvent}
@@ -17,6 +16,8 @@ use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
  * @internal
  *
  * @author Martin Nielsen <mn@northrook.com>
+ *
+ * @final  ✅
  */
 final class ControllerActionInvoker extends ControllerAwareEvent
 {
@@ -35,7 +36,10 @@ final class ControllerActionInvoker extends ControllerAwareEvent
                 ->invoke( $this->controller );
         }
         catch ( ReflectionException $exception ) {
-            $this->logger?->error( $exception->getMessage(), ['exception' => $exception] );
+            $this->logger?->error(
+                $exception->getMessage(),
+                ['exception' => $exception],
+            );
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Core\Framework\Controller;
 use Core\Framework\Controller;
 use Core\Framework\Controller\Attribute\Template;
 use Core\Profiler\Interface\Profilable;
-use Core\Profiler\ProfilerTrait;
+use Core\Profiler\StopwatchProfiler;
 use Core\Symfony\DependencyInjection\SettingsAccessor;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 use Symfony\Component\HttpKernel\Controller\ErrorController;
@@ -22,7 +22,7 @@ abstract class ControllerAwareEvent implements
     LoggerAwareInterface
 {
     use SettingsAccessor,
-        ProfilerTrait,
+        StopwatchProfiler,
         LoggerAwareTrait;
 
     protected const string CATEGORY = 'Controller';

@@ -4,34 +4,76 @@ declare(strict_types=1);
 
 namespace Core\Framework;
 
+use Core\Framework\Response\{View, ViewResponse};
 use Core\Profiler\Interface\Profilable;
-use Core\Profiler\ProfilerTrait;
-use Symfony\Component\HttpFoundation\{Request, Response};
+use Core\Profiler\{StopwatchProfiler};
+use Symfony\Component\HttpFoundation\{Request};
 use Core\Framework\Controller\ResponseMethods;
 use Core\Framework\Controller\Attribute\{OnContent, OnDocument};
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 use Core\Symfony\DependencyInjection\{ServiceContainer, SettingsAccessor};
 use Core\Symfony\Interface\ServiceContainerInterface;
 use Exception, RuntimeException, ReflectionClass, ReflectionException;
+use Symfony\Component\Stopwatch\Stopwatch;
+use InvalidArgumentException;
+use const Support\AUTO;
 
 abstract class Controller implements ServiceContainerInterface, Profilable, LoggerAwareInterface
 {
+    protected const string CATEGORY = 'Controller';
+
     use ServiceContainer,
         SettingsAccessor,
-        ProfilerTrait,
+        StopwatchProfiler,
         ResponseMethods,
         LoggerAwareTrait;
 
     protected Request $request;
 
+    final public function setProfiler( ?Stopwatch $stopwatch, ?string $category = null ) : void
+    {
+        $this->assignProfiler( $stopwatch, $this::CATEGORY );
+    }
+
+    /**
+     * Set by {@see ControllerAwareEvent::resolveControllerEvent()}.
+     *
+     * @internal
+     *
+     * @param Request $request
+     *
+     * @return void
+     */
     final public function setCurrentRequest( Request $request ) : void
     {
         $this->request = $request;
     }
 
-    final protected function response( ?string $content = null ) : Response
-    {
-        return new Response( $content );
+    /**
+     * @param null|string                      $content
+     * @param null|int                         $status
+     * @param array<string, list<null|string>> $headers
+     *
+     * @return ViewResponse
+     */
+    final protected function response(
+        ?string $content = null,
+        ?int    $status = AUTO,
+        array   $headers = [],
+    ) : ViewResponse {
+        $view = $this->request->attributes->get( '_response' );
+
+        if ( ! $view instanceof View ) {
+            $message = "Expected a 'View::TYPE' on this 'ResponseEvent'.";
+            throw new InvalidArgumentException( $message );
+        }
+
+        return new ViewResponse(
+            $view,
+            $content,
+            $status,
+            $headers,
+        );
     }
 
     /**
