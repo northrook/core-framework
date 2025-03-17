@@ -5,18 +5,15 @@ declare(strict_types=1);
 namespace Core\Framework\Events;
 
 use Core\Framework\Controller\ControllerAwareEvent;
-use Symfony\Component\HttpKernel\Event\{ControllerArgumentsEvent, ResponseEvent, ViewEvent};
+use Core\Framework\Response\{View, ViewResponse};
+use Symfony\Component\HttpKernel\Event\{ResponseEvent, ViewEvent};
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelEvents;
-use ReflectionClass;
-use ReflectionException;
 use Stringable;
 
 final class ResponseHandler extends ControllerAwareEvent implements EventSubscriberInterface
 {
-    public function __construct() {}
-
     public static function getSubscribedEvents() : array
     {
         return [
@@ -42,7 +39,7 @@ final class ResponseHandler extends ControllerAwareEvent implements EventSubscri
 
         $content = $event->getControllerResult();
 
-        if ( \is_string( $content ) || $content instanceof Stringable ) {
+        if ( $content instanceof Stringable ) {
             $content = (string) $content;
         }
 
@@ -62,17 +59,49 @@ final class ResponseHandler extends ControllerAwareEvent implements EventSubscri
         // @phpstan-ignore-next-line
         \assert( \is_string( $content ) || \is_null( $content ) );
 
-        $event->setResponse( new Response( $content ) );
+        $_response = $event->getRequest()->attributes->get( '_response' );
+
+        if ( $_response instanceof View ) {
+            $event->setResponse(
+                new ViewResponse( $_response, $content ),
+            );
+        }
+        else {
+            $event->setResponse( new Response( $content ) );
+        }
+
         $this->profiler?->stop( __METHOD__ );
         dump( $event );
     }
 
     public function onKernelResponse( ResponseEvent $event ) : void
     {
+        $this->profiler?->event( __METHOD__ );
         if ( $this->skipEvent() ) {
             return;
         }
 
+        if ( $event->getResponse() instanceof ViewResponse ) {
+            return;
+        }
+
+        $_response_view = $event->getRequest()->attributes->get( '_response' );
+
+        if ( $_response_view instanceof View ) {
+            $event->setResponse(
+                new ViewResponse(
+                    $_response_view,
+                    $event->getResponse()->getContent(),
+                    $event->getResponse()->getStatusCode(),
+                    $event->getResponse()->headers->allPreserveCase(),
+                ),
+            );
+        }
+        else {
+            $this->logger?->error( "Expected a 'View::TYPE' on this 'ResponseEvent'." );
+        }
+
+        $this->profiler?->stop( __METHOD__ );
         dump( $event );
     }
 }
