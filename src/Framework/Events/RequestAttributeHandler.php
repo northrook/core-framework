@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Framework\Events;
 
+use Core\Framework\Lifecycle\EventValidator;
 use Core\Framework\Response\{View};
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
@@ -16,8 +17,14 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
  */
 final class RequestAttributeHandler
 {
+    use EventValidator;
+
     public function __invoke( RequestEvent $event ) : void
     {
+        dump( __METHOD__.' '.( $this->skip() ? 'true' : 'false') );
+        $this->validateLifecycle( $event );
+        dump( __METHOD__.' '.( $this->skip() ? 'true' : 'false') );
+
         $htmx      = $event->getRequest()->headers->has( 'hx-request' );
         $_path     = $event->getRequest()->getRequestUri();
         $_response = $htmx ? View::CONTENT : View::DOCUMENT;

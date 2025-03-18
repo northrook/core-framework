@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Core\Framework\Events;
 
 use Core\Framework\Controller\ControllerAwareEvent;
+use Core\Framework\Lifecycle\EventValidator;
 use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
 use ReflectionClass, ReflectionException;
 
@@ -21,6 +22,8 @@ use ReflectionClass, ReflectionException;
  */
 final class ControllerActionInvoker extends ControllerAwareEvent
 {
+    use EventValidator;
+
     /**
      * @param ControllerArgumentsEvent $event
      */
@@ -29,6 +32,8 @@ final class ControllerActionInvoker extends ControllerAwareEvent
         if ( $this->skipEvent() ) {
             return;
         }
+
+        dump( __METHOD__.' '.( $this->skip() ? 'true' : 'false') );
 
         try {
             ( new ReflectionClass( $this->controller ) )

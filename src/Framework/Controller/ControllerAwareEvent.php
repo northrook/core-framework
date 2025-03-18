@@ -6,6 +6,7 @@ namespace Core\Framework\Controller;
 
 use Core\Framework\Controller;
 use Core\Framework\Controller\Attribute\Template;
+use Core\Framework\Lifecycle\EventValidator;
 use Core\Profiler\Interface\Profilable;
 use Core\Profiler\StopwatchProfiler;
 use Core\Symfony\DependencyInjection\SettingsAccessor;
@@ -23,7 +24,8 @@ abstract class ControllerAwareEvent implements
 {
     use SettingsAccessor,
         StopwatchProfiler,
-        LoggerAwareTrait;
+        LoggerAwareTrait,
+        EventValidator;
 
     protected const string CATEGORY = 'Controller';
 
@@ -43,6 +45,7 @@ abstract class ControllerAwareEvent implements
      */
     final protected function skipEvent() : bool
     {
+        dump( __METHOD__.' '.( $this->skip() ? 'true' : 'false') );
         if ( isset( $this->skipEvent ) ) {
             return $this->skipEvent;
         }

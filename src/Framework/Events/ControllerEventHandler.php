@@ -30,6 +30,7 @@ final class ControllerEventHandler extends ControllerAwareEvent
         if ( $this->skipEvent() ) {
             return;
         }
+        dump( __METHOD__.' '.( $this->skip() ? 'true' : 'false') );
 
         $this->profiler?->event( $this::class );
 

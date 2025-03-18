@@ -32,6 +32,7 @@ final class ToastMessageInjector extends ControllerAwareEvent implements EventSu
         if ( $this->skipEvent() || ! $this->toast->hasMessages() ) {
             return;
         }
+        dump( __METHOD__.' '.( $this->skip() ? 'true' : 'false' ) );
 
         $this->profiler?->event( __METHOD__ );
         $this->messages = $this->toast->getAllMessages();
