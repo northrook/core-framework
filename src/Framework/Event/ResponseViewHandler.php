@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Core\Framework\Events;
+namespace Core\Framework\Event;
 
-use Core\Framework\Controller\ControllerAwareEvent;
+use Core\Framework\Controller\Attribute\Template;
+use Core\Framework\Lifecycle\LifecycleEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Core\Framework\ResponseRenderer;
 
@@ -19,7 +20,7 @@ use Core\Framework\ResponseRenderer;
  *
  * @final  ✅
  */
-final class ControllerEventHandler extends ControllerAwareEvent
+final class ResponseViewHandler extends LifecycleEvent
 {
     protected const string CATEGORY = 'Response';
 
@@ -39,12 +40,13 @@ final class ControllerEventHandler extends ControllerAwareEvent
                 ->clearTemplateCache();
         }
 
+        $template = $event->getRequest()->attributes->get( '_template' );
+
+        \assert( \is_null( $template ) || $template instanceof Template );
+
         $profileContent = $this->profiler?->event( 'Response Content' );
         $this->responseRenderer
-            ->setResponseContent(
-                $event,
-                $this->template,
-            );
+            ->setResponseContent( $event, $template );
         $profileContent?->stop();
 
         $profileRender = $this->profiler?->event( 'Render Response' );

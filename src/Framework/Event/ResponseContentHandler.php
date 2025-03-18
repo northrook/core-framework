@@ -1,23 +1,18 @@
 <?php
 
-declare(strict_types=1);
+namespace Core\Framework\Event;
 
-namespace Core\Framework\Events;
-
-use Core\Framework\Controller\ControllerAwareEvent;
-use JetBrains\PhpStorm\Deprecated;
+use Core\Framework\Lifecycle\LifecycleEvent;
 use Core\Framework\Response\{View, ViewResponse};
-use Symfony\Component\HttpKernel\Event\{ResponseEvent, ViewEvent};
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\{ResponseEvent, ViewEvent};
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Stringable;
+use function Support\is_stringable;
+use InvalidArgumentException;
 
-#[Deprecated]
-final class ResponseHandler extends ControllerAwareEvent implements EventSubscriberInterface
+final class ResponseContentHandler extends LifecycleEvent implements EventSubscriberInterface
 {
-    protected const string CATEGORY = 'Response';
-
     public static function getSubscribedEvents() : array
     {
         return [
@@ -39,55 +34,29 @@ final class ResponseHandler extends ControllerAwareEvent implements EventSubscri
             return;
         }
 
-        $this->profiler?->event( __METHOD__ );
+        $profiler = $this->profiler?->event( 'View Content' );
 
-        $content = $event->getControllerResult();
-
-        if ( $content instanceof Stringable ) {
-            $content = (string) $content;
-        }
-
-        if ( ! ( \is_string( $content ) || \is_null( $content ) ) ) {
-            $this->logger?->error(
-                message : 'Controller {controller} return value is {type}; {required}, {provided} provided as fallback.',
-                context : [
-                    'controller' => $this->controller,
-                    'type'       => \gettype( $content ),
-                    'required'   => 'string|null',
-                    'provided'   => 'null',
-                ],
-            );
-            $content = null;
-        }
-
-        // @phpstan-ignore-next-line
-        \assert( \is_string( $content ) || \is_null( $content ) );
+        $content = $this->resolveViewContent( $event->getControllerResult() );
 
         $_response = $event->getRequest()->attributes->get( '_response' );
 
         if ( $_response instanceof View ) {
-            $event->setResponse(
-                new ViewResponse( $_response, $content ),
-            );
+            $event->setResponse( new ViewResponse( $_response, $content ) );
         }
         else {
             $event->setResponse( new Response( $content ) );
         }
 
-        $this->profiler?->stop( __METHOD__ );
+        $profiler?->stop();
     }
 
     public function onKernelResponse( ResponseEvent $event ) : void
     {
-        if ( $this->skipEvent() ) {
+        if ( $this->skipEvent() || $event->getResponse() instanceof ViewResponse ) {
             return;
         }
 
-        if ( $event->getResponse() instanceof ViewResponse ) {
-            return;
-        }
-
-        $this->profiler?->event( __METHOD__ );
+        $profiler = $this->profiler?->event( 'Response Content' );
 
         $_response_view = $event->getRequest()->attributes->get( '_response' );
 
@@ -105,6 +74,16 @@ final class ResponseHandler extends ControllerAwareEvent implements EventSubscri
             $this->logger?->error( "Expected a 'View::TYPE' on this 'ResponseEvent'." );
         }
 
-        $this->profiler?->stop( __METHOD__ );
+        $profiler?->stop();
+    }
+
+    private function resolveViewContent( mixed $value ) : string
+    {
+        return match ( true ) {
+            is_stringable( $value ) => (string) $value,
+            default                 => throw new InvalidArgumentException(
+                'Unable to resolve controller content.',
+            ),
+        };
     }
 }

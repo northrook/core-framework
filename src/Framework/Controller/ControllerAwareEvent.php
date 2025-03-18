@@ -6,10 +6,10 @@ namespace Core\Framework\Controller;
 
 use Core\Framework\Controller;
 use Core\Framework\Controller\Attribute\Template;
-use Core\Framework\Lifecycle\EventValidator;
 use Core\Profiler\Interface\Profilable;
 use Core\Profiler\StopwatchProfiler;
 use Core\Symfony\DependencyInjection\SettingsAccessor;
+use JetBrains\PhpStorm\Deprecated;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 use Symfony\Component\HttpKernel\Controller\ErrorController;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -18,14 +18,14 @@ use LogicException, BadMethodCallException;
 use ReflectionAttribute, ReflectionClass;
 use Symfony\Component\Stopwatch\Stopwatch;
 
+#[Deprecated]
 abstract class ControllerAwareEvent implements
     Profilable,
     LoggerAwareInterface
 {
     use SettingsAccessor,
         StopwatchProfiler,
-        LoggerAwareTrait,
-        EventValidator;
+        LoggerAwareTrait;
 
     protected const string CATEGORY = 'Controller';
 
@@ -45,7 +45,6 @@ abstract class ControllerAwareEvent implements
      */
     final protected function skipEvent() : bool
     {
-        dump( __METHOD__.' '.( $this->skip() ? 'true' : 'false') );
         if ( isset( $this->skipEvent ) ) {
             return $this->skipEvent;
         }

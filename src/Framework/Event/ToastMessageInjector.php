@@ -2,19 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Core\Framework\Events;
+namespace Core\Framework\Event;
 
-use Core\Framework\Controller\ControllerAwareEvent;
+use Core\Framework\Lifecycle\LifecycleEvent;
 use Core\Symfony\ToastService;
-use JetBrains\PhpStorm\Deprecated;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Core\Symfony\ToastService\{ToastMessage, ToastView};
 use Symfony\Component\HttpKernel\KernelEvents;
 use Generator;
 use Symfony\Component\HttpKernel\Event\{ResponseEvent, TerminateEvent};
 
-#[Deprecated]
-final class ToastMessageInjector extends ControllerAwareEvent implements EventSubscriberInterface
+final class ToastMessageInjector extends LifecycleEvent implements EventSubscriberInterface
 {
     /** @var ToastMessage[] */
     protected array $messages = [];
