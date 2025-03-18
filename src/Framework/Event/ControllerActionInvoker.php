@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Core\Framework\Event;
 
 use Core\Framework\Controller;
-use Core\Framework\Controller\Attribute\Template;
 use Core\Framework\Lifecycle\LifecycleEvent;
-use Symfony\Component\HttpKernel\Event\{ControllerArgumentsEvent};
+use Symfony\Component\HttpKernel\Event\{ControllerArgumentsEvent, ControllerEvent};
+use Core\Framework\Response\Template;
 use InvalidArgumentException;
-use ReflectionClass, ReflectionException;
 use function Support\str_before;
 use ReflectionAttribute;
+use ReflectionClass;
 
 /**
  * {@see ControllerArgumentsEvent}
@@ -27,68 +27,123 @@ use ReflectionAttribute;
 final class ControllerActionInvoker extends LifecycleEvent
 {
     /**
-     * @param ControllerArgumentsEvent $event
+     * @param ControllerEvent $event
      */
-    public function __invoke( ControllerArgumentsEvent $event ) : void
+    public function __invoke( ControllerEvent $event ) : void
     {
         if ( $this->skipEvent() ) {
             return;
         }
 
-        $controller = $this->resolveController( $event );
+        // Get Template::attr from both Controller:class and Controller::method
+        // Merge the two, return single Template
+        [$controller, $method] = $this->resolveController( $event );
 
         if ( $controller instanceof Controller ) {
             $controller->setCurrentRequest( $event->getRequest() );
         }
         else {
+            $this->logger?->notice( 'Non-framework Controller, skipping.' );
             self::$handleLifecycleEvent = false;
             return;
         }
 
-        try {
-            $reflection = new ReflectionClass( $controller );
+        $_template = $this->resolveViewTemplate( $event, $controller );
 
-            $event->getRequest()->attributes->set(
-                '_template',
-                $reflection->getAttributes(
-                    Template::class,
-                    ReflectionAttribute::IS_INSTANCEOF,
-                )[0]?->newInstance(),
-            );
+        $event->getRequest()->attributes->set(
+            '_template',
+            $_template,
+        );
 
-            $reflection->getMethod( 'controllerResponseMethods' )
-                ->invoke( $controller );
+        dd( \get_defined_vars() );
+        // try {
+        //     $reflection = new ReflectionClass( $controller );
+        //
+        //     $reflection->getMethod( 'controllerResponseMethods' )
+        //         ->invoke( $controller );
+        // }
+        // catch ( ReflectionException $exception ) {
+        //     $this->logger?->error(
+        //         $exception->getMessage(),
+        //         ['exception' => $exception],
+        //     );
+        // }
+    }
+
+    private function resolveViewTemplate( ControllerEvent $event, object|string $controller ) : Template
+    {
+        $template = ( $event->getControllerReflector()->getAttributes(
+            Template::class,
+            ReflectionAttribute::IS_INSTANCEOF,
+        )[0] ?? null )?->newInstance();
+
+        if ( $template instanceof Template && $template->content && $template->document ) {
+            return $template;
         }
-        catch ( ReflectionException $exception ) {
-            $this->logger?->error(
-                $exception->getMessage(),
-                ['exception' => $exception],
-            );
-        }
+
+        $controllerTemplate = ( ( new ReflectionClass( $controller ) )->getAttributes(
+            Template::class,
+            ReflectionAttribute::IS_INSTANCEOF,
+        )[0] ?? null )?->newInstance() ?? new Template();
+
+        return  $template;
     }
 
     /**
-     * @param ControllerArgumentsEvent $event
+     * @param ControllerEvent $event
      *
-     * @return class-string|object
+     * @return array{0: class-string|object, 1: string}
      */
-    private function resolveController( ControllerArgumentsEvent $event ) : object|string
+    private function resolveController( ControllerEvent $event ) : array
     {
         $controller = $event->getController();
 
-        $controller = match ( true ) {
-            \is_object( $controller ) => $controller,
-            \is_array( $controller )  => $controller[0] ?? '',
-            \is_string( $controller ) => str_before( $controller, '::' ),
-            default                   => '',
-        };
-
-        \assert( \is_string( $controller ) || \is_object( $controller ) );
-
-        if ( \is_object( $controller ) || \class_exists( $controller ) ) {
-            return $controller;
+        if ( \is_object( $controller ) ) {
+            return [$controller::class, '__invoke'];
         }
 
-        throw new InvalidArgumentException( 'Unable to resolve the controller class.' );
+        if ( \is_string( $controller ) ) {
+            [$controller, $method] = \explode( '::', $controller, 2 );
+        }
+        elseif ( \is_array( $controller ) ) {
+            [$controller, $method] = $controller;
+        }
+        else {
+            throw new InvalidArgumentException( 'Unable to resolve the controller class.' );
+        }
+
+        \assert(
+            ( \is_string( $controller ) && \class_exists( $controller, false ) )
+                || \is_object( $controller ),
+        );
+
+        \assert( \is_string( $method ) );
+
+        return [$controller, $method];
     }
+
+    // /**
+    //  * @param ControllerEvent $event
+    //  *
+    //  * @return class-string|object
+    //  */
+    // private function resolveController( ControllerEvent $event ) : object|string
+    // {
+    //     $controller = $event->getController();
+    //
+    //     $controller = match ( true ) {
+    //         \is_object( $controller ) => $controller,
+    //         \is_array( $controller )  => $controller[0] ?? '',
+    //         \is_string( $controller ) => str_before( $controller, '::' ),
+    //         default                   => '',
+    //     };
+    //
+    //     \assert( \is_string( $controller ) || \is_object( $controller ) );
+    //
+    //     if ( \is_object( $controller ) || \class_exists( $controller ) ) {
+    //         return $controller;
+    //     }
+    //
+    //     throw new InvalidArgumentException( 'Unable to resolve the controller class.' );
+    // }
 }

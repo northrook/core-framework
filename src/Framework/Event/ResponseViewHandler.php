@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Framework\Event;
 
-use Core\Framework\Controller\Attribute\Template;
+use Core\Framework\Response\Template;
 use Core\Framework\Lifecycle\LifecycleEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Core\Framework\ResponseRenderer;

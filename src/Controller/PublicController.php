@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Core\Controller;
 
+use Core\Framework\Response\Template;
 use Core\Pathfinder;
 use Core\Symfony\Toast;
 use Core\Framework\Controller;
-use Core\Framework\Controller\Attribute\{OnDocument, Template};
+use Core\Framework\Controller\Attribute\{OnDocument};
 use Core\View\{ComponentFactory, Document};
 use Symfony\Component\HttpFoundation\{Request};
 use Symfony\Component\Routing\Attribute\Route;

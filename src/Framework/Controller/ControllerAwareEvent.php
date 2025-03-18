@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Core\Framework\Controller;
 
 use Core\Framework\Controller;
-use Core\Framework\Controller\Attribute\Template;
+use Core\Framework\Response\Template;
 use Core\Profiler\Interface\Profilable;
 use Core\Profiler\StopwatchProfiler;
 use Core\Symfony\DependencyInjection\SettingsAccessor;

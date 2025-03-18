@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Framework\Controller\Attribute;
+namespace Core\Framework\Response;
 
 use Attribute;
 
@@ -13,7 +13,7 @@ use Attribute;
  * - When set on the called `method`, it will provide the content block. or as a stand-alone render for `htmx`.
  */
 #[Attribute( Attribute::TARGET_CLASS | Attribute::TARGET_METHOD )]
-final readonly class Template
+final class Template
 {
     public function __construct(
         public ?string $document = null,

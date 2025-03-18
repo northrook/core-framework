@@ -17,7 +17,11 @@ use Core\Framework\Event\{
 };
 use Core\Framework\ResponseRenderer;
 use Core\Symfony\ToastService;
-use Symfony\Component\HttpKernel\Event\{ControllerArgumentsEvent, RequestEvent, ResponseEvent, ViewEvent};
+use Symfony\Component\HttpKernel\Event\{ControllerArgumentsEvent,
+        ControllerEvent,
+        RequestEvent,
+        ResponseEvent,
+        ViewEvent};
 
 return static function( ContainerConfigurator $container ) : void {
     $subscriber = $container->services()
@@ -34,7 +38,7 @@ return static function( ContainerConfigurator $container ) : void {
     $listener->set( RequestLifecycleHandler::class );
 
     /**
-     * {@see ControllerArgumentsEvent}.
+     * {@see ControllerEvent}.
      */
     $listener->set( ControllerActionInvoker::class );
 

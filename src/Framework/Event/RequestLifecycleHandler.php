@@ -40,7 +40,7 @@ final class RequestLifecycleHandler extends LifecycleEvent
 
         // Do not parse sub-requests
         if ( $event->isMainRequest() === false ) {
-            dump( ['sub-request' => $event] );
+            dump( ['handleRequest@sub-request' => $event] );
             return false;
         }
 

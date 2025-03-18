@@ -6,7 +6,7 @@ namespace Core\Framework;
 
 use Core\AssetManager;
 use Core\AssetManager\Interface\MinifiedAssetInterface;
-use Core\Framework\Controller\Attribute\Template;
+use Core\Framework\Response\Template;
 use Core\View\{ComponentFactory, Document, DocumentEngine, TemplateEngine};
 use Core\Interface\LazyService;
 use Core\Profiler\{ProfilerTrait};
