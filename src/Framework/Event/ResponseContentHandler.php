@@ -34,11 +34,11 @@ final class ResponseContentHandler extends LifecycleEvent implements EventSubscr
             return;
         }
 
-        $profiler = $this->profiler?->event( 'View Content' );
+        $profiler = $this->profiler?->event( 'controller.view' );
 
         $content = $this->resolveViewContent( $event->getControllerResult() );
 
-        $_response = $event->getRequest()->attributes->get( '_response' );
+        $_response = $event->getRequest()->attributes->get( '_view' );
 
         if ( $_response instanceof View ) {
             $event->setResponse( new ViewResponse( $_response, $content ) );
@@ -56,9 +56,9 @@ final class ResponseContentHandler extends LifecycleEvent implements EventSubscr
             return;
         }
 
-        $profiler = $this->profiler?->event( 'Response Content' );
+        $profiler = $this->profiler?->event( 'controller.response' );
 
-        $_response_view = $event->getRequest()->attributes->get( '_response' );
+        $_response_view = $event->getRequest()->attributes->get( '_view' );
 
         if ( $_response_view instanceof View ) {
             $event->setResponse(

@@ -9,7 +9,7 @@ use Core\Framework\Lifecycle\LifecycleEvent;
 use Symfony\Component\HttpKernel\Event\{ControllerArgumentsEvent, ControllerEvent};
 use Core\Framework\Response\Template;
 use InvalidArgumentException;
-use function Support\str_before;
+use ReflectionException;
 use ReflectionAttribute;
 use ReflectionClass;
 
@@ -48,28 +48,21 @@ final class ControllerActionInvoker extends LifecycleEvent
             return;
         }
 
-        $_template = $this->resolveViewTemplate( $event, $controller );
+        $parameters = [
+            '_controller_class'  => $controller::class,
+            '_controller_method' => $method,
+            '_template'          => $this->resolveViewTemplate( $event, $controller ),
+        ];
 
-        $event->getRequest()->attributes->set(
-            '_template',
-            $_template,
-        );
-
-        dd( \get_defined_vars() );
-        // try {
-        //     $reflection = new ReflectionClass( $controller );
-        //
-        //     $reflection->getMethod( 'controllerResponseMethods' )
-        //         ->invoke( $controller );
-        // }
-        // catch ( ReflectionException $exception ) {
-        //     $this->logger?->error(
-        //         $exception->getMessage(),
-        //         ['exception' => $exception],
-        //     );
-        // }
+        $event->getRequest()->attributes->add( $parameters );
     }
 
+    /**
+     * @param ControllerEvent     $event
+     * @param class-string|object $controller
+     *
+     * @return Template
+     */
     private function resolveViewTemplate( ControllerEvent $event, object|string $controller ) : Template
     {
         $template = ( $event->getControllerReflector()->getAttributes(
@@ -81,12 +74,25 @@ final class ControllerActionInvoker extends LifecycleEvent
             return $template;
         }
 
-        $controllerTemplate = ( ( new ReflectionClass( $controller ) )->getAttributes(
-            Template::class,
-            ReflectionAttribute::IS_INSTANCEOF,
-        )[0] ?? null )?->newInstance() ?? new Template();
+        try {
+            $controllerTemplate = ( ( new ReflectionClass( $controller ) )->getAttributes(
+                Template::class,
+                ReflectionAttribute::IS_INSTANCEOF,
+            )[0] ?? null )?->newInstance() ?? new Template();
+        }
+        catch ( ReflectionException $e ) {
+            $this->logger?->error( $e->getMessage() );
+            $controllerTemplate = new Template();
+        }
 
-        return  $template;
+        if ( ! $template ) {
+            return $controllerTemplate;
+        }
+
+        $template->document ??= $controllerTemplate->document;
+        $template->content  ??= $controllerTemplate->content;
+
+        return $template;
     }
 
     /**
