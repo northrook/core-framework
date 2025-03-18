@@ -8,13 +8,12 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\Framework\Event\{
-    RequestLifecycleHandler,
-    ControllerActionInvoker,
-    ResponseContentHandler,
-    ResponseViewHandler,
-    ToastMessageInjector
-};
+use Core\Framework\Event\{ControllerMethodInvoker,
+        RequestLifecycleHandler,
+        ControllerActionInvoker,
+        ResponseContentHandler,
+        ResponseViewHandler,
+        ToastMessageInjector};
 use Core\Framework\ResponseRenderer;
 use Core\Symfony\ToastService;
 use Symfony\Component\HttpKernel\Event\{ControllerArgumentsEvent,
@@ -41,6 +40,11 @@ return static function( ContainerConfigurator $container ) : void {
      * {@see ControllerEvent}.
      */
     $listener->set( ControllerActionInvoker::class );
+
+    /**
+     * {@see ControllerArgumentsEvent}.
+     */
+    $listener->set( ControllerMethodInvoker::class );
 
     /**
      * Prepares content for {@see ViewEvent} and {@see ResponseEvent}.

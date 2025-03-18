@@ -128,28 +128,4 @@ final class ControllerActionInvoker extends LifecycleEvent
         return [$controller, $method];
     }
 
-    // /**
-    //  * @param ControllerEvent $event
-    //  *
-    //  * @return class-string|object
-    //  */
-    // private function resolveController( ControllerEvent $event ) : object|string
-    // {
-    //     $controller = $event->getController();
-    //
-    //     $controller = match ( true ) {
-    //         \is_object( $controller ) => $controller,
-    //         \is_array( $controller )  => $controller[0] ?? '',
-    //         \is_string( $controller ) => str_before( $controller, '::' ),
-    //         default                   => '',
-    //     };
-    //
-    //     \assert( \is_string( $controller ) || \is_object( $controller ) );
-    //
-    //     if ( \is_object( $controller ) || \class_exists( $controller ) ) {
-    //         return $controller;
-    //     }
-    //
-    //     throw new InvalidArgumentException( 'Unable to resolve the controller class.' );
-    // }
 }

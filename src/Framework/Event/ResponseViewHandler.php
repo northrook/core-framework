@@ -6,6 +6,8 @@ namespace Core\Framework\Event;
 
 use Core\Framework\Response\Template;
 use Core\Framework\Lifecycle\LifecycleEvent;
+use Core\Symfony\DependencyInjection\ServiceLocator;
+use Symfony\Component\DependencyInjection as Container;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Core\Framework\ResponseRenderer;
 use ReflectionClass;
@@ -25,8 +27,9 @@ use ReflectionException;
 final class ResponseViewHandler extends LifecycleEvent
 {
     protected const string CATEGORY = 'Response';
-
-    public function __construct( protected readonly ResponseRenderer $responseRenderer ) {}
+    public function __construct(
+        protected readonly ResponseRenderer         $responseRenderer,
+    ) {}
 
     public function __invoke( ResponseEvent $event ) : void
     {
@@ -35,8 +38,6 @@ final class ResponseViewHandler extends LifecycleEvent
         }
 
         $this->profiler?->event( $this::class );
-
-        $this->controllerOnViewMethods( $event );
 
         if ( $this->getSetting( 'view.template.clear_cache', false ) ) {
             $this->responseRenderer
@@ -60,26 +61,5 @@ final class ResponseViewHandler extends LifecycleEvent
         $profileRender?->stop();
 
         $this->profiler?->stop( $this::class );
-    }
-
-    private function controllerOnViewMethods( ResponseEvent $event ) : void
-    {
-        if ( ! $_controller_class = $event->getRequest()->attributes->get( '_controller_class' ) ) {
-            return;
-        }
-
-        \assert( is_string( $_controller_class ) && class_exists( $_controller_class ) );
-
-        try {
-            ( new ReflectionClass( $_controller_class ) )
-                ->getMethod( 'controllerResponseMethods' )
-                ->invoke( $_controller_class );
-        }
-        catch ( ReflectionException $exception ) {
-            $this->logger?->error(
-                $exception->getMessage(),
-                ['exception' => $exception],
-            );
-        }
     }
 }
