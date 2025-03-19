@@ -32,7 +32,7 @@ final class ResponseViewHandler extends LifecycleEvent
             return;
         }
 
-        $this->profiler?->event( $this::class );
+        $profiler = $this->profiler?->event( 'response' );
 
         if ( $this->getSetting( 'view.template.clear_cache', false ) ) {
             $this->responseRenderer
@@ -55,6 +55,6 @@ final class ResponseViewHandler extends LifecycleEvent
         );
         $profileRender?->stop();
 
-        $this->profiler?->stop( $this::class );
+        $profiler?->stop();
     }
 }

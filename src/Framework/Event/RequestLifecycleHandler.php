@@ -19,9 +19,9 @@ final class RequestLifecycleHandler extends LifecycleEvent
 {
     public function __invoke( RequestEvent $event ) : void
     {
+        $profiler                   = $this->profiler?->event( 'request' );
         self::$handleLifecycleEvent = $this->handleRequest( $event );
-
-        $profiler = $this->profiler?->event( 'prepare.request' );
+        $profiler?->stop();
 
         $htmx  = $event->getRequest()->headers->has( 'hx-request' );
         $_path = $event->getRequest()->getRequestUri();
@@ -31,8 +31,6 @@ final class RequestLifecycleHandler extends LifecycleEvent
         $event->getRequest()->attributes->set( '_view', $_view );
         $event->getRequest()->attributes->set( '_path', $_path );
         $event->getRequest()->attributes->set( 'hx-request', $htmx );
-
-        $profiler?->stop();
     }
 
     private function handleRequest( RequestEvent $event ) : bool
