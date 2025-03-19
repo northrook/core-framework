@@ -21,6 +21,8 @@ final class RequestLifecycleHandler extends LifecycleEvent
     {
         self::$handleLifecycleEvent = $this->handleRequest( $event );
 
+        $profiler = $this->profiler?->event( 'prepare.request' );
+
         $htmx  = $event->getRequest()->headers->has( 'hx-request' );
         $_path = $event->getRequest()->getRequestUri();
         $_view = $htmx ? View::CONTENT : View::DOCUMENT;
@@ -29,6 +31,8 @@ final class RequestLifecycleHandler extends LifecycleEvent
         $event->getRequest()->attributes->set( '_view', $_view );
         $event->getRequest()->attributes->set( '_path', $_path );
         $event->getRequest()->attributes->set( 'hx-request', $htmx );
+
+        $profiler?->stop();
     }
 
     private function handleRequest( RequestEvent $event ) : bool
@@ -40,7 +44,7 @@ final class RequestLifecycleHandler extends LifecycleEvent
 
         // Do not parse sub-requests
         if ( $event->isMainRequest() === false ) {
-            dd( ['handleRequest@sub-request' => $event] );
+            dump( ['handleRequest@sub-request' => $event] );
             return false;
         }
 

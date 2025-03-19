@@ -33,16 +33,22 @@ final class ToastMessageInjector extends LifecycleEvent implements EventSubscrib
             return;
         }
 
-        $this->profiler?->event( __METHOD__ );
+        $profiler = $this->profiler?->event( 'prepare.toasts' );
+
         $this->messages = $this->toast->getAllMessages();
-        $this->profiler?->stop( __METHOD__ );
+
+        $profiler?->stop();
     }
 
     public function renderToastMessages( TerminateEvent $event ) : void
     {
+        $profiler = $this->profiler?->event( 'render.toasts' );
+
         foreach ( $this->printMessages() as $message ) {
             echo $message;
         }
+
+        $profiler?->stop();
     }
 
     /**

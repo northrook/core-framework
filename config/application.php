@@ -8,19 +8,23 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\Framework\Event\{ControllerMethodInvoker,
-        RequestLifecycleHandler,
-        ControllerActionInvoker,
-        ResponseContentHandler,
-        ResponseViewHandler,
-        ToastMessageInjector};
 use Core\Framework\ResponseRenderer;
 use Core\Symfony\ToastService;
-use Symfony\Component\HttpKernel\Event\{ControllerArgumentsEvent,
-        ControllerEvent,
-        RequestEvent,
-        ResponseEvent,
-        ViewEvent};
+use Core\Framework\Event\{
+    ControllerMethodInvoker,
+    RequestLifecycleHandler,
+    ControllerActionInvoker,
+    ResponseContentHandler,
+    ResponseViewHandler,
+    ToastMessageInjector
+};
+use Symfony\Component\HttpKernel\Event\{
+    ControllerArgumentsEvent,
+    ControllerEvent,
+    RequestEvent,
+    ResponseEvent,
+    ViewEvent
+};
 
 return static function( ContainerConfigurator $container ) : void {
     $subscriber = $container->services()

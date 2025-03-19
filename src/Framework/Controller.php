@@ -30,15 +30,13 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
 
     protected Request $request;
 
-    final public function setRequiredServices() : void {}
-
     final public function setProfiler( ?Stopwatch $stopwatch, ?string $category = null ) : void
     {
         $this->assignProfiler( $stopwatch, $this::CATEGORY );
     }
 
     /**
-     * Set by {@see ControllerAwareEvent::resolveControllerEvent()}.
+     * Set by {@see ControllerActionInvoker::__invoke}.
      *
      * @internal
      *

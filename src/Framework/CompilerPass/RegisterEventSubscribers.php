@@ -6,12 +6,13 @@ namespace Core\Framework\CompilerPass;
 
 use Core\Symfony\DependencyInjection\CompilerPass;
 use Symfony\Component\DependencyInjection\{ContainerBuilder, Reference};
-use Core\Framework\Controller\ControllerAwareEvent;
 use InvalidArgumentException;
+use JetBrains\PhpStorm\Deprecated;
 
 /**
  * @internal
  */
+#[Deprecated]
 final class RegisterEventSubscribers extends CompilerPass
 {
     public function compile( ContainerBuilder $container ) : void

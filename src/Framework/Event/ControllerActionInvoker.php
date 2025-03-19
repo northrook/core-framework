@@ -34,6 +34,7 @@ final class ControllerActionInvoker extends LifecycleEvent
         if ( $this->skipEvent() ) {
             return;
         }
+        $profiler = $this->profiler?->event( 'prepare.controller' );
 
         // Get Template::attr from both Controller:class and Controller::method
         // Merge the two, return single Template
@@ -45,6 +46,8 @@ final class ControllerActionInvoker extends LifecycleEvent
         else {
             $this->logger?->notice( 'Non-framework Controller, skipping.' );
             self::$handleLifecycleEvent = false;
+
+            $profiler?->stop();
             return;
         }
 
@@ -55,6 +58,8 @@ final class ControllerActionInvoker extends LifecycleEvent
         ];
 
         $event->getRequest()->attributes->add( $parameters );
+
+        $profiler?->stop();
     }
 
     /**
@@ -127,5 +132,4 @@ final class ControllerActionInvoker extends LifecycleEvent
 
         return [$controller, $method];
     }
-
 }

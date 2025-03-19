@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace Core\Framework\Event;
 
-use Core\Framework\Response\Template;
-use Core\Framework\Lifecycle\LifecycleEvent;
-use Core\Symfony\DependencyInjection\ServiceLocator;
-use Symfony\Component\DependencyInjection as Container;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Core\Framework\Lifecycle\LifecycleEvent;
 use Core\Framework\ResponseRenderer;
-use ReflectionClass;
-use ReflectionException;
+use Core\Framework\Response\Template;
 
 /**
  * {@see ResponseEvent}
@@ -27,8 +23,9 @@ use ReflectionException;
 final class ResponseViewHandler extends LifecycleEvent
 {
     protected const string CATEGORY = 'Response';
+
     public function __construct(
-        protected readonly ResponseRenderer         $responseRenderer,
+        protected readonly ResponseRenderer $responseRenderer,
     ) {}
 
     public function __invoke( ResponseEvent $event ) : void

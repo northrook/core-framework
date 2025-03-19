@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace Core;
 
-use Core\AssetManager\Compiler\RegisterAssetServices;
-use Core\View\Compiler\RegisterViewComponentsPass;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Core\Framework\CompilerPass\{ApplicationInitialization,
-    RegisterServiceArguments,
-    RegisterEventSubscribers
+use Core\Symfony\Compiler\{
+    AutodiscoverServicesPass,
+    AutowireInterfaceDependencies
 };
-use Core\Symfony\Compiler\{AutodiscoverServicesPass, AutowireInterfaceDependencies};
+use Core\Framework\CompilerPass\{
+    ApplicationInitialization,
+    RegisterServiceArguments,
+};
+use Core\AssetManager\Compiler\RegisterAssetServices;
+use Core\View\Compiler\RegisterViewComponentsPass;
 
 /**
  * Core Symfony Framework.
@@ -57,7 +60,7 @@ final class CoreBundle extends AbstractBundle
             ->addCompilerPass( new RegisterAssetServices() )
             ->addCompilerPass( new RegisterViewComponentsPass() )
             ->addCompilerPass( new ApplicationInitialization() )
-            ->addCompilerPass( new RegisterEventSubscribers() )
+                // ->addCompilerPass( new RegisterEventSubscribers() )
             ->addCompilerPass( new AutowireInterfaceDependencies(), priority : -256 )
             ->addCompilerPass( new RegisterServiceArguments(), priority : -264 );
     }
