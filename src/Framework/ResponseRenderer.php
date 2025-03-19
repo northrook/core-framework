@@ -102,8 +102,8 @@ class ResponseRenderer implements LazyService, Profilable, LoggerAwareInterface
     final protected function handleEnqueuedAssets() : void
     {
         foreach ( $this->document->assets->getEnqueuedAssets() as $assetKey ) {
-            $this->profiler?->event( $assetKey, 'Asset' );
-            $asset = $this->assetManager->getAsset( $assetKey );
+            $profiler = $this->profiler?->event( $assetKey, 'Asset' );
+            $asset    = $this->assetManager->getAsset( $assetKey );
 
             $html = $asset->getHtml();
 
@@ -115,7 +115,7 @@ class ResponseRenderer implements LazyService, Profilable, LoggerAwareInterface
             }
 
             $this->document->head->injectHtml( $html, $assetKey );
-            $this->profiler?->stop( $assetKey );
+            $profiler?->stop();
         }
     }
 }

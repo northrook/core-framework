@@ -22,8 +22,6 @@ use Core\Framework\Response\Template;
  */
 final class ResponseViewHandler extends LifecycleEvent
 {
-    protected const string CATEGORY = 'Response';
-
     public function __construct(
         protected readonly ResponseRenderer $responseRenderer,
     ) {}
@@ -46,12 +44,12 @@ final class ResponseViewHandler extends LifecycleEvent
 
         \assert( \is_null( $template ) || $template instanceof Template );
 
-        $profileContent = $this->profiler?->event( 'Response Content' );
+        $profileContent = $this->profiler?->event( 'response.content' );
         $this->responseRenderer
             ->setResponseContent( $event, $template );
         $profileContent?->stop();
 
-        $profileRender = $this->profiler?->event( 'Render Response' );
+        $profileRender = $this->profiler?->event( 'render.response' );
         $event->setResponse(
             $this->responseRenderer->getResponse(),
         );

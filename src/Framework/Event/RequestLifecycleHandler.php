@@ -44,7 +44,10 @@ final class RequestLifecycleHandler extends LifecycleEvent
 
         // Do not parse sub-requests
         if ( $event->isMainRequest() === false ) {
-            dump( ['handleRequest@sub-request' => $event] );
+            $this->logger?->notice(
+                'Lifecycle: Sub-request, skipping.',
+                ['request' => $event->getRequest()],
+            );
             return false;
         }
 

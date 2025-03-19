@@ -77,6 +77,8 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
     }
 
     /**
+     * Called by {@see Event\ControllerMethodInvoker::controllerOnViewMethods}.
+     *
      * @return void
      */
     final protected function controllerResponseMethods() : void

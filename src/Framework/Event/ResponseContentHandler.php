@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\Framework\Event;
 
 use Core\Framework\Lifecycle\LifecycleEvent;
@@ -8,8 +10,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\{ResponseEvent, ViewEvent};
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelEvents;
-use function Support\is_stringable;
 use InvalidArgumentException;
+use function Support\is_stringable;
 
 final class ResponseContentHandler extends LifecycleEvent implements EventSubscriberInterface
 {

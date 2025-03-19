@@ -33,11 +33,18 @@ final class ControllerMethodInvoker extends LifecycleEvent
             return;
         }
 
-        $profiler = $this->profiler?->event( 'controller.onView' );
+        $profiler = $this->profiler?->event( 'controller.methods' );
         $this->controllerOnViewMethods( $event );
         $profiler?->stop();
     }
 
+    /**
+     * Calls {@see Controller::controllerResponseMethods()}.
+     *
+     * @param ControllerArgumentsEvent $event
+     *
+     * @return void
+     */
     private function controllerOnViewMethods( ControllerArgumentsEvent $event ) : void
     {
         $controller = $this->resolveController( $event );

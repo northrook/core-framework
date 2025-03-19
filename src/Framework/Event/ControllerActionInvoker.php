@@ -34,7 +34,7 @@ final class ControllerActionInvoker extends LifecycleEvent
         if ( $this->skipEvent() ) {
             return;
         }
-        $profiler = $this->profiler?->event( 'prepare.controller' );
+        $profiler = $this->profiler?->event( 'controller.prepare' );
 
         // Get Template::attr from both Controller:class and Controller::method
         // Merge the two, return single Template
@@ -70,12 +70,15 @@ final class ControllerActionInvoker extends LifecycleEvent
      */
     private function resolveViewTemplate( ControllerEvent $event, object|string $controller ) : Template
     {
+        $profiler = $this->profiler?->event( 'controller.view.template' );
+
         $template = ( $event->getControllerReflector()->getAttributes(
             Template::class,
             ReflectionAttribute::IS_INSTANCEOF,
         )[0] ?? null )?->newInstance();
 
         if ( $template instanceof Template && $template->content && $template->document ) {
+            $profiler?->stop();
             return $template;
         }
 
@@ -91,12 +94,14 @@ final class ControllerActionInvoker extends LifecycleEvent
         }
 
         if ( ! $template ) {
+            $profiler?->stop();
             return $controllerTemplate;
         }
 
         $template->document ??= $controllerTemplate->document;
         $template->content  ??= $controllerTemplate->content;
 
+        $profiler?->stop();
         return $template;
     }
 
@@ -107,9 +112,11 @@ final class ControllerActionInvoker extends LifecycleEvent
      */
     private function resolveController( ControllerEvent $event ) : array
     {
+        $profiler   = $this->profiler?->event( 'controller.resolve' );
         $controller = $event->getController();
 
         if ( \is_object( $controller ) ) {
+            $profiler?->stop();
             return [$controller::class, '__invoke'];
         }
 
@@ -130,6 +137,7 @@ final class ControllerActionInvoker extends LifecycleEvent
 
         \assert( \is_string( $method ) );
 
+        $profiler?->stop();
         return [$controller, $method];
     }
 }
