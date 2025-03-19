@@ -16,7 +16,7 @@ use Attribute;
 final class Template
 {
     public function __construct(
-        public ?string $document = null,
         public ?string $content = null,
+        public ?string $document = null,
     ) {}
 }

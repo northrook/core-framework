@@ -20,8 +20,6 @@ use const Support\AUTO;
 
 abstract class Controller implements ServiceContainerInterface, Profilable, LoggerAwareInterface
 {
-    protected const string CATEGORY = 'Controller';
-
     use ResponseMethods,
         ServiceContainer,
         SettingsAccessor,
@@ -30,9 +28,9 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
 
     protected Request $request;
 
-    final public function setProfiler( ?Stopwatch $stopwatch, ?string $category = null ) : void
+    final public function setProfiler( ?Stopwatch $stopwatch, ?string $category = 'Controller' ) : void
     {
-        $this->assignProfiler( $stopwatch, $this::CATEGORY );
+        $this->assignProfiler( $stopwatch, $category );
     }
 
     /**
