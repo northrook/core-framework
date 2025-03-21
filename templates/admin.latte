@@ -1,6 +1,7 @@
-{var $template = 'admin/dashboard.latte'}
+
 
 <header>
+
     Header
 </header>
 <sidebar>
@@ -8,7 +9,7 @@
 </sidebar>
 <main>
     <h1>
-        This is the <em>adminral</em>, hello.
+        This is the <em>Adminral</em>, hello.
     </h1>
-    {include $template}
+    {include $template ?? 'admin/_fallback.latte'}
 </main>

@@ -9,6 +9,7 @@ use Core\AssetManager\Interface\MinifiedAssetInterface;
 use Core\Framework\Response\Template;
 use Core\View\{ComponentFactory, Document, DocumentEngine, TemplateEngine};
 use Core\Interface\LazyService;
+use JetBrains\PhpStorm\Deprecated;
 use Core\Profiler\{ProfilerTrait};
 use Core\Profiler\Interface\{Profilable};
 use Core\Symfony\ToastService;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\Stopwatch\Stopwatch;
 
+#[Deprecated]
 class ResponseRenderer implements LazyService, Profilable, LoggerAwareInterface
 {
     use ProfilerTrait, LoggerAwareTrait;
@@ -67,6 +69,7 @@ class ResponseRenderer implements LazyService, Profilable, LoggerAwareInterface
         $contentOnly = $event->getRequest()->headers->has( 'hx-request' );
 
         $view = $contentOnly ? $template?->content : $template?->document;
+
 
         if ( ! $this->content && ! $view ) {
             $this->logger?->error(

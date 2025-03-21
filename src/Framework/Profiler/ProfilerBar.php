@@ -67,7 +67,7 @@ final class ProfilerBar
             profiler a > route prefix {
               --color: var(--status);
               --background: hsla( from currentColor h calc(s - 25) calc(l + 25)  / 0.15 );
-              
+            
               margin-inline-end: 1ch;
               background: var(--background);
             }
@@ -156,7 +156,12 @@ final class ProfilerBar
             default => 'style="--status: #b60c3a"',
         };
 
-        [$prefix, $route] = \explode( '.', $route, 2 );
+        if ( \str_contains( $route, '.' ) ) {
+            [$prefix, $route] = \explode( '.', $route, 2 );
+        }
+        else {
+            $prefix = null;
+        }
 
         // dd( get_defined_vars(), $this->event->getRequest() );
         return <<<HTML

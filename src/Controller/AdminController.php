@@ -12,8 +12,11 @@ use Symfony\Component\HttpKernel\Profiler\Profiler;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(
-    path : '/admin/',
-    name : 'admin.',
+    path    : '/',
+    name    : 'admin.',
+    host    : 'admin.{domain}.{tld}',
+    methods : 'GET',
+    schemes : 'https',
 )]
 #[Template( document : 'admin.latte' )]
 final class AdminController extends Controller
@@ -23,22 +26,21 @@ final class AdminController extends Controller
         Document   $document,
         Parameters $parameters,
     ) : void {
+        $parameters->set( 'hello', 'hello there' );
         $document
             ->title( 'Admin' )
             ->assets( 'style.core', 'script.core', 'script.htmx' );
     }
 
     #[Route(
-        path         : '/{route}',
-        name         : 'dashboard',
-        requirements : ['route' => '.+'],
-        defaults     : ['dashboard' => 'dashboard'],
+        path : '/',
+        name : 'dashboard',
     )]
     #[Template( 'admin/dashboard.latte' )]
     public function dashboard(
         Profiler $profiler,
     ) : void {
-        $profiler->disable();
+        // $profiler->disable();
 
         dump(
             $this,

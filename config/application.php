@@ -8,7 +8,8 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\Framework\ResponseRenderer;
+use Core\AssetManager;
+use Core\Framework\Response\Parameters;
 use Core\Symfony\ToastService;
 use Core\Framework\Event\{
     ControllerMethodInvoker,
@@ -25,6 +26,7 @@ use Symfony\Component\HttpKernel\Event\{
     ResponseEvent,
     ViewEvent
 };
+use Core\View\{DocumentEngine, TemplateEngine};
 
 return static function( ContainerConfigurator $container ) : void {
     $subscriber = $container->services()
@@ -60,7 +62,15 @@ return static function( ContainerConfigurator $container ) : void {
      * @see ResponseEvent
      */
     $listener->set( ResponseViewHandler::class )
-        ->args( [service( ResponseRenderer::class )] );
+        ->args(
+            [
+                service( DocumentEngine::class ),
+                service( TemplateEngine::class ),
+                service( Parameters::class ),
+                service( AssetManager::class ),
+                service( ToastService::class ),
+            ],
+        );
 
     $subscriber->set( ToastMessageInjector::class )
         ->args( [service( ToastService::class )] );

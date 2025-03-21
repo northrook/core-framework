@@ -8,8 +8,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\{AssetManager, Pathfinder};
-use Core\Framework\ResponseRenderer;
+use Core\{AssetManager, Framework\Response\Parameters, Pathfinder};
 use Core\View\{ComponentFactory,
     ComponentFactory\ComponentBag,
     Document,
@@ -30,20 +29,21 @@ return static function( ContainerConfigurator $container ) : void {
         ->tag( 'container.service_locator' )
         ->args( PLACEHOLDER_ARGS );
     //
-    $container->services()
-        ->set( ResponseRenderer::class )
-        ->args(
-            [
-                service( DocumentEngine::class ),
-                service( TemplateEngine::class ),
-                service( ComponentFactory::class ),
-                service( AssetManager::class ),
-                service( Document::class ),
-                service( ToastService::class ),
-            ],
-        )
-        ->tag( 'monolog.logger', ['channel' => 'view'] )
-        ->lazy();
+    // $container->services()
+    //     ->set( ResponseRenderer::class )
+    //     ->args(
+    //         [
+    //             service( DocumentEngine::class ),
+    //             service( TemplateEngine::class ),
+    //             service( ComponentFactory::class ),
+    //             service( AssetManager::class ),
+    //             service( Document::class ),
+    //             service( Parameters::class ),
+    //             service( ToastService::class ),
+    //         ],
+    //     )
+    //     ->tag( 'monolog.logger', ['channel' => 'view'] )
+    //     ->lazy();
     //
     $container->services()
         ->set( IconSet::class )
