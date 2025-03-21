@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Core\Framework\Controller;
 
-use Core\Framework\Controller;
 use Core\Framework\Exception\HttpNotFoundException;
 use Core\Symfony\DependencyInjection\ServiceContainer;
 use Core\Symfony\Interface\ServiceContainerInterface;
@@ -22,7 +21,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Exception;
-use function Support\class_name;
 
 /**
  * @phpstan-require-implements ServiceContainerInterface
@@ -32,24 +30,6 @@ use function Support\class_name;
 trait ResponseMethods
 {
     use ServiceContainer;
-
-    final protected function getRequest() : Request
-    {
-        return $this->serviceLocator( Request::class );
-    }
-
-    final protected function isHtmxRequest() : bool
-    {
-        return $this->getRequest()->attributes->get( 'htmx', false );
-    }
-
-    final protected function isManagedRequest() : bool
-    {
-        return \is_subclass_of(
-            class_name( $this->getRequest()->attributes->get( '_controller' ) ),
-            Controller::class,
-        );
-    }
 
     final protected function generateRoutePath( string $name, array $parameters = [], bool $relative = false ) : string
     {
@@ -78,7 +58,7 @@ trait ResponseMethods
      *
      * @return Response
      */
-    protected function forward( string $controller, array $path = [], array $query = [] ) : Response
+    protected function forwardToController( string $controller, array $path = [], array $query = [] ) : Response
     {
         $request             = $this->serviceLocator( Request::class );
         $path['_controller'] = $controller;

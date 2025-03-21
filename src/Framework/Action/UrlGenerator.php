@@ -8,10 +8,31 @@ use Core\Symfony\DependencyInjection\Autodiscover;
 use Core\Interface\ActionInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+/**
+ * @TODO [md] Create dynamic route generators for current request
+ */
 #[Autodiscover( autowire : true )]
 final readonly class UrlGenerator implements ActionInterface
 {
     public function __construct( private UrlGeneratorInterface $urlGenerator ) {}
+
+    final protected function generateRoutePath( string $name, array $parameters = [], bool $relative = false ) : string
+    {
+        return $this->urlGenerator->generate(
+            $name,
+            $parameters,
+            $relative ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_PATH,
+        );
+    }
+
+    final protected function generateRouteUrl( string $name, array $parameters = [], bool $relative = false ) : string
+    {
+        return $this->urlGenerator->generate(
+            $name,
+            $parameters,
+            $relative ? UrlGeneratorInterface::NETWORK_PATH : UrlGeneratorInterface::ABSOLUTE_URL,
+        );
+    }
 
     /**
      * @param string                $name

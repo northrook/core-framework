@@ -32,6 +32,7 @@ abstract class HttpException extends RuntimeException implements HttpExceptionIn
     /**
      * @param self::*                            $code
      * @param string                             $message
+     * @param array<string, mixed>               $context
      * @param null|Throwable                     $previous
      * @param array<string,null|string|string[]> $headers
      *                                                     /
@@ -39,6 +40,7 @@ abstract class HttpException extends RuntimeException implements HttpExceptionIn
     public function __construct(
         int             $code,
         string          $message,
+        protected array $context = [],
         ?Throwable      $previous = null,
         protected array $headers = [],
     ) {

@@ -7,13 +7,13 @@ namespace Core\Controller;
 use Symfony\Component\HttpFoundation\{BinaryFileResponse, Request};
 use Core\Asset\ImageAsset;
 use Core\{AssetManager, Framework\Exception\HttpNotFoundException, Pathfinder};
-use Core\Framework\Route;
 use Core\Symfony\Toast;
 use Support\Image;
+use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
 
 #[Route(
-    name    : Route::ASSETS,
+    name    : 'assets.',
     methods : 'GET',
     schemes : 'https',
 )]
@@ -51,7 +51,7 @@ final class AssetController
             );
         }
 
-        $response = new BinaryFileResponse(
+        return new BinaryFileResponse(
             file               : $filePath,
             status             : 200,
             headers            : [
@@ -59,8 +59,6 @@ final class AssetController
             ],
             contentDisposition : 'inline',
         );
-
-        return $response;
     }
 
     #[Route( '/favicon.ico', 'favicon' )]

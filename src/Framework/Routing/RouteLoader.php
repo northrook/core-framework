@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\Framework\Routing;
 
 use Symfony\Component\Config\Loader\Loader;

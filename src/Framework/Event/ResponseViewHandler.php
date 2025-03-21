@@ -144,39 +144,4 @@ final class ResponseViewHandler extends LifecycleEvent
             $profiler?->stop();
         }
     }
-
-    // public function __construct(
-    //         protected readonly ResponseRenderer $responseRenderer,
-    // ) {}
-    // public function __invoke( ResponseEvent $event ) : void
-    // {
-    //     if ( $this->skipEvent() ) {
-    //         return;
-    //     }
-    //
-    //     $profiler = $this->profiler?->event( 'response' );
-    //
-    //     if ( $this->getSetting( 'view.template.clear_cache', false ) ) {
-    //         $this->responseRenderer
-    //             ->templateEngine
-    //             ->clearTemplateCache();
-    //     }
-    //
-    //     $template = $event->getRequest()->attributes->get( '_template' );
-    //
-    //     \assert( \is_null( $template ) || $template instanceof Template );
-    //
-    //     $profileContent = $this->profiler?->event( 'response.content' );
-    //     $this->responseRenderer
-    //         ->setResponseContent( $event, $template );
-    //     $profileContent?->stop();
-    //
-    //     $profileRender = $this->profiler?->event( 'render.response' );
-    //     $event->setResponse(
-    //         $this->responseRenderer->getResponse(),
-    //     );
-    //     $profileRender?->stop();
-    //
-    //     $profiler?->stop();
-    // }
 }

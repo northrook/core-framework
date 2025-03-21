@@ -1,8 +1,8 @@
 <?php
 
-namespace Core\Framework\Routing;
+declare(strict_types=1);
 
-use Symfony\Component\Config\Loader\Loader;
+namespace Core\Framework\Routing;
 
 /**
  * @see https://symfony.com/doc/current/routing/custom_route_loader.html

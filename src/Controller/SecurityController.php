@@ -4,9 +4,8 @@ namespace Core\Controller;
 
 use Core\Framework\Controller;
 use Core\Framework\Exception\HttpNotFoundException;
-use Core\Framework\Response\Parameters;
-use Core\Framework\Response\Template;
-use Core\Framework\Controller\Attribute\{OnDocument};
+use Core\Framework\Response\{Parameters, Template};
+use Core\Framework\Controller\Attribute\OnDocument;
 use Core\View\Document;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
