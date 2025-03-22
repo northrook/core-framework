@@ -39,7 +39,7 @@ final class DevHotlinks extends AbstractDataCollector
                 'href' => '/demo',
             ],
             'admin' => [
-                'href' => "admin.{$host}",
+                'href' => "https://admin.{$host}",
             ],
         ];
 

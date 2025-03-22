@@ -6,7 +6,7 @@ namespace Core\Framework\Routing;
 
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
-use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Routing\{Route, RouteCollection};
 use RuntimeException;
 
 #[AutoconfigureTag( 'routing.loader' )]
@@ -40,6 +40,11 @@ abstract class RouteLoader extends Loader
         $this->isLoaded = $this->routeCollection( $resource, $type );
 
         return $this->routes;
+    }
+
+    final protected function add( string $name, Route $route, int $priority = 0 ) : void
+    {
+        $this->routes->add( $name, $route, $priority );
     }
 
     public function supports( $resource, ?string $type = null ) : bool

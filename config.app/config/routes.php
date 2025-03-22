@@ -17,4 +17,5 @@ return static function( RoutingConfigurator $routes ) : void {
 
     $routes->import( $appControllers, 'attribute' );
     $routes->import( $coreControllers, 'attribute' );
+    $routes->import( '.', 'admin' );
 };
