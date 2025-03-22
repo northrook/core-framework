@@ -13,11 +13,6 @@ use Core\View\{ComponentFactory, Document};
 use Symfony\Component\HttpFoundation\{Request};
 use Symfony\Component\Routing\Attribute\Route;
 
-// #[Route(
-//     path     : '/',
-//     name     : 'public.',
-//     priority : -1,
-// )]
 final class PublicController extends Controller
 {
     #[OnDocument]

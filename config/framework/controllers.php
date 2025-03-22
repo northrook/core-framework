@@ -17,36 +17,29 @@ return static function( ContainerConfigurator $container ) : void {
         param( 'kernel.environment' ),
         service( SettingsProvider::class ),
     ];
-    $router = $container->services()->defaults()
+
+    $router = $container->services()
+        ->defaults()
         ->tag( 'routing.loader' );
 
-    $router->set( AdminRouteLoader::class )
-        ->args( $router_args );
-
-    $router->set( AssetsRouteLoader::class )
-        ->args( $router_args );
-
-    $router->set( PublicRouteLoader::class )
-        ->args( $router_args );
-
-    $router->set( SecurityRouteLoader::class )
-        ->args( $router_args );
-
-    $framework = $container->services()
+    $controller = $container->services()
         ->defaults()
         ->tag( 'controller.service_arguments' )
         ->tag( 'monolog.logger', ['channel' => 'request'] );
 
-    $framework->set( AdminController::class );
+    $controller->set( AdminController::class );
+    $router->set( AdminRouteLoader::class )
+        ->args( $router_args );
 
-    $framework->set( AssetController::class );
+    $controller->set( AssetController::class );
+    $router->set( AssetsRouteLoader::class )
+        ->args( $router_args );
 
-    $framework->set( SecurityController::class );
+    $controller->set( PublicController::class );
+    $router->set( PublicRouteLoader::class )
+        ->args( $router_args );
 
-    $framework->set( PublicController::class );
-    // ->autowire();
-
-    // $framework
-    //     ->set( AdminController::class )
-    //     ->autowire();
+    $controller->set( SecurityController::class );
+    $router->set( SecurityRouteLoader::class )
+        ->args( $router_args );
 };

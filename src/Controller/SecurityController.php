@@ -10,12 +10,6 @@ use Core\View\Document;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-// #[Route(
-//     name     : 'security.',
-//     methods  : ['GET', 'POST'],
-//     schemes  : 'https',
-//     priority : 64,
-// )]
 #[Template( 'security.latte' )]
 final class SecurityController extends Controller
 {

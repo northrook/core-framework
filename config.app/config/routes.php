@@ -14,11 +14,11 @@ return static function( RoutingConfigurator $routes ) : void {
 
     $routes->import( $appControllers, 'attribute' );
 
-    $routes->import( PublicController::class, 'public' );
-    $routes->import( AdminController::class, 'admin' );
-    $routes->import( SecurityController::class, 'security' );
-
-    $routes->import( AssetController::class, 'assets' );
+    // $routes->import( PublicController::class, 'public' );
+    // $routes->import( AdminController::class, 'admin' );
+    // $routes->import( SecurityController::class, 'security' );
+    //
+    // $routes->import( AssetController::class, 'assets' );
     // $routes->import( SystemController::class, 'system' );
 
     // $coreControllers = [

@@ -12,11 +12,6 @@ use Support\Image;
 use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
 
-// #[Route(
-//     name    : 'assets.',
-//     methods : 'GET',
-//     schemes : 'https',
-// )]
 final class AssetController
 {
     #[Route( '{path}', 'fallback', requirements : ['path' => '.+'] )]

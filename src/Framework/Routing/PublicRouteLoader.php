@@ -27,6 +27,7 @@ final class PublicRouteLoader extends RouteLoader
     {
         $this->name( 'public' )
             ->path( '/' )
+            ->host( '{_locale}.{domain}.{tld}' )
             ->scheme( 'https' )
             ->method( 'GET' );
     }
