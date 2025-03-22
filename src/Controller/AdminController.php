@@ -11,13 +11,13 @@ use Core\View\{Document};
 use Symfony\Component\HttpKernel\Profiler\Profiler;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route(
-    path    : '/',
-    name    : 'admin.',
-    host    : 'admin.{domain}.{tld}',
-    methods : 'GET',
-    schemes : 'https',
-)]
+// #[Route(
+//     path    : '/',
+//     name    : 'admin.',
+//     host    : 'admin.{domain}.{tld}',
+//     methods : 'GET',
+//     schemes : 'https',
+// )]
 #[Template( document : 'admin.latte' )]
 final class AdminController extends Controller
 {

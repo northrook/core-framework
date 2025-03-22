@@ -9,19 +9,28 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Core\Controller\{AdminController, AssetController, PublicController, SecurityController};
-use Core\Framework\Routing\AdminRouteLoader;
+use Core\Framework\Routing\{AdminRouteLoader, AssetsRouteLoader, PublicRouteLoader, SecurityRouteLoader};
 use Core\Symfony\DependencyInjection\SettingsProvider;
 
 return static function( ContainerConfigurator $container ) : void {
-    $container->services()
-        ->set( AdminRouteLoader::class )
-        ->tag( 'routing.loader' )
-        ->args(
-            [
-                param( 'kernel.environment' ),
-                service( SettingsProvider::class ),
-            ],
-        );
+    $router_args = [
+        param( 'kernel.environment' ),
+        service( SettingsProvider::class ),
+    ];
+    $router = $container->services()->defaults()
+        ->tag( 'routing.loader' );
+
+    $router->set( AdminRouteLoader::class )
+        ->args( $router_args );
+
+    $router->set( AssetsRouteLoader::class )
+        ->args( $router_args );
+
+    $router->set( PublicRouteLoader::class )
+        ->args( $router_args );
+
+    $router->set( SecurityRouteLoader::class )
+        ->args( $router_args );
 
     $framework = $container->services()
         ->defaults()

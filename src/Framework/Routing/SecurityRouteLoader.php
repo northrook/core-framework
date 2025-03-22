@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Core\Framework\Routing;
 
-use Core\Controller\{AssetController};
-use Symfony\Component\Routing\Route;
+use Core\Controller\SecurityController;
+use Core\Framework\Config\RouteLoader;
 
 /**
  * @see https://symfony.com/doc/current/routing/custom_route_loader.html
@@ -14,24 +14,20 @@ final class SecurityRouteLoader extends RouteLoader
 {
     public function type() : string
     {
-        return 'assets';
+        return 'security';
     }
 
     // @phpstan-ignore-next-line
     public function controller() : string|false
     {
-        return AssetController::class;
+        return SecurityController::class;
     }
 
-    protected function compile( mixed $resource, ?string $type ) : bool
+    protected function compile( mixed $resource, ?string $type ) : void
     {
         $this
-            ->name( 'assets' )
-            ->path( '/assets/' )
+            ->name( 'security' )
             ->scheme( 'https' )
-            ->method( 'GET' );
-
-        dump( $this->routes );
-        return true;
+            ->method( 'GET', 'POST' );
     }
 }

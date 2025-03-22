@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Core\Framework\Routing;
+namespace Core\Framework\Config;
 
-use Core\Framework\Controller;
 use Core\Interface\SettingsProviderInterface;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
@@ -33,7 +32,7 @@ abstract class RouteLoader extends Loader
 
     abstract public function type() : string;
 
-    abstract protected function compile( mixed $resource, ?string $type ) : bool;
+    abstract protected function compile( mixed $resource, ?string $type ) : void;
 
     /**
      * @see https://symfony.com/doc/current/routing/custom_route_loader.html#creating-a-custom-loader
@@ -52,9 +51,11 @@ abstract class RouteLoader extends Loader
 
         $this->routes ??= new RouteCollection();
 
-        $this->importController( $this->controller() );
+        $this
+            ->importController( $this->controller() )
+            ->compile( $resource, $type );
 
-        $this->isLoaded = $this->compile( $resource, $type );
+        $this->isLoaded = true;
 
         return $this->routes;
     }
@@ -86,7 +87,7 @@ abstract class RouteLoader extends Loader
 
     final protected function name( string $name ) : self
     {
-        $this->routes->addNamePrefix( \trim( $name, " \n\r\t\v\0." ) );
+        $this->routes->addNamePrefix( \trim( $name, " \n\r\t\v\0." ).'.' );
         return $this;
     }
 

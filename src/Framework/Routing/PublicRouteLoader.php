@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Core\Framework\Routing;
 
-use Core\Controller\{PublicController};
-use Symfony\Component\Routing\Route;
+use Core\Controller\PublicController;
+use Core\Framework\Config\RouteLoader;
 
 /**
  * @see https://symfony.com/doc/current/routing/custom_route_loader.html
@@ -14,7 +14,7 @@ final class PublicRouteLoader extends RouteLoader
 {
     public function type() : string
     {
-        return 'admin';
+        return 'public';
     }
 
     // @phpstan-ignore-next-line
@@ -23,14 +23,11 @@ final class PublicRouteLoader extends RouteLoader
         return PublicController::class;
     }
 
-    protected function compile( mixed $resource, ?string $type ) : bool
+    protected function compile( mixed $resource, ?string $type ) : void
     {
         $this->name( 'public' )
             ->path( '/' )
             ->scheme( 'https' )
             ->method( 'GET' );
-
-        dump( $this->routes );
-        return true;
     }
 }
