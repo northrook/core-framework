@@ -92,18 +92,18 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
 
         $calledMethods = [];
 
+        // Loop through each Controller::method
         foreach ( ( new ReflectionClass( $this ) )->getMethods() as $method ) {
+            // Only parse methods with a OnView attribute
             if ( ! $method->getAttributes( $responseType ) ) {
                 continue;
             }
 
-            $action = $method->getName();
-
-            $this->profiler?->event( $action );
-
+            $action     = $method->getName();
+            $profiler   = $this->profiler?->event( $action );
             $parameters = [];
 
-            // Locate requested services
+            // Locate requested services arguments
             foreach ( $method->getParameters() as $parameter ) {
                 $injectableClass = $parameter->getType()?->__toString();
 
@@ -132,7 +132,7 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
                 $this->logger?->error( $exception->getMessage(), ['exception' => $exception] );
             }
 
-            $this->profiler?->stop( $action );
+            $profiler?->stop();
         }
 
         $this->request->attributes->set( '_controller_actions', $calledMethods );

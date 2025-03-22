@@ -8,11 +8,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\Framework\Profiler\{
-    ParameterSettingsCollector,
-    PipelineCollector,
-    ProfilerBar
-};
+use Core\Framework\Profiler\{DevHotlinks, ParameterSettingsCollector, PipelineCollector, ProfilerBar};
 use Symfony\Component\HttpKernel\Profiler\Profiler;
 use Symfony\Component\Stopwatch\Stopwatch;
 
@@ -40,7 +36,10 @@ return static function( ContainerConfigurator $container ) : void {
             // ->tag( 'kernel.event_subscriber' )
             // ->args( [service( Clerk::class )] )
 
-            // Profiler
+            // Easy links for navigating the _dev stage
+        ->set( DevHotlinks::class )
+        ->tag( 'data_collector' )
+            //
         ->set( PipelineCollector::class )
         ->tag( 'data_collector' )
             //

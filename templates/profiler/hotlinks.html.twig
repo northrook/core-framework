@@ -1,0 +1,22 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block toolbar %}
+
+    {% set icon %}
+        {{ source('@WebProfiler/Icon/forward.svg') }}
+        <span class="sf-toolbar-value">Go</span>
+    {% endset %}
+
+    {% set text %}
+        <div class="sf-toolbar-info-group">
+            {% for label, link in collector.links %}
+                <div class="sf-toolbar-info-piece">
+                    <b>{{ label }}</b>
+                    <a href="{{ link.href }}">{{ link.href }}</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endset %}
+
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: profiler_url }) }}
+{% endblock %}
