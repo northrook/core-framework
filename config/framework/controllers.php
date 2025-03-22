@@ -15,6 +15,7 @@ use Core\Symfony\DependencyInjection\SettingsProvider;
 return static function( ContainerConfigurator $container ) : void {
     $container->services()
         ->set( AdminRouteLoader::class )
+        ->tag( 'routing.loader' )
         ->args(
             [
                 param( 'kernel.environment' ),

@@ -20,46 +20,33 @@ final class AdminRouteLoader extends RouteLoader
         parent::__construct( $env );
     }
 
-    protected function routeCollection( mixed $resource, ?string $type ) : bool
-    {
-        if ( $this->settings->get( 'admin.access.sub_domain', true ) ) {
-            $route = $this->subodomainRoute();
-        }
-        else {
-            $route = $this->domainPathRoute();
-        }
-
-        $route->setDefault(
-            '_controller',
-            AdminController::class,
-        );
-
-        $route
-            ->setSchemes( 'https' )
-            ->setMethods( 'GET' );
-
-        $this->routes->add( 'admin', $route );
-
-        return true;
-    }
-
     public function type() : string
     {
         return 'admin';
     }
 
-    private function subodomainRoute() : Route
+    // @phpstan-ignore-next-line
+    public function controller() : string|false
     {
-        return new Route(
-            path : '/',
-            host : 'admin.{domain}.{tld}',
-        );
+        return AdminController::class;
     }
 
-    private function domainPathRoute() : Route
+    protected function compile( mixed $resource, ?string $type ) : bool
     {
-        return new Route(
-            path : '/admin',
-        );
+        $this->name( 'admin' )
+            ->scheme( 'https' )
+            ->method( 'GET' );
+
+        if ( $this->settings->get( 'admin.access.sub_domain', true ) ) {
+            $this
+                ->path( '/' )
+                ->host( 'admin.{domain}.{tld}' );
+        }
+        else {
+            $this->path( '/admin' );
+        }
+
+        dump( $this->routes );
+        return true;
     }
 }

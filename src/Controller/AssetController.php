@@ -12,14 +12,14 @@ use Support\Image;
 use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
 
-#[Route(
-    name    : 'assets.',
-    methods : 'GET',
-    schemes : 'https',
-)]
+// #[Route(
+//     name    : 'assets.',
+//     methods : 'GET',
+//     schemes : 'https',
+// )]
 final class AssetController
 {
-    #[Route( '/assets/{path}', 'fallback', requirements : ['path' => '.+'] )]
+    #[Route( '{path}', 'fallback', requirements : ['path' => '.+'] )]
     public function index(
         Request      $request,
         Toast        $toast,
