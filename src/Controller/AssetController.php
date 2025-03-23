@@ -14,7 +14,7 @@ use Throwable;
 
 final class AssetController
 {
-    #[Route( '{path}', 'fallback', requirements : ['path' => '.+'] )]
+    #[Route( '/assets/{path}', 'fallback', requirements : ['path' => '.+'] )]
     public function index(
         Request      $request,
         Toast        $toast,

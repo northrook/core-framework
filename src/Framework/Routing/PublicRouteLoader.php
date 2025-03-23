@@ -7,9 +7,6 @@ namespace Core\Framework\Routing;
 use Core\Controller\PublicController;
 use Core\Framework\Config\RouteLoader;
 
-/**
- * @see https://symfony.com/doc/current/routing/custom_route_loader.html
- */
 final class PublicRouteLoader extends RouteLoader
 {
     public function type() : string
@@ -17,8 +14,7 @@ final class PublicRouteLoader extends RouteLoader
         return 'public';
     }
 
-    // @phpstan-ignore-next-line
-    public function controller() : string|false
+    public function controller() : string
     {
         return PublicController::class;
     }
@@ -27,7 +23,14 @@ final class PublicRouteLoader extends RouteLoader
     {
         $this->name( 'public' )
             ->path( '/' )
-            ->host( '{_locale}.{domain}.{tld}' )
+            ->host(
+                pattern      : '{_locale}{_host}',
+                defaults     : ['_locale' => ''],
+                requirements : [
+                    '_locale' => '[a-z]*\.|',
+                    '_host'   => '.+',
+                ],
+            )
             ->scheme( 'https' )
             ->method( 'GET' );
     }

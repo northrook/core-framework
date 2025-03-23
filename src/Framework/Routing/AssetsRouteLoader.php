@@ -7,9 +7,6 @@ namespace Core\Framework\Routing;
 use Core\Controller\AssetController;
 use Core\Framework\Config\RouteLoader;
 
-/**
- * @see https://symfony.com/doc/current/routing/custom_route_loader.html
- */
 final class AssetsRouteLoader extends RouteLoader
 {
     public function type() : string
@@ -17,8 +14,7 @@ final class AssetsRouteLoader extends RouteLoader
         return 'assets';
     }
 
-    // @phpstan-ignore-next-line
-    public function controller() : string|false
+    public function controller() : string
     {
         return AssetController::class;
     }
@@ -27,7 +23,7 @@ final class AssetsRouteLoader extends RouteLoader
     {
         $this
             ->name( 'assets' )
-            ->path( '/assets/' )
+            ->path( '/' )
             ->scheme( 'https' )
             ->method( 'GET' );
     }

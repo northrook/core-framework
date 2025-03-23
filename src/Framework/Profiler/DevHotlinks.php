@@ -23,27 +23,33 @@ final class DevHotlinks extends AbstractDataCollector
             $requestAssets = \explode( ',', $requestAssets );
         }
 
-        $host = $request->getHttpHost();
+        $this->data['links'] = [];
 
-        $links = [
-            'home' => [
-                'href' => '/',
-            ],
-            'welcome' => [
-                'href' => '/welcome',
-            ],
-            'onboarding' => [
-                'href' => '/onboarding',
-            ],
-            'demo' => [
-                'href' => '/demo',
-            ],
-            'admin' => [
-                'href' => "https://admin.{$host}",
-            ],
+        $host = (string) $request->get(
+            '_host',
+            $request->getHost(),
+        );
+
+        $this
+            ->addLink( 'Home', '/' )
+            ->addLink( 'Demo', '/demo' )
+            ->addLink( 'Welcome', '/welcome' )
+            ->addLink( 'Onboarding', '/onboarding' )
+            ->addLink( 'Admin', "https://admin.{$host}", 'admin.' );
+    }
+
+    protected function addLink(
+        string  $label,
+        string  $href,
+        ?string $path = null,
+    ) : self {
+        $this->data['links'][$label] = [
+            'label' => $label,
+            'href'  => $href,
+            'path'  => $path ?? $href,
         ];
 
-        $this->data = ['links' => $links];
+        return $this;
     }
 
     public function links() : array

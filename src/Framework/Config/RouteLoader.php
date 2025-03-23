@@ -6,12 +6,13 @@ namespace Core\Framework\Config;
 
 use Core\Interface\SettingsProviderInterface;
 use Symfony\Component\Config\Loader\Loader;
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Symfony\Component\Routing\{Route, RouteCollection};
 use RuntimeException;
 use InvalidArgumentException;
 
-#[AutoconfigureTag( 'routing.loader' )]
+/**
+ * @see https://symfony.com/doc/current/routing/custom_route_loader.html
+ */
 abstract class RouteLoader extends Loader
 {
     private bool $isLoaded = false;
@@ -75,7 +76,7 @@ abstract class RouteLoader extends Loader
             $import = $this->import( $controller, 'attribute' );
             \assert( $import instanceof RouteCollection );
             $this->routes->addCollection( $import );
-            $this->routes->setHost( '{domain}.{tld}' );
+            $this->routes->setHost( '{_host}' );
         }
         else {
             $message = "The controller '{$controller}' does not exists.";

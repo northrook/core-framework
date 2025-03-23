@@ -9,10 +9,12 @@
 
     {% set text %}
         <div class="sf-toolbar-info-group">
-            {% for label, link in collector.links %}
+            {% for link in collector.links %}
                 <div class="sf-toolbar-info-piece">
-                    <b>{{ label }}</b>
-                    <a href="{{ link.href }}">{{ link.href }}</a>
+                    <b>
+                        <a href="{{ link.href }}">{{ link.label }}</a>
+                    </b>
+                    <code style="color: var(--sf-toolbar-gray-100); background-color: var(--sf-toolbar-gray-600);">{{ link.path }}</code>
                 </div>
             {% endfor %}
         </div>

@@ -56,6 +56,7 @@ final class PublicController extends Controller
     public function tailwind(
         Document $document,
     ) : string {
+        dump( $this->request->attributes->get( '_route_params' ) );
         $document( 'Tailwind Demo Template' );
         // $document->script( 'https://cdn.tailwindcss.com', 'tailwindcss' );
 

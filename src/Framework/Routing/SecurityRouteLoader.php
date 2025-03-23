@@ -7,9 +7,6 @@ namespace Core\Framework\Routing;
 use Core\Controller\SecurityController;
 use Core\Framework\Config\RouteLoader;
 
-/**
- * @see https://symfony.com/doc/current/routing/custom_route_loader.html
- */
 final class SecurityRouteLoader extends RouteLoader
 {
     public function type() : string
@@ -17,8 +14,7 @@ final class SecurityRouteLoader extends RouteLoader
         return 'security';
     }
 
-    // @phpstan-ignore-next-line
-    public function controller() : string|false
+    public function controller() : string
     {
         return SecurityController::class;
     }
