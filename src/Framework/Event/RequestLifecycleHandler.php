@@ -49,30 +49,6 @@ final class RequestLifecycleHandler extends LifecycleEvent
         $profiler?->stop();
     }
 
-    private function getValidLocale() : string
-    {
-        $_locale  = \trim( $this->request->getLocale(), " \n\r\t\v\0." );
-        $_enabled = $this->getSetting(
-            'site.enabled_locales',
-            ['en', 'dk', 'nl'],
-        );
-
-        if ( \strlen( $_locale ) > 2 ) {
-            $message = "Unknown locale: '{$_locale}'";
-            throw new NotFoundHttpException( $message );
-        }
-
-        if ( ! \in_array( $_locale, $_enabled ) ) {
-            $_locale = 'en';
-            $this->logger?->warning(
-                'Unknown locale: {_locale}',
-                ['_locale' => $_locale],
-            );
-        }
-
-        return $_locale;
-    }
-
     protected function setRequestLocale() : void
     {
         $_locale = $this->getValidLocale();
@@ -110,5 +86,29 @@ final class RequestLifecycleHandler extends LifecycleEvent
     private function getRouteParameters() : array
     {
         return $this->attributes->get( '_route_params', [] );
+    }
+
+    private function getValidLocale() : string
+    {
+        $_locale = \trim( $this->request->getLocale(), " \n\r\t\v\0." );
+        if ( \strlen( $_locale ) > 2 ) {
+            $message = "Unknown locale: '{$_locale}'";
+            throw new NotFoundHttpException( $message );
+        }
+
+        $_enabled = $this->getSetting(
+            'site.enabled_locales',
+            ['en', 'dk', 'nl'],
+        );
+
+        if ( ! \in_array( $_locale, $_enabled ) ) {
+            $_locale = 'en';
+            $this->logger?->warning(
+                'Unknown locale: {_locale}',
+                ['_locale' => $_locale],
+            );
+        }
+
+        return $_locale;
     }
 }

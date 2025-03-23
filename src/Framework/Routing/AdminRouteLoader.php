@@ -24,7 +24,10 @@ final class AdminRouteLoader extends RouteLoader
         if ( $this->settings->get( 'admin.access.sub_domain', true ) ) {
             $this
                 ->path( '/' )
-                ->host( 'admin.{_host}' );
+                ->host(
+                    pattern      : 'admin.{_host}',
+                    requirements : ['_host' => '.+'],
+                );
         }
         else {
             $this->path( '/admin' );

@@ -6,6 +6,7 @@ use Override;
 use Symfony\Bundle\FrameworkBundle\DataCollector\AbstractDataCollector;
 use Throwable;
 use Symfony\Component\HttpFoundation\{Request, Response};
+use function Support\str_after;
 
 final class DevHotlinks extends AbstractDataCollector
 {
@@ -18,24 +19,16 @@ final class DevHotlinks extends AbstractDataCollector
     #[Override]
     public function collect( Request $request, Response $response, ?Throwable $exception = null ) : void
     {
-        $requestAssets = $request->headers->get( 'X-Request-Assets', 'core, document' );
-        if ( $requestAssets ) {
-            $requestAssets = \explode( ',', $requestAssets );
-        }
-
         $this->data['links'] = [];
 
-        $host = (string) $request->get(
-            '_host',
-            $request->getHost(),
-        );
+        $host = 'sf-temp.wip';
 
         $this
-            ->addLink( 'Home', '/' )
-            ->addLink( 'Demo', '/demo' )
-            ->addLink( 'Welcome', '/welcome' )
-            ->addLink( 'Onboarding', '/onboarding' )
-            ->addLink( 'Admin', "https://admin.{$host}", 'admin.' );
+            ->addLink( 'Home', "https://{$host}/" )
+            ->addLink( 'Demo', "https://{$host}/demo" )
+            ->addLink( 'Welcome', "https://{$host}/welcome" )
+            ->addLink( 'Onboarding', "https://{$host}/onboarding" )
+            ->addLink( 'Admin', "https://admin.{$host}" );
     }
 
     protected function addLink(
@@ -46,7 +39,7 @@ final class DevHotlinks extends AbstractDataCollector
         $this->data['links'][$label] = [
             'label' => $label,
             'href'  => $href,
-            'path'  => $path ?? $href,
+            'path'  => $path ?? \ltrim( str_after( $href, '//' ), '/' ),
         ];
 
         return $this;
