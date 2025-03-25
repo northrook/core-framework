@@ -7,7 +7,7 @@ namespace Core\Framework\Event;
 use Core\AssetManager;
 use Core\AssetManager\Interface\MinifiedAssetInterface;
 use Core\Symfony\ToastService;
-use Core\View\{DocumentEngine, TemplateEngine};
+use Core\View\{DocumentEngine, Html\HtmlFormatter, TemplateEngine};
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Core\Framework\Lifecycle\LifecycleEvent;
 use InvalidArgumentException;
@@ -37,6 +37,31 @@ final class ResponseViewHandler extends LifecycleEvent
         private readonly AssetManager   $assetManager,
         private readonly ToastService   $toastService,
     ) {}
+
+    public function __invoke( ResponseEvent $event ) : void
+    {
+        if ( $this->skipEvent() ) {
+            return;
+        }
+
+        $this->responseProperties( $event );
+
+        $profiler = $this->profiler?->event( 'response.'.( $this->view?->name() ?? 'render' ) );
+
+        $this->resolveContent( $event );
+
+        $this->handleEnqueuedAssets();
+
+        $html = new HtmlFormatter(
+            $this->documentEngine->__toString(),
+        );
+
+        $event->getResponse()->setContent(
+            $html->toString( true ),
+        );
+
+        $profiler?->stop();
+    }
 
     private function responseProperties( ResponseEvent $event ) : void
     {
@@ -100,27 +125,6 @@ final class ResponseViewHandler extends LifecycleEvent
         );
 
         $this->documentEngine->setInnerHtml( $content );
-
-        $profiler?->stop();
-    }
-
-    public function __invoke( ResponseEvent $event ) : void
-    {
-        if ( $this->skipEvent() ) {
-            return;
-        }
-
-        $this->responseProperties( $event );
-
-        $profiler = $this->profiler?->event( 'response.'.( $this->view?->name() ?? 'render' ) );
-
-        $this->resolveContent( $event );
-
-        $this->handleEnqueuedAssets();
-
-        $event->getResponse()->setContent(
-            $this->documentEngine->__toString(),
-        );
 
         $profiler?->stop();
     }

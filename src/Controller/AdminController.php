@@ -8,6 +8,7 @@ use Core\Framework\Controller;
 use Core\Framework\Response\{Parameters, Template};
 use Core\Framework\Controller\Attribute\{OnDocument};
 use Core\View\{Document};
+use Symfony\Bundle\WebProfilerBundle\EventListener\WebDebugToolbarListener;
 use Symfony\Component\HttpKernel\Profiler\Profiler;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -31,13 +32,9 @@ final class AdminController extends Controller
     )]
     #[Template( 'admin/dashboard.latte' )]
     public function dashboard(
-        Profiler $profiler,
+        Profiler                $profiler,
+        WebDebugToolbarListener $debugBar,
     ) : void {
-        // $profiler->disable();
-
-        dump(
-            $this,
-            \get_defined_vars(),
-        );
+        $debugBar->setMode( $debugBar::DISABLED );
     }
 }

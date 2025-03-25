@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\Framework\Profiler;
 
-use Override;
 use Symfony\Bundle\FrameworkBundle\DataCollector\AbstractDataCollector;
-use Throwable;
 use Symfony\Component\HttpFoundation\{Request, Response};
+use Override, Throwable;
 use function Support\str_after;
 
 final class DevHotlinks extends AbstractDataCollector
@@ -45,6 +46,9 @@ final class DevHotlinks extends AbstractDataCollector
         return $this;
     }
 
+    /**
+     * @return array<string, array{'label': string,'href': string,'path':string}>
+     */
     public function links() : array
     {
         return $this->data['links'] ?? [];

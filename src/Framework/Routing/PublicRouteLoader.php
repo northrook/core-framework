@@ -19,7 +19,7 @@ final class PublicRouteLoader extends RouteLoader
         return PublicController::class;
     }
 
-    protected function compile( mixed $resource, ?string $type ) : void
+    protected function configure( mixed $resource, ?string $type ) : void
     {
         $this->name( 'public' )
             ->path( '/' )

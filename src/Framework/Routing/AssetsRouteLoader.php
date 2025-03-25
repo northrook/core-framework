@@ -19,7 +19,7 @@ final class AssetsRouteLoader extends RouteLoader
         return AssetController::class;
     }
 
-    protected function compile( mixed $resource, ?string $type ) : void
+    protected function configure( mixed $resource, ?string $type ) : void
     {
         $this
             ->name( 'assets' )

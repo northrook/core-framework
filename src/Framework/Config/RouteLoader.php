@@ -33,11 +33,9 @@ abstract class RouteLoader extends Loader
 
     abstract public function type() : string;
 
-    abstract protected function compile( mixed $resource, ?string $type ) : void;
+    abstract protected function configure( mixed $resource, ?string $type ) : void;
 
     /**
-     * @see https://symfony.com/doc/current/routing/custom_route_loader.html#creating-a-custom-loader
-     *
      * @param mixed       $resource
      * @param null|string $type
      *
@@ -54,7 +52,7 @@ abstract class RouteLoader extends Loader
 
         $this
             ->importController( $this->controller() )
-            ->compile( $resource, $type );
+            ->configure( $resource, $type );
 
         $this->isLoaded = true;
 

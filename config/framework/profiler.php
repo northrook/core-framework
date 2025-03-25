@@ -9,41 +9,29 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Core\Framework\Profiler\{DevHotlinks, ParameterSettingsCollector, PipelineCollector, ProfilerBar};
+use Symfony\Bundle\WebProfilerBundle\EventListener\WebDebugToolbarListener;
 use Symfony\Component\HttpKernel\Profiler\Profiler;
-use Symfony\Component\Stopwatch\Stopwatch;
 
 return static function( ContainerConfigurator $container ) : void {
     $services = $container->services();
 
     $services->alias( Profiler::class, 'profiler' );
+    $services->alias( WebDebugToolbarListener::class, 'web_profiler.debug_toolbar' );
 
     $services->set( ProfilerBar::class )
         ->autowire()
         ->tag( 'kernel.event_listener' );
 
-    $container->services()
-            // ->set( Clerk::class )
-            // ->args(
-            //     [
-            //         service( Stopwatch::class ),
-            //         service( 'logger' ),
-            //         param( 'kernel.debug' ), // enabled when debugging, regardless of env
-            //     ],
-            // )
-
-            // TelemetryEventSubscriber
-            // ->set( ClerkProfiler::class )
-            // ->tag( 'kernel.event_subscriber' )
-            // ->args( [service( Clerk::class )] )
-
+    $services
             // Easy links for navigating the _dev stage
         ->set( DevHotlinks::class )
-        ->tag( 'data_collector' )
-            //
+        ->tag( 'data_collector' );
+    //
+    $services
         ->set( PipelineCollector::class )
-        ->tag( 'data_collector' )
-            //
-        ->set( ParameterSettingsCollector::class )
+        ->tag( 'data_collector' );
+    //
+    $services->set( ParameterSettingsCollector::class )
         ->args(
             [
                 service( 'parameter_bag' ),

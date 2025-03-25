@@ -19,7 +19,7 @@ final class SystemRouteLoader extends RouteLoader
         return SystemController::class;
     }
 
-    protected function compile( mixed $resource, ?string $type ) : void
+    protected function configure( mixed $resource, ?string $type ) : void
     {
         $this
             ->scheme( 'https' )
