@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Core\Framework\Event;
 
 use Core\Framework\Lifecycle\LifecycleEvent;
-use Core\Framework\Response\{View, ViewResponse};
+use Core\Framework\Response\{ResponseView, ViewResponse};
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\{ResponseEvent, ViewEvent};
 use Symfony\Component\HttpFoundation\Response;
@@ -42,7 +42,7 @@ final class ResponseContentHandler extends LifecycleEvent implements EventSubscr
 
         $_response = $event->getRequest()->attributes->get( '_view' );
 
-        if ( $_response instanceof View ) {
+        if ( $_response instanceof ResponseView ) {
             $event->setResponse( new ViewResponse( $_response, $content ) );
         }
         else {
@@ -62,7 +62,7 @@ final class ResponseContentHandler extends LifecycleEvent implements EventSubscr
 
         $_response_view = $event->getRequest()->attributes->get( '_view' );
 
-        if ( $_response_view instanceof View ) {
+        if ( $_response_view instanceof ResponseView ) {
             $event->setResponse(
                 new ViewResponse(
                     $_response_view,

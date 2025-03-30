@@ -26,7 +26,7 @@ use Symfony\Component\HttpKernel\Event\{
     ResponseEvent,
     ViewEvent
 };
-use Core\View\{DocumentEngine, TemplateEngine};
+use Core\View\{DocumentEngine, Template\Engine};
 
 return static function( ContainerConfigurator $container ) : void {
     $subscriber = $container->services()
@@ -65,7 +65,7 @@ return static function( ContainerConfigurator $container ) : void {
         ->args(
             [
                 service( DocumentEngine::class ),
-                service( TemplateEngine::class ),
+                service( Engine::class ),
                 service( Parameters::class ),
                 service( AssetManager::class ),
                 service( ToastService::class ),

@@ -8,17 +8,15 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\View\{
-    Document,
+use Core\View\{Document,
     DocumentEngine,
-    TemplateEngine,
     ComponentFactory,
     ComponentFactory\ComponentBag,
     IconSet,
     Latte\ViewComponentExtension,
+    Template\Engine
 };
 use Core\Interface\IconProviderInterface;
-use Core\Pathfinder;
 use const Support\PLACEHOLDER_ARGS;
 
 return static function( ContainerConfigurator $container ) : void {
@@ -75,20 +73,19 @@ return static function( ContainerConfigurator $container ) : void {
         );
 
     $services
-        ->set( TemplateEngine::class )
+        ->set( Engine::class )
         ->args(
             [
                 param( 'dir.cache.view' ),
-                service( Pathfinder::class ),
                 [
                     param( 'dir.templates' ),
                     param( 'dir.core.templates' ),
                 ],
-                [service( ViewComponentExtension::class )],
+                [],
                 param( 'kernel.default_locale' ),
-                param( 'kernel.debug' ),
             ],
-        );
+        )
+        ->call( 'addExtension', [service( ViewComponentExtension::class )] );
 
     $services
         ->set( DocumentEngine::class )

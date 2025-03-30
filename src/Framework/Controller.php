@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Framework;
 
-use Core\Framework\Response\{View, ViewResponse};
+use Core\Framework\Response\{ResponseView, ViewResponse};
 use Core\Profiler\Interface\Profilable;
 use Core\Profiler\{StopwatchProfiler};
 use Symfony\Component\HttpFoundation\{Request};
@@ -61,7 +61,7 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
     ) : ViewResponse {
         $view = $this->request->attributes->get( '_response' );
 
-        if ( ! $view instanceof View ) {
+        if ( !$view instanceof ResponseView ) {
             $message = "Expected a 'View::TYPE' on this 'ResponseEvent'.";
             throw new InvalidArgumentException( $message );
         }

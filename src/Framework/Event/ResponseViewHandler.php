@@ -7,11 +7,11 @@ namespace Core\Framework\Event;
 use Core\AssetManager;
 use Core\AssetManager\Interface\MinifiedAssetInterface;
 use Core\Symfony\ToastService;
-use Core\View\{DocumentEngine, Html\HtmlFormatter, TemplateEngine};
+use Core\View\{DocumentEngine, Html\HtmlFormatter, Template\Engine};
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Core\Framework\Lifecycle\LifecycleEvent;
 use InvalidArgumentException;
-use Core\Framework\Response\{Parameters, Template, View};
+use Core\Framework\Response\{Parameters, Template, ResponseView};
 
 /**
  * {@see ResponseEvent}
@@ -26,13 +26,13 @@ use Core\Framework\Response\{Parameters, Template, View};
  */
 final class ResponseViewHandler extends LifecycleEvent
 {
-    private readonly ?View $view;
+    private readonly ?ResponseView $view;
 
     private readonly ?Template $template;
 
     public function __construct(
         private readonly DocumentEngine $documentEngine,
-        private readonly TemplateEngine $templateEngine,
+        private readonly Engine         $templateEngine,
         private readonly Parameters     $parameters,
         private readonly AssetManager   $assetManager,
         private readonly ToastService   $toastService,
@@ -71,7 +71,7 @@ final class ResponseViewHandler extends LifecycleEvent
 
         // @phpstan-ignore-next-line
         $this->view = $event->getRequest()->attributes->get( '_view' );
-        \assert( $this->view instanceof View || \is_null( $this->view ) );
+        \assert( $this->view instanceof ResponseView || \is_null( $this->view ) );
     }
 
     /**
@@ -103,11 +103,11 @@ final class ResponseViewHandler extends LifecycleEvent
             $profiler = $this->profiler?->event( 'response.template' );
             $template = $content;
         }
-        elseif ( $this->view === View::DOCUMENT && $this->template?->document ) {
+        elseif ( $this->view === ResponseView::DOCUMENT && $this->template?->document ) {
             $profiler = $this->profiler?->event( 'response.document' );
             $template = $this->template->document;
         }
-        elseif ( $this->view === View::CONTENT && $this->template?->content ) {
+        elseif ( $this->view === ResponseView::CONTENT && $this->template?->content ) {
             $profiler = $this->profiler?->event( 'response.content' );
             $this->documentEngine->contentOnly();
             $template = $this->template->content;
@@ -119,7 +119,7 @@ final class ResponseViewHandler extends LifecycleEvent
             throw new InvalidArgumentException( $message );
         }
 
-        $content = $this->templateEngine->render(
+        $content = $this->templateEngine->renderToString(
             $template,
             $this->parameters->getParameters(),
         );
