@@ -7,10 +7,11 @@ namespace Core\Framework\Event;
 use Core\AssetManager;
 use Core\AssetManager\Interface\MinifiedAssetInterface;
 use Core\Symfony\ToastService;
-use Core\View\{DocumentEngine, Html\HtmlFormatter, Template\Engine};
+use Core\View\{DocumentEngine, Html\HtmlFormatter, Template\Engine, Template\Exception\CompileException};
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Core\Framework\Lifecycle\LifecycleEvent;
 use InvalidArgumentException;
+use Throwable;
 use Core\Framework\Response\{Parameters, Template, ResponseView};
 
 /**
@@ -38,6 +39,12 @@ final class ResponseViewHandler extends LifecycleEvent
         private readonly ToastService   $toastService,
     ) {}
 
+    /**
+     * @param ResponseEvent $event
+     *
+     * @throws CompileException
+     * @throws Throwable
+     */
     public function __invoke( ResponseEvent $event ) : void
     {
         if ( $this->skipEvent() ) {
@@ -52,13 +59,11 @@ final class ResponseViewHandler extends LifecycleEvent
 
         $this->handleEnqueuedAssets();
 
-        $html = new HtmlFormatter(
-            $this->documentEngine->__toString(),
-        );
+        $string = $this->documentEngine->__toString();
+        $html   = new HtmlFormatter( $string );
+        $string = $html->toString( true );
 
-        $event->getResponse()->setContent(
-            $html->toString( true ),
-        );
+        $event->getResponse()->setContent( $string );
 
         $profiler?->stop();
     }
@@ -78,7 +83,8 @@ final class ResponseViewHandler extends LifecycleEvent
      * @param ResponseEvent $event
      *
      * @return void
-     * @throws InvalidArgumentException
+     * @throws CompileException
+     * @throws Throwable
      */
     private function resolveContent( ResponseEvent $event ) : void
     {
