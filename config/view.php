@@ -13,8 +13,9 @@ use Core\View\{Document,
     ComponentFactory,
     ComponentFactory\ComponentBag,
     IconSet,
-    Latte\ViewComponentExtension,
-    Template\Engine
+    Template\Engine,
+    Template\StyleSystemExtension,
+    Template\ViewComponentExtension
 };
 use Core\Interface\IconProviderInterface;
 use const Support\PLACEHOLDER_ARGS;
@@ -83,9 +84,11 @@ return static function( ContainerConfigurator $container ) : void {
                 ],
                 [],
                 param( 'kernel.default_locale' ),
+                true,
             ],
         )
-        ->call( 'addExtension', [service( ViewComponentExtension::class )] );
+        ->call( 'addExtension', [service( ViewComponentExtension::class )] )
+        ->call( 'addExtension', [inline_service( StyleSystemExtension::class )] );
 
     $services
         ->set( DocumentEngine::class )
