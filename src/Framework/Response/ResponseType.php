@@ -2,7 +2,7 @@
 
 namespace Core\Framework\Response;
 
-enum ResponseView
+enum ResponseType
 {
     case DOCUMENT;
     case CONTENT;

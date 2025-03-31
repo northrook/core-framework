@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Core\Framework\Event;
 
 use Core\Framework\Lifecycle\LifecycleEvent;
-use Core\Framework\Response\ResponseView;
+use Core\Framework\Response\ResponseType;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpFoundation\{ParameterBag, Request};
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -38,13 +38,13 @@ final class RequestLifecycleHandler extends LifecycleEvent
         $this->setRequestLocale();
 
         $_view = $this->request->headers->has( 'hx-request' )
-                ? ResponseView::CONTENT
-                : ResponseView::DOCUMENT;
+                ? ResponseType::CONTENT
+                : ResponseType::DOCUMENT;
 
         // Set Request attributes
         $this->attributes->set( '_path', $this->request->getRequestUri() );
         $this->attributes->set( '_view', $_view );
-        $this->attributes->set( 'hx-request', $_view === ResponseView::CONTENT );
+        $this->attributes->set( 'hx-request', $_view === ResponseType::CONTENT );
 
         $profiler?->stop();
     }

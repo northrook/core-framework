@@ -84,7 +84,7 @@ return static function( ContainerConfigurator $container ) : void {
                 ],
                 [],
                 param( 'kernel.default_locale' ),
-                true,
+                true, // preformatter
             ],
         )
         ->call( 'addExtension', [service( ViewComponentExtension::class )] )

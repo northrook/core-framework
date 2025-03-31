@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Core\Framework\Lifecycle\LifecycleEvent;
 use InvalidArgumentException;
 use Throwable;
-use Core\Framework\Response\{Parameters, Template, ResponseView};
+use Core\Framework\Response\{Parameters, Template, ResponseType};
 
 /**
  * {@see ResponseEvent}
@@ -27,13 +27,13 @@ use Core\Framework\Response\{Parameters, Template, ResponseView};
  */
 final class ResponseViewHandler extends LifecycleEvent
 {
-    private readonly ?ResponseView $view;
+    private readonly ?ResponseType $type;
 
     private readonly ?Template $template;
 
     public function __construct(
-        private readonly DocumentEngine $documentEngine,
-        private readonly Engine         $templateEngine,
+        private readonly DocumentEngine $view,
+        private readonly Engine         $engine,
         private readonly Parameters     $parameters,
         private readonly AssetManager   $assetManager,
         private readonly ToastService   $toastService,
@@ -53,15 +53,16 @@ final class ResponseViewHandler extends LifecycleEvent
 
         $this->responseProperties( $event );
 
-        $profiler = $this->profiler?->event( 'response.'.( $this->view?->name() ?? 'render' ) );
+        $profiler = $this->profiler?->event( 'response.'.( $this->type?->name() ?? 'render' ) );
 
         $this->resolveContent( $event );
 
         $this->handleEnqueuedAssets();
 
-        $string = $this->documentEngine->__toString();
-        $html   = new HtmlFormatter( $string );
-        $string = $html->toString( true );
+        $string = $this->view->__toString();
+
+        // $html   = new HtmlFormatter( $string );
+        // $string = $html->toString( true );
 
         $event->getResponse()->setContent( $string );
 
@@ -75,8 +76,8 @@ final class ResponseViewHandler extends LifecycleEvent
         \assert( $this->template instanceof Template || \is_null( $this->template ) );
 
         // @phpstan-ignore-next-line
-        $this->view = $event->getRequest()->attributes->get( '_view' );
-        \assert( $this->view instanceof ResponseView || \is_null( $this->view ) );
+        $this->type = $event->getRequest()->attributes->get( '_view' );
+        \assert( $this->type instanceof ResponseType || \is_null( $this->type ) );
     }
 
     /**
@@ -98,7 +99,7 @@ final class ResponseViewHandler extends LifecycleEvent
 
         if ( $this->getSetting( 'view.template.clear_cache', false ) ) {
             $profiler = $this->profiler?->event( 'clear.cache', 'View' );
-            $this->templateEngine->clearTemplateCache();
+            $this->engine->clearTemplateCache();
             $profiler?->stop();
         }
 
@@ -109,13 +110,13 @@ final class ResponseViewHandler extends LifecycleEvent
             $profiler = $this->profiler?->event( 'response.template' );
             $template = $content;
         }
-        elseif ( $this->view === ResponseView::DOCUMENT && $this->template?->document ) {
+        elseif ( $this->type === ResponseType::DOCUMENT && $this->template?->document ) {
             $profiler = $this->profiler?->event( 'response.document' );
             $template = $this->template->document;
         }
-        elseif ( $this->view === ResponseView::CONTENT && $this->template?->content ) {
+        elseif ( $this->type === ResponseType::CONTENT && $this->template?->content ) {
             $profiler = $this->profiler?->event( 'response.content' );
-            $this->documentEngine->contentOnly();
+            $this->view->contentOnly();
             $template = $this->template->content;
         }
 
@@ -125,19 +126,19 @@ final class ResponseViewHandler extends LifecycleEvent
             throw new InvalidArgumentException( $message );
         }
 
-        $content = $this->templateEngine->renderToString(
+        $content = $this->engine->renderToString(
             $template,
             $this->parameters->getParameters(),
         );
 
-        $this->documentEngine->setInnerHtml( $content );
+        $this->view->setInnerHtml( $content );
 
         $profiler?->stop();
     }
 
     final protected function handleEnqueuedAssets() : void
     {
-        foreach ( $this->documentEngine->document->assets->getEnqueuedAssets() as $assetKey ) {
+        foreach ( $this->view->document->assets->getEnqueuedAssets() as $assetKey ) {
             $profiler = $this->profiler?->event( $assetKey, 'Asset' );
             $asset    = $this->assetManager->getAsset( $assetKey );
 
@@ -150,7 +151,7 @@ final class ResponseViewHandler extends LifecycleEvent
                 $this->toastService->addMessage( 'info', $message );
             }
 
-            $this->documentEngine->document->head->injectHtml( $html, $assetKey );
+            $this->view->document->head->injectHtml( $html, $assetKey );
             $profiler?->stop();
         }
     }
