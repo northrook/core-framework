@@ -18,8 +18,7 @@ use Core\View\{Document,
     Template\ViewComponentExtension
 };
 use Core\Interface\IconProviderInterface;
-use const Support\PLACEHOLDER_ARGS;
-
+use const Support\{AUTO, PLACEHOLDER_ARGS};
 return static function( ContainerConfigurator $container ) : void {
     //
     // Component Service Locator
@@ -52,18 +51,6 @@ return static function( ContainerConfigurator $container ) : void {
         ->defaults()
         ->tag( 'monolog.logger', ['channel' => 'view'] );
 
-    // IconSet
-    $services
-        ->set( ComponentFactory::class )
-        ->args(
-            [
-                '$locator'    => service( 'view.component_locator' ),
-                '$components' => abstract_arg( ComponentBag::class ),
-                '$tags'       => abstract_arg( 'ComponentProperties::tagged' ),
-            ],
-        )
-        ->private(); // ->lazy()
-
     $services
         ->set( ViewComponentExtension::class )
         ->args(
@@ -85,10 +72,24 @@ return static function( ContainerConfigurator $container ) : void {
                 [],
                 param( 'kernel.default_locale' ),
                 true, // preformatter
+                true, // cache
+                AUTO, // profiler
+                AUTO, // logger
             ],
         )
         ->call( 'addExtension', [service( ViewComponentExtension::class )] )
         ->call( 'addExtension', [inline_service( StyleSystemExtension::class )] );
+
+    $services
+        ->set( ComponentFactory::class )
+        ->args(
+            [
+                '$locator'    => service( 'view.component_locator' ),
+                '$components' => abstract_arg( ComponentBag::class ),
+                '$tags'       => abstract_arg( 'ComponentProperties::tagged' ),
+            ],
+        )
+        ->private(); // ->lazy()
 
     $services
         ->set( DocumentEngine::class )
