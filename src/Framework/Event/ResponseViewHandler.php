@@ -126,12 +126,13 @@ final class ResponseViewHandler extends LifecycleEvent
             throw new InvalidArgumentException( $message );
         }
 
-        $content = $this->engine->renderToString(
-            $template,
-            $this->parameters->getParameters(),
+        $this->view->setInnerHtml(
+            $this->engine->render(
+                $template,
+                $this->parameters->resolve(),
+                true,
+            ),
         );
-
-        $this->view->setInnerHtml( $content );
 
         $profiler?->stop();
     }

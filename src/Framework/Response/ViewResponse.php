@@ -14,10 +14,10 @@ class ViewResponse extends Response
     protected ?string $charset = 'UTF-8';
 
     /**
-     * @param ResponseType                      $view
-     * @param null|false|string|Stringable      $content
-     * @param null|int                          $status
-     * @param array<string, list<null|string>>  $headers
+     * @param ResponseType                     $view
+     * @param null|false|string|Stringable     $content
+     * @param null|int                         $status
+     * @param array<string, list<null|string>> $headers
      */
     public function __construct(
         public readonly ResponseType $view,

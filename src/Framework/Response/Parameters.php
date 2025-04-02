@@ -70,9 +70,10 @@ final class Parameters implements ActionInterface
     }
 
     /**
+     * @internal
      * @return array<string, mixed>|object
      */
-    public function getParameters() : object|array
+    public function resolve() : object|array
     {
         // TODO : handle array->object
         return $this->object ?? $this->parameters;
