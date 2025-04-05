@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Finder\Finder;
 use SplFileInfo;
 use Exception, LogicException, InvalidArgumentException;
-use function Support\normalizePath;
+use function Support\normalize_path;
 
 /**
  * @internal
@@ -23,7 +23,7 @@ final class ApplicationInitialization extends CompilerPass
 
     public function __construct( protected bool $override = false )
     {
-        $this->defaultsDirectory = normalizePath( \dirname( __DIR__, 3 ).'/config.app' );
+        $this->defaultsDirectory = normalize_path( \dirname( __DIR__, 3 ).'/config.app' );
     }
 
     public function compile( ContainerBuilder $container ) : void
@@ -164,7 +164,7 @@ final class ApplicationInitialization extends CompilerPass
 
                 // Normalize and report
                 try {
-                    $value = normalizePath( $value );
+                    $value = normalize_path( $value );
                     $this->parameterBag->set( $key, $value );
                 }
                 catch ( Exception $e ) {
@@ -183,7 +183,7 @@ final class ApplicationInitialization extends CompilerPass
 
         $relativePath = \substr( $path->getRealPath(), \strlen( $this->defaultsDirectory ) );
 
-        return normalizePath( $this->projectDirectory, $relativePath );
+        return normalize_path( $this->projectDirectory, $relativePath );
     }
 
     private function overrideExistingFile( string $path ) : bool

@@ -19,6 +19,7 @@ use Core\View\{Document,
 };
 use Core\Interface\IconProviderInterface;
 use const Support\{AUTO, PLACEHOLDER_ARGS};
+
 return static function( ContainerConfigurator $container ) : void {
     //
     // Component Service Locator
@@ -84,6 +85,7 @@ return static function( ContainerConfigurator $container ) : void {
         ->set( ComponentFactory::class )
         ->args(
             [
+                '$engine'     => service( Engine::class ),
                 '$locator'    => service( 'view.component_locator' ),
                 '$components' => abstract_arg( ComponentBag::class ),
                 '$tags'       => abstract_arg( 'ComponentProperties::tagged' ),

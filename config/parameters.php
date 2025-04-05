@@ -9,7 +9,7 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Core\Symfony\DependencyInjection\SettingsProvider;
-use function Support\normalizePath;
+use function Support\normalize_path;
 
 return static function( ContainerConfigurator $container ) : void {
     $container->services()
@@ -64,6 +64,6 @@ return static function( ContainerConfigurator $container ) : void {
             );
             $value = \dirname( $dir, $level );
         }
-        $container->parameters()->set( $key, normalizePath( $value ) );
+        $container->parameters()->set( $key, normalize_path( $value ) );
     }
 };
