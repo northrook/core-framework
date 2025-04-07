@@ -60,7 +60,7 @@ final class CoreBundle extends AbstractBundle
         $container
             ->addCompilerPass( new AutodiscoverServicesPass(), priority : 1_024 )
             ->addCompilerPass( new RegisterAssetServices() )
-            // ->addCompilerPass( new RegisterViewComponentsPass() )
+            ->addCompilerPass( new RegisterViewComponentsPass() )
             ->addCompilerPass( new ApplicationInitialization() )
             ->addCompilerPass( new AutowireInterfaceDependencies(), priority : -256 )
             ->addCompilerPass( new RegisterServiceArguments(), priority : -264 );
