@@ -43,9 +43,10 @@ return static function( ContainerConfigurator $container ) : void {
         'dir.core.templates' => '%dir.core%/templates',
 
         // Cache
-        'dir.cache'       => '%kernel.cache_dir%',
-        'dir.cache.latte' => '%kernel.cache_dir%/latte',
-        'dir.cache.view'  => '%kernel.cache_dir%/view',
+        'dir.cache'                => '%kernel.cache_dir%',
+        'dir.cache.latte'          => '%kernel.cache_dir%/latte',
+        'dir.cache.view'           => '%kernel.cache_dir%/view',
+        'dir.cache.view.component' => '%kernel.cache_dir%/view/component',
 
         // Themes
         'path.theme.core' => '%dir.core%/config/themes/core.php',

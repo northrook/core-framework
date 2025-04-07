@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Core\Controller;
 
-use Core\Framework\Response\Template;
+use Core\Framework\Response\{Parameters, Template};
 use Core\Pathfinder;
 use Core\Symfony\Toast;
 use Core\Framework\Controller;
 use Core\Framework\Controller\Attribute\{OnDocument};
-use Core\View\{ComponentFactory, Document};
+use Core\View\{Document};
 use Symfony\Component\HttpFoundation\{Request};
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -66,9 +66,9 @@ final class PublicController extends Controller
     #[Route( 'demo', 'view_demo' )]
     #[Template( 'demo.latte' )]
     public function demo(
-        Document         $document,
-        Toast            $toast,
-        ComponentFactory $componentFactory,
+        Document   $document,
+        Toast      $toast,
+        Parameters $parameters,
     ) : string {
         // $assetManager->factory->locator()->scan();
         $document( 'Index Demo Template' );

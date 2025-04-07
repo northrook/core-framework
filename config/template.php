@@ -9,12 +9,24 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Core\View\ComponentFactory\ComponentBag;
-use Core\View\Template\ViewRenderExtension;
+use Core\View\Template\{Engine, ViewRenderExtension};
 use Core\View\ViewFactory;
-use Random\Engine;
 use const Support\{AUTO, PLACEHOLDER_ARGS, PLACEHOLDER_ARRAY};
 
 return static function( ContainerConfigurator $container ) : void {
+    // Component Service Locator
+    $container->services()
+        ->set( 'view.component_locator' )
+        ->tag( 'container.service_locator' )
+        ->args( PLACEHOLDER_ARGS );
+
+    $templateDirectories = [
+        'app'  => param( 'dir.templates' ),
+        'core' => param( 'dir.core.templates' ),
+    ];
+    // Template strings [name => template]
+    $preloadedTemplates = PLACEHOLDER_ARRAY;
+
     $services = $container->services()
         ->defaults()
         ->tag( 'monolog.logger', ['channel' => 'view'] );
@@ -24,12 +36,9 @@ return static function( ContainerConfigurator $container ) : void {
     $services->set( 'core.view.engine', Engine::class )
         ->args(
             [
-                // Cache Directory
-                '%kernel.cache_dir%/view',
-                // Template directories
-                ['%dir.root%/templates', '%dir.core%/templates'],
-                // Template strings
-                PLACEHOLDER_ARRAY, // [name => template]
+                param( 'dir.cache.view' ),
+                $templateDirectories,
+                $preloadedTemplates,
                 '%kernel.default_locale%',
                 true, // preformatter
                 true, // cache
@@ -43,12 +52,9 @@ return static function( ContainerConfigurator $container ) : void {
     $services->set( 'core.view.factory.engine', Engine::class )
         ->args(
             [
-                // Cache Directory
-                '%kernel.cache_dir%/view/components',
-                // Template directories
-                ['%dir.root%/templates', '%dir.core%/templates'],
-                // Template strings
-                PLACEHOLDER_ARRAY, // [name => template]
+                param( 'dir.cache.view.component' ),
+                $templateDirectories,
+                $preloadedTemplates,
                 '%kernel.default_locale%',
                 true, // preformatter
                 true, // cache
@@ -60,11 +66,6 @@ return static function( ContainerConfigurator $container ) : void {
     /**
      * Factories
      */
-    $services
-        ->set( 'view.component_locator' )
-        ->tag( 'container.service_locator' )
-        ->args( PLACEHOLDER_ARGS );
-
     $services->set( ViewFactory::class )
         ->args(
             [

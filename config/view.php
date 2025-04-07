@@ -22,12 +22,6 @@ use const Support\{AUTO, PLACEHOLDER_ARGS};
 
 return static function( ContainerConfigurator $container ) : void {
     //
-    // Component Service Locator
-    // $container->services()
-    //     ->set( 'view.component_locator' )
-    //     ->tag( 'container.service_locator' )
-    //     ->args( PLACEHOLDER_ARGS );
-    //
     // $container->services()
     //     ->set( ResponseRenderer::class )
     //     ->args(

@@ -12,7 +12,10 @@
   "autoload": {
     "psr-4": {
       "Core\\": "src"
-    }
+    },
+    "files": [
+      "src/app.php"
+    ]
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
