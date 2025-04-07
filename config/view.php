@@ -23,10 +23,10 @@ use const Support\{AUTO, PLACEHOLDER_ARGS};
 return static function( ContainerConfigurator $container ) : void {
     //
     // Component Service Locator
-    $container->services()
-        ->set( 'view.component_locator' )
-        ->tag( 'container.service_locator' )
-        ->args( PLACEHOLDER_ARGS );
+    // $container->services()
+    //     ->set( 'view.component_locator' )
+    //     ->tag( 'container.service_locator' )
+    //     ->args( PLACEHOLDER_ARGS );
     //
     // $container->services()
     //     ->set( ResponseRenderer::class )
@@ -52,46 +52,46 @@ return static function( ContainerConfigurator $container ) : void {
         ->defaults()
         ->tag( 'monolog.logger', ['channel' => 'view'] );
 
-    $services
-        ->set( ViewComponentExtension::class )
-        ->args(
-            [
-                service( ComponentFactory::class ),
-                service( 'logger' )->nullOnInvalid(),
-            ],
-        );
+    // $services
+    //     ->set( ViewComponentExtension::class )
+    //     ->args(
+    //         [
+    //             service( ComponentFactory::class ),
+    //             service( 'logger' )->nullOnInvalid(),
+    //         ],
+    //     );
 
-    $services
-        ->set( Engine::class )
-        ->args(
-            [
-                param( 'dir.cache.view' ),
-                [
-                    param( 'dir.templates' ),
-                    param( 'dir.core.templates' ),
-                ],
-                [],
-                param( 'kernel.default_locale' ),
-                true, // preformatter
-                true, // cache
-                AUTO, // profiler
-                AUTO, // logger
-            ],
-        )
-        ->call( 'addExtension', [service( ViewComponentExtension::class )] )
-        ->call( 'addExtension', [inline_service( StyleSystemExtension::class )] );
+    // $services
+    //     ->set( Engine::class )
+    //     ->args(
+    //         [
+    //             param( 'dir.cache.view' ),
+    //             [
+    //                 param( 'dir.templates' ),
+    //                 param( 'dir.core.templates' ),
+    //             ],
+    //             [],
+    //             param( 'kernel.default_locale' ),
+    //             true, // preformatter
+    //             true, // cache
+    //             AUTO, // profiler
+    //             AUTO, // logger
+    //         ],
+    //     )
+    //     ->call( 'addExtension', [service( ViewComponentExtension::class )] )
+    //     ->call( 'addExtension', [inline_service( StyleSystemExtension::class )] );
 
-    $services
-        ->set( ComponentFactory::class )
-        ->args(
-            [
-                '$engine'     => service( Engine::class ),
-                '$locator'    => service( 'view.component_locator' ),
-                '$components' => abstract_arg( ComponentBag::class ),
-                '$tags'       => abstract_arg( 'ComponentProperties::tagged' ),
-            ],
-        )
-        ->private(); // ->lazy()
+    // $services
+    //     ->set( ComponentFactory::class )
+    //     ->args(
+    //         [
+    //             '$engine'     => service( Engine::class ),
+    //             '$locator'    => service( 'view.component_locator' ),
+    //             '$components' => abstract_arg( ComponentBag::class ),
+    //             '$tags'       => abstract_arg( 'ComponentProperties::tagged' ),
+    //         ],
+    //     )
+    //     ->private(); // ->lazy()
 
     $services
         ->set( DocumentEngine::class )

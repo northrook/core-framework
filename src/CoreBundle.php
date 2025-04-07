@@ -41,6 +41,7 @@ final class CoreBundle extends AbstractBundle
         $container->import( __DIR__.'/../config/parameters.php' );
         $container->import( __DIR__.'/../config/pathfinder.php' );
         $container->import( __DIR__.'/../config/response.php' );
+        $container->import( __DIR__.'/../config/template.php' );
         $container->import( __DIR__.'/../config/view.php' );
         $container->import( __DIR__.'/../config/framework/assets.php' );
         $container->import( __DIR__.'/../config/framework/controllers.php' );
@@ -59,7 +60,7 @@ final class CoreBundle extends AbstractBundle
         $container
             ->addCompilerPass( new AutodiscoverServicesPass(), priority : 1_024 )
             ->addCompilerPass( new RegisterAssetServices() )
-            ->addCompilerPass( new RegisterViewComponentsPass() )
+            // ->addCompilerPass( new RegisterViewComponentsPass() )
             ->addCompilerPass( new ApplicationInitialization() )
             ->addCompilerPass( new AutowireInterfaceDependencies(), priority : -256 )
             ->addCompilerPass( new RegisterServiceArguments(), priority : -264 );
