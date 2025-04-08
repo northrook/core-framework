@@ -84,7 +84,6 @@ final class ResponseViewHandler extends LifecycleEvent
      * @param ResponseEvent $event
      *
      * @return void
-     * @throws CompileException
      * @throws Throwable
      */
     private function resolveContent( ResponseEvent $event ) : void
@@ -97,7 +96,10 @@ final class ResponseViewHandler extends LifecycleEvent
             return;
         }
 
-        if ( $this->getSetting( 'view.template.clear_cache', false ) ) {
+        if ( $this->getSetting(
+            'view.template.clear_cache',
+            true, // :: DEBUG
+        ) ) {
             $profiler = $this->profiler?->event( 'clear.cache', 'View' );
             $this->engine->clearTemplateCache();
             $profiler?->stop();

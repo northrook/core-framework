@@ -8,9 +8,9 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\View\ComponentFactory\ComponentBag;
 use Core\View\Template\{Engine, ViewRenderExtension};
-use Core\View\ViewFactory;
+use Core\View\ComponentFactory;
+use Core\View\ComponentFactory\ComponentBag;
 use const Support\{AUTO, PLACEHOLDER_ARGS, PLACEHOLDER_ARRAY};
 
 return static function( ContainerConfigurator $container ) : void {
@@ -66,7 +66,7 @@ return static function( ContainerConfigurator $container ) : void {
     /**
      * Factories
      */
-    $services->set( ViewFactory::class )
+    $services->set( ComponentFactory::class )
         ->args(
             [
                 '$engine'     => service( 'core.view.factory.engine' ),
@@ -78,5 +78,5 @@ return static function( ContainerConfigurator $container ) : void {
 
     $services
         ->set( ViewRenderExtension::class )
-        ->args( [service( ViewFactory::class )] );
+        ->args( [service( ComponentFactory::class )] );
 };

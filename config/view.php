@@ -18,26 +18,8 @@ use Core\View\{Document,
     Template\ViewComponentExtension
 };
 use Core\Interface\IconProviderInterface;
-use const Support\{AUTO, PLACEHOLDER_ARGS};
 
 return static function( ContainerConfigurator $container ) : void {
-    //
-    // $container->services()
-    //     ->set( ResponseRenderer::class )
-    //     ->args(
-    //         [
-    //             service( DocumentEngine::class ),
-    //             service( TemplateEngine::class ),
-    //             service( ComponentFactory::class ),
-    //             service( AssetManager::class ),
-    //             service( Document::class ),
-    //             service( Parameters::class ),
-    //             service( ToastService::class ),
-    //         ],
-    //     )
-    //     ->tag( 'monolog.logger', ['channel' => 'view'] )
-    //     ->lazy();
-    //
     $container->services()
         ->set( IconSet::class )
         ->alias( IconProviderInterface::class, IconSet::class );
