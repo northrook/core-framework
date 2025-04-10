@@ -16,15 +16,13 @@ abstract class LifecycleEvent implements Profilable, LoggerAwareInterface
         StopwatchProfiler,
         LoggerAwareTrait;
 
-    protected const string CATEGORY = 'Lifecycle';
-
     protected static bool $handleLifecycleEvent;
 
     final public function setProfiler(
         ?Stopwatch $stopwatch,
-        ?string    $category = self::CATEGORY,
+        ?string    $category = null,
     ) : void {
-        $this->assignProfiler( $stopwatch, $category );
+        $this->assignProfiler( $stopwatch, $category ?? 'Lifecycle' );
     }
 
     final protected function skipEvent() : bool

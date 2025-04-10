@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App;
 
-use Symfony\Bundle\FrameworkBundle\Kernel as FrameworkKernel;
+use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\HttpKernel\Kernel as HttpKernel;
 
 final class Kernel extends HttpKernel
 {
-    use FrameworkKernel\MicroKernelTrait;
+    use MicroKernelTrait;
 
     public function hasContainer() : bool
     {

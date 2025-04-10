@@ -13,6 +13,7 @@ tailwind.config.js      export-ignore
 postcss.config.js       export-ignore
 phpunit.xml.dist        export-ignore
 .phpstorm.meta.php/*    export-ignore
+bin/console.php         export-ignore
 
 # Auto detect text files and perform LF normalization
 * text=auto eol=lf

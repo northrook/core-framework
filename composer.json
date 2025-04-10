@@ -41,5 +41,7 @@
   },
   "scripts": {
     "phpstan": "vendor/bin/phpstan analyse src"
+  },
+  "config": {
   }
 }

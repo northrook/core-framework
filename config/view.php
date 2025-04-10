@@ -8,16 +8,8 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\View\{Document,
-    DocumentEngine,
-    ComponentFactory,
-    ComponentFactory\ComponentBag,
-    IconSet,
-    Template\Engine,
-    Template\StyleSystemExtension,
-    Template\ViewComponentExtension
-};
 use Core\Interface\IconProviderInterface;
+use Core\View\{Document, DocumentEngine, IconSet};
 
 return static function( ContainerConfigurator $container ) : void {
     $container->services()
@@ -27,47 +19,6 @@ return static function( ContainerConfigurator $container ) : void {
     $services = $container->services()
         ->defaults()
         ->tag( 'monolog.logger', ['channel' => 'view'] );
-
-    // $services
-    //     ->set( ViewComponentExtension::class )
-    //     ->args(
-    //         [
-    //             service( ComponentFactory::class ),
-    //             service( 'logger' )->nullOnInvalid(),
-    //         ],
-    //     );
-
-    // $services
-    //     ->set( Engine::class )
-    //     ->args(
-    //         [
-    //             param( 'dir.cache.view' ),
-    //             [
-    //                 param( 'dir.templates' ),
-    //                 param( 'dir.core.templates' ),
-    //             ],
-    //             [],
-    //             param( 'kernel.default_locale' ),
-    //             true, // preformatter
-    //             true, // cache
-    //             AUTO, // profiler
-    //             AUTO, // logger
-    //         ],
-    //     )
-    //     ->call( 'addExtension', [service( ViewComponentExtension::class )] )
-    //     ->call( 'addExtension', [inline_service( StyleSystemExtension::class )] );
-
-    // $services
-    //     ->set( ComponentFactory::class )
-    //     ->args(
-    //         [
-    //             '$engine'     => service( Engine::class ),
-    //             '$locator'    => service( 'view.component_locator' ),
-    //             '$components' => abstract_arg( ComponentBag::class ),
-    //             '$tags'       => abstract_arg( 'ComponentProperties::tagged' ),
-    //         ],
-    //     )
-    //     ->private(); // ->lazy()
 
     $services
         ->set( DocumentEngine::class )
