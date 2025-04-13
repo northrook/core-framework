@@ -8,8 +8,8 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\View\Template\{Engine, ViewRenderExtension};
-use Core\View\ComponentFactory;
+use Core\View\Template\{Engine, IconProviderExtension, ViewComponentExtension};
+use Core\View\{ComponentFactory, IconSet};
 use Core\View\ComponentFactory\ComponentBag;
 use const Support\{AUTO, PLACEHOLDER_ARGS, PLACEHOLDER_ARRAY};
 
@@ -46,7 +46,7 @@ return static function( ContainerConfigurator $container ) : void {
                 AUTO, // logger
             ],
         )
-        ->call( 'addExtension', [service( ViewRenderExtension::class )] )
+        ->call( 'addExtension', [service( ViewComponentExtension::class )] )
         ->alias( Engine::class, 'core.view.engine' );
 
     $services->set( 'core.view.factory.engine', Engine::class )
@@ -77,6 +77,10 @@ return static function( ContainerConfigurator $container ) : void {
         );
 
     $services
-        ->set( ViewRenderExtension::class )
+        ->set( ViewComponentExtension::class )
         ->args( [service( ComponentFactory::class )] );
+
+    $services
+        ->set( IconProviderExtension::class )
+        ->args( [service( IconSet::class )] );
 };
