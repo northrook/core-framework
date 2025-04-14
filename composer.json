@@ -32,7 +32,6 @@
     "northrook/view": "dev-main",
     "northrook/view-element": "dev-main",
     "northrook/view-document": "dev-main",
-    "northrook/view-icons": "dev-main",
     "northrook/view-components": "dev-main",
     "northrook/toast-bundle": "dev-main"
   },

@@ -71,7 +71,7 @@ final class CoreBundle extends AbstractBundle
     {
         \class_exists( ContainerConfigurator::class );
         return new RegisterViewComponentsPass(
-            service( 'core.view.factory.engine' ),
+            service( 'core.view.engine' ),
             service( 'debug.stopwatch' ),
             service( 'logger' ),
         );
