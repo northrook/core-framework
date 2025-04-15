@@ -9,7 +9,7 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Core\View\Template\{Engine, IconProviderExtension, ViewComponentExtension};
-use Core\View\{ComponentFactory, IconProviderService, IconSet};
+use Core\View\{ComponentFactory, IconProviderService};
 use Core\View\ComponentFactory\ComponentBag;
 use const Support\{AUTO, PLACEHOLDER_ARGS, PLACEHOLDER_ARRAY};
 
@@ -47,7 +47,19 @@ return static function( ContainerConfigurator $container ) : void {
             ],
         )
         ->call( 'addExtension', [service( ViewComponentExtension::class )] )
+        ->call( 'addExtension', [service( IconProviderExtension::class )] )
         ->alias( Engine::class, 'core.view.engine' );
+
+    /**
+     * Extensions
+     */
+    $services
+        ->set( ViewComponentExtension::class )
+        ->args( [service( ComponentFactory::class )] );
+
+    $services
+        ->set( IconProviderExtension::class )
+        ->args( [service( IconProviderService::class )] );
 
     /**
      * Factories
@@ -61,12 +73,4 @@ return static function( ContainerConfigurator $container ) : void {
                 '$tags'       => abstract_arg( 'ComponentProperties::tagged' ),
             ],
         );
-
-    $services
-        ->set( ViewComponentExtension::class )
-        ->args( [service( ComponentFactory::class )] );
-
-    $services
-            ->set( IconProviderExtension::class )
-            ->args( [service( IconProviderService::class )] );
 };
