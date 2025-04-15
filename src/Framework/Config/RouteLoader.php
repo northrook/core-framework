@@ -71,10 +71,13 @@ abstract class RouteLoader extends Loader
         }
 
         if ( \class_exists( $controller ) ) {
-            $import = $this->import( $controller, 'attribute' );
-            \assert( $import instanceof RouteCollection );
-            $this->routes->addCollection( $import );
-            $this->routes->setHost( '{_host}' );
+            $this->routes->addCollection(
+                $this->routeCollection( $controller ),
+            );
+            $this->routes->setHost(
+                pattern      : '{_host}',
+                requirements : ['_host' => '.+'],
+            );
         }
         else {
             $message = "The controller '{$controller}' does not exists.";
@@ -144,5 +147,22 @@ abstract class RouteLoader extends Loader
     public function supports( $resource, ?string $type = null ) : bool
     {
         return $type === $this->type();
+    }
+
+    /**
+     * @param mixed  $from
+     * @param string $type
+     *
+     * @return RouteCollection
+     */
+    public function routeCollection(
+        mixed  $from,
+        string $type = 'attribute',
+    ) : RouteCollection {
+        $import = $this->import( $from, $type );
+
+        \assert( $import instanceof RouteCollection );
+
+        return $import;
     }
 }
