@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Core\Controller;
 
-use Symfony\Component\HttpFoundation\{BinaryFileResponse, Request};
+use Symfony\Component\HttpFoundation\{BinaryFileResponse, RedirectResponse, Request};
 use Core\Asset\ImageAsset;
 use Core\{AssetManager, Framework\Exception\HttpNotFoundException, Pathfinder};
 use Core\Symfony\Toast;
-use Support\Image;
 use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
 
@@ -20,7 +19,7 @@ final class AssetController
         Toast        $toast,
         AssetManager $assetManager,
         Pathfinder   $pathfinder,
-    ) : BinaryFileResponse {
+    ) : RedirectResponse {
         $path = $request->getRequestUri();
 
         try {
@@ -46,14 +45,7 @@ final class AssetController
             );
         }
 
-        return new BinaryFileResponse(
-            file               : $filePath,
-            status             : 200,
-            headers            : [
-                'Content-Type' => Image::mimeType( $filePath ),
-            ],
-            contentDisposition : 'inline',
-        );
+        return new RedirectResponse( $path );
     }
 
     #[Route( '/favicon.ico', 'favicon' )]

@@ -11,22 +11,9 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use Core\{AssetManager, AssetManager\AssetManifest, Pathfinder};
 use Core\AssetManager\AssetConfig;
 use Core\AssetManager\Compiler\RegisterAssetServices;
-use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 use const Support\PLACEHOLDER_ARGS;
 
 return static function( ContainerConfigurator $container ) : void {
-    $container->services()
-        ->set( 'cache.asset_pool', PhpFilesAdapter::class )
-        ->tag( 'cache.pool' )
-        ->args(
-            [
-                'asset_pool',  // $namespace
-                0,             // $defaultLifetime
-                '%kernel.cache_dir%', // $directory
-                true,          // $appendOnly
-            ],
-        );
-
     // Create a ServiceLocator for ServicePasses
     $container->services()->set( RegisterAssetServices::ID )
         ->tag( 'container.service_locator' )

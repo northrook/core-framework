@@ -45,6 +45,7 @@ final class CoreBundle extends AbstractBundle
         $container->import( __DIR__.'/../config/template.php' );
         $container->import( __DIR__.'/../config/view.php' );
         $container->import( __DIR__.'/../config/framework/assets.php' );
+        $container->import( __DIR__.'/../config/framework/cache.php' );
         $container->import( __DIR__.'/../config/framework/controllers.php' );
         $container->import( __DIR__.'/../config/framework/profiler.php' );
         $container->import( __DIR__.'/../config/framework/route_loaders.php' );
@@ -74,6 +75,7 @@ final class CoreBundle extends AbstractBundle
             service( 'core.view.engine' ),
             service( 'debug.stopwatch' ),
             service( 'logger' ),
+            service( 'cache.component_pool' ),
         );
     }
 }

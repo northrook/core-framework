@@ -11,8 +11,14 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use Core\View\{Document, DocumentEngine, IconProviderService, ViewFactory};
 
 return static function( ContainerConfigurator $container ) : void {
-    // $container->services()
-    //     ->set( ViewFactory::class );
+    $container->services()
+        ->set( ViewFactory::class )
+        ->args(
+            [
+                '$engine'  => service( 'core.view.engine' ),
+                '$locator' => service( 'view.component_locator' ),
+            ],
+        );
 
     //
     $services = $container->services()

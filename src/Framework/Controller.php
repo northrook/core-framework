@@ -94,7 +94,7 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
 
         // Loop through each Controller::method
         foreach ( ( new ReflectionClass( $this ) )->getMethods() as $method ) {
-            // Only parse methods with a OnView attribute
+            // Only parse methods with an OnView attribute
             if ( ! $method->getAttributes( $responseType ) ) {
                 continue;
             }
