@@ -76,26 +76,6 @@ final class PublicController extends Controller
 
         $toast->info( 'Hello there, this is a toast.' );
 
-        // $toast(
-        //     'info',
-        //     'Useful information Toast.',
-        //     'It has some details as well. How thoughtful.',
-        // );
-
-        // foreach ( \range( 0, \rand( 2, 7 ) ) as $key => $value ) {
-        //     $status      = (string) $toast::STATUS[ \array_rand( $toast::STATUS ) ];
-        //     $description = $key % 2 == 0 ? 'Description' : null;
-        //
-        //     $timeout = 3600 + ( $key * 1000 );
-        //
-        //     $toast(
-        //             $status,
-        //             'Hello there, this is a ' . $status . '. Seed: ' . $key,
-        //             $description,
-        //             $timeout,
-        //     );
-        // }
-
         return 'demo.latte';
     }
 

@@ -31,8 +31,18 @@ trait ResponseMethods
 {
     use ServiceContainer;
 
-    final protected function generateRoutePath( string $name, array $parameters = [], bool $relative = false ) : string
-    {
+    /**
+     * @param string              $name
+     * @param array<string,mixed> $parameters
+     * @param bool                $relative
+     *
+     * @return string
+     */
+    final protected function generateRoutePath(
+        string $name,
+        array  $parameters = [],
+        bool   $relative = false,
+    ) : string {
         return $this->urlGenerator()->generate(
             $name,
             $parameters,
@@ -40,8 +50,18 @@ trait ResponseMethods
         );
     }
 
-    final protected function generateRouteUrl( string $name, array $parameters = [], bool $relative = false ) : string
-    {
+    /**
+     * @param string              $name
+     * @param array<string,mixed> $parameters
+     * @param bool                $relative
+     *
+     * @return string
+     */
+    final protected function generateRouteUrl(
+        string $name,
+        array  $parameters = [],
+        bool   $relative = false,
+    ) : string {
         return $this->urlGenerator()->generate(
             $name,
             $parameters,
@@ -52,9 +72,9 @@ trait ResponseMethods
     /**
      * Forwards the request to another controller.
      *
-     * @param string $controller The controller name (a string like "App\Controller\PostController::index" or "App\Controller\PostController" if it is invokable)
-     * @param array  $path
-     * @param array  $query
+     * @param string              $controller The controller name (a string like "App\Controller\PostController::index" or "App\Controller\PostController" if it is invokable)
+     * @param array<string,mixed> $path
+     * @param array<string,mixed> $query
      *
      * @return Response
      */
@@ -78,14 +98,17 @@ trait ResponseMethods
     /**
      * Returns a RedirectResponse to the given route with the given parameters.
      *
-     * @param string $route
-     * @param array  $parameters
-     * @param int    $status     The HTTP status code (302 "Found" by default)
+     * @param string              $route
+     * @param array<string,mixed> $parameters
+     * @param int                 $status     The HTTP status code (302 "Found" by default)
      *
      * @return RedirectResponse
      */
-    protected function redirectToRoute( string $route, array $parameters = [], int $status = 302 ) : RedirectResponse
-    {
+    protected function redirectToRoute(
+        string $route,
+        array  $parameters = [],
+        int    $status = 302,
+    ) : RedirectResponse {
         // TODO : [md] Log redirects
 
         $url = $this->serviceLocator( RouterInterface::class )->generate( $route, $parameters );
@@ -102,8 +125,8 @@ trait ResponseMethods
      *
      * @param mixed                          $data
      * @param int                            $status
-     * @param array                          $headers
-     * @param array                          $context
+     * @param array<string,mixed>            $headers
+     * @param array<string,mixed>            $context
      * @param null|false|SerializerInterface $serializer
      *
      * @return JsonResponse

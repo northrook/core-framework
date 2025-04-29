@@ -16,29 +16,11 @@ final readonly class UrlGenerator implements ActionInterface
 {
     public function __construct( private UrlGeneratorInterface $urlGenerator ) {}
 
-    final protected function generateRoutePath( string $name, array $parameters = [], bool $relative = false ) : string
-    {
-        return $this->urlGenerator->generate(
-            $name,
-            $parameters,
-            $relative ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_PATH,
-        );
-    }
-
-    final protected function generateRouteUrl( string $name, array $parameters = [], bool $relative = false ) : string
-    {
-        return $this->urlGenerator->generate(
-            $name,
-            $parameters,
-            $relative ? UrlGeneratorInterface::NETWORK_PATH : UrlGeneratorInterface::ABSOLUTE_URL,
-        );
-    }
-
     /**
-     * @param string                $name
-     * @param array<string, string> $parameters
-     * @param bool                  $relative
-     * @param bool                  $asUrl
+     * @param string              $name
+     * @param array<string,mixed> $parameters
+     * @param bool                $relative
+     * @param bool                $asUrl
      *
      * @return string
      */
@@ -60,14 +42,17 @@ final readonly class UrlGenerator implements ActionInterface
     }
 
     /**
-     * @param string                $name
-     * @param array<string, string> $parameters
-     * @param bool                  $relative
+     * @param string              $name
+     * @param array<string,mixed> $parameters
+     * @param bool                $relative
      *
      * @return string
      */
-    public function routePath( string $name, array $parameters = [], bool $relative = false ) : string
-    {
+    public function routePath(
+        string $name,
+        array  $parameters = [],
+        bool   $relative = false,
+    ) : string {
         return $this->urlGenerator->generate(
             $name,
             $parameters,
@@ -76,14 +61,17 @@ final readonly class UrlGenerator implements ActionInterface
     }
 
     /**
-     * @param string                $name
-     * @param array<string, string> $parameters
-     * @param bool                  $relative
+     * @param string              $name
+     * @param array<string,mixed> $parameters
+     * @param bool                $relative
      *
      * @return string
      */
-    public function routeUrl( string $name, array $parameters = [], bool $relative = false ) : string
-    {
+    public function routeUrl(
+        string $name,
+        array  $parameters = [],
+        bool   $relative = false,
+    ) : string {
         return $this->urlGenerator->generate(
             $name,
             $parameters,
