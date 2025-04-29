@@ -14,8 +14,7 @@ use const Support\CACHE_FOREVER;
 use const Time\HOUR_4;
 
 return static function( ContainerConfigurator $container ) : void {
-    $cache     = $container->services();
-    $cachePool = $cache
+    $cachePool = $container->services()
         ->defaults()
         ->tag( 'cache.pool' );
 
@@ -27,7 +26,7 @@ return static function( ContainerConfigurator $container ) : void {
         ->set( 'cache.component_pool', PhpFilesAdapter::class )
         ->args( ['component_pool', HOUR_4, '%kernel.cache_dir%', true] );
 
-    $cache
+    $container->services()
         ->set( 'cache.pathfinder', LocalStorage::class )
         ->call(
             'setStopwatch',
