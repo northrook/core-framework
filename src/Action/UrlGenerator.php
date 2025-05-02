@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Framework\Action;
+namespace Core\Action;
 
 use Core\Symfony\DependencyInjection\Autodiscover;
 use Core\Interface\ActionInterface;

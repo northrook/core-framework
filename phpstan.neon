@@ -1,3 +1,5 @@
+rules:
+	- Northrook\PHPStan\RequiresMethodRule
 parameters:
 	level: 9
 	paths:
