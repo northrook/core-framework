@@ -11,4 +11,6 @@ return static function( FrameworkConfig $framework ) : void {
     $framework->secret( '%env(APP_SECRET)%' );
 
     $framework->session( ['enabled' => true] );
+
+    $framework->fragments( ['enabled' => true] );
 };

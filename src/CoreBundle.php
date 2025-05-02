@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Core;
 
 use Core\Symfony\DependencyInjection\FinalizeParametersPass;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -77,6 +78,9 @@ final class CoreBundle extends AbstractBundle
             ->addCompilerPass( new ApplicationInitialization() )
             ->addCompilerPass( new AutowireInterfaceDependencies(), priority : -256 )
             ->addCompilerPass( new RegisterServiceArguments(), priority : -264 )
-            ->addCompilerPass( new FinalizeParametersPass() );
+            ->addCompilerPass(
+                pass : new FinalizeParametersPass(),
+                type : PassConfig::TYPE_OPTIMIZE,
+            );
     }
 }
