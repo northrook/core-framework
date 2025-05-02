@@ -15,6 +15,9 @@ return static function( ContainerConfigurator $container ) : void {
     $container->services()
         ->set( SettingsProvider::class );
 
+    $container->parameters()->set( 'session.metadata.storage_key', '_session.meta' );
+
+    // Directories
     foreach ( [
         'dir.root'          => '%kernel.project_dir%',
         'dir.config'        => '%dir.root%/config',

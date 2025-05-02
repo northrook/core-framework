@@ -6,12 +6,12 @@ declare(strict_types=1);
 
 include_once dirname( __DIR__ ).'/vendor/autoload.php';
 
-use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory as Config;
-use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\{AccessToken, UserProvider};
+// use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory as Config;
+// use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\{AccessToken, UserProvider};
 use Symfony\Bundle\FrameworkBundle\DependencyInjection as FrameworkBundle;
-use Symfony\Bundle\SecurityBundle\DependencyInjection as SecurityBundle;
-use Doctrine\Bundle\DoctrineBundle\DependencyInjection as DoctrineBundle;
-use Doctrine\Bundle\MigrationsBundle\DependencyInjection as DoctrineMigrations;
+// use Symfony\Bundle\SecurityBundle\DependencyInjection as SecurityBundle;
+// use Doctrine\Bundle\DoctrineBundle\DependencyInjection as DoctrineBundle;
+// use Doctrine\Bundle\MigrationsBundle\DependencyInjection as DoctrineMigrations;
 use Symfony\Component\Config\Builder\ConfigBuilderGenerator;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -35,9 +35,9 @@ function ConfigurationReference() : array
     return array_filter(
         [
             new FrameworkBundle\Configuration( false ),
-            new DoctrineBundle\Configuration( true ),
-            new DoctrineMigrations\Configuration(),
-            SecurityConfiguration(),
+            // new DoctrineBundle\Configuration( true ),
+            // new DoctrineMigrations\Configuration(),
+            // SecurityConfiguration(),
         ],
     );
 }

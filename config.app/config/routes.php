@@ -11,15 +11,20 @@ use Core\Controller\{
     AssetController,
     SystemController,
 };
+use function Support\get_path;
 
 return static function( RoutingConfigurator $routes ) : void {
-    $routes->import(
-        resource : [
-            'path'      => '../src/Controller/',
-            'namespace' => 'App\Controller',
-        ],
-        type     : 'attribute',
-    );
+    $appControllers = get_path( __DIR__.'/../src/Controller/' );
+
+    if ( \is_dir( $appControllers ) ) {
+        $routes->import(
+            resource : [
+                'path'      => $appControllers,
+                'namespace' => 'App\Controller',
+            ],
+            type     : 'attribute',
+        );
+    }
     $routes->import(
         resource : PublicController::class,
         type     : 'public',

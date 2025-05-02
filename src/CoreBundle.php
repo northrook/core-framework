@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Core;
 
+use Core\Symfony\DependencyInjection\FinalizeParametersPass;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\Configurator\{ContainerConfigurator};
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use Core\Symfony\Compiler\{
     AutodiscoverServicesPass,
     AutowireInterfaceDependencies
@@ -17,7 +19,6 @@ use Core\Framework\CompilerPass\{
 };
 use Core\AssetManager\Compiler\RegisterAssetServices;
 use Core\View\Compiler\RegisterViewComponentsPass;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 /**
  * Core Symfony Framework.
@@ -59,23 +60,23 @@ final class CoreBundle extends AbstractBundle
      */
     public function build( ContainerBuilder $container ) : void
     {
+        // Ensure required classes are available
+        \class_exists( ContainerConfigurator::class );
+
         $container
             ->addCompilerPass( new AutodiscoverServicesPass(), priority : 1_024 )
             ->addCompilerPass( new RegisterAssetServices() )
-            ->addCompilerPass( $this->registerComponentPass() )
+            ->addCompilerPass(
+                new RegisterViewComponentsPass(
+                    service( 'core.view.engine' ),
+                    service( 'debug.stopwatch' ),
+                    service( 'logger' ),
+                    service( 'cache.component_pool' ),
+                ),
+            )
             ->addCompilerPass( new ApplicationInitialization() )
             ->addCompilerPass( new AutowireInterfaceDependencies(), priority : -256 )
-            ->addCompilerPass( new RegisterServiceArguments(), priority : -264 );
-    }
-
-    private function registerComponentPass() : RegisterViewComponentsPass
-    {
-        \class_exists( ContainerConfigurator::class );
-        return new RegisterViewComponentsPass(
-            service( 'core.view.engine' ),
-            service( 'debug.stopwatch' ),
-            service( 'logger' ),
-            service( 'cache.component_pool' ),
-        );
+            ->addCompilerPass( new RegisterServiceArguments(), priority : -264 )
+            ->addCompilerPass( new FinalizeParametersPass() );
     }
 }

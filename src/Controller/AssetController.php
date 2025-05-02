@@ -45,6 +45,8 @@ final class AssetController
             );
         }
 
+        // TODO : Possibly return 201 Created
+        // Note that redirects help in-place hot-reloads of <img src..>
         return new RedirectResponse( $path );
     }
 
