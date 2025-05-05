@@ -26,10 +26,9 @@ return static function( ContainerConfigurator $container ) : void {
         'dir.public.assets' => '%dir.root%/public/assets',
 
         // Assets
-        'dir.assets'        => '%dir.root%/assets',
-        'dir.assets.build'  => '%dir.root%/assets/build',
-        'dir.assets.themes' => '%dir.core%/assets',
-        'dir.assets.cache'  => __DIR__.'/var/assets',
+        'dir.assets'       => '%dir.root%/assets',
+        'dir.assets.cache' => '%dir.root%/var/cache/assets',
+        'dir.assets.meta'  => '%dir.core%/var/assets/meta',
 
         // Core
         'dir.core'        => [__DIR__, 1],

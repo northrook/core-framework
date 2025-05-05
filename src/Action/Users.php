@@ -3,8 +3,10 @@
 namespace Core\Action;
 
 use Core\Interface\ActionInterface;
+use Core\Symfony\DependencyInjection\Autodiscover;
 use const Support\AUTO;
 
+#[Autodiscover( autowire : true )]
 final class Users implements ActionInterface
 {
     private ?string $userId = null;

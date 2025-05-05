@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Cache\LocalStorage;
 use Core\Pathfinder;
 use const Support\PLACEHOLDER_ARRAY;
 

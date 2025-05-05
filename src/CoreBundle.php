@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Core;
 
+use Core\AssetManager\RegisterAssetsPass;
 use Core\Symfony\DependencyInjection\FinalizeParametersPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\{param, service};
 use Core\Symfony\Compiler\{
     AutodiscoverServicesPass,
     AutowireInterfaceDependencies
@@ -18,7 +19,6 @@ use Core\Framework\CompilerPass\{
     ApplicationInitialization,
     RegisterServiceArguments,
 };
-use Core\AssetManager\Compiler\RegisterAssetServices;
 use Core\View\Compiler\RegisterViewComponentsPass;
 
 /**
@@ -66,7 +66,13 @@ final class CoreBundle extends AbstractBundle
 
         $container
             ->addCompilerPass( new AutodiscoverServicesPass(), priority : 1_024 )
-            ->addCompilerPass( new RegisterAssetServices() )
+            ->addCompilerPass(
+                new RegisterAssetsPass(
+                    param( 'dir.assets.meta' ),
+                    service( Pathfinder::class ),
+                    service( 'cache.asset_pool' )->nullOnInvalid(),
+                ),
+            )
             ->addCompilerPass(
                 new RegisterViewComponentsPass(
                     service( 'core.view.engine' ),
