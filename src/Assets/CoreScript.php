@@ -2,16 +2,12 @@
 
 namespace Core\Assets;
 
-use Core\Asset\Type;
-use Core\AssetManager\{RegisteredAsset};
+use Core\AssetManager\Asset;
 
 /**
  * @internal
  */
-#[RegisteredAsset(
-    Type::SCRIPT,
-    '/scripts/core.js',
-)]
+#[Asset( '/script/core.js' )]
 final class CoreScript extends ScriptAsset
 {
     /**

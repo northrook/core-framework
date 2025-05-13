@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Core\Controller;
 
 use Symfony\Component\HttpFoundation\{BinaryFileResponse, RedirectResponse, Request};
-use Core\Asset\ImageAsset;
-use Core\{AssetManager, Framework\Exception\HttpNotFoundException, Pathfinder};
+use Core\{AssetManager, Assets\ImageAsset, Framework\Exception\HttpNotFoundException, Pathfinder};
 use Core\Symfony\Toast;
 use Symfony\Component\Routing\Attribute\Route;
 use Throwable;

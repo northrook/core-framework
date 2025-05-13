@@ -69,7 +69,6 @@ final class CoreBundle extends AbstractBundle
             ->addCompilerPass(
                 new RegisterAssetsPass(
                     param( 'dir.assets.meta' ),
-                    service( Pathfinder::class ),
                     service( 'cache.asset_pool' )->nullOnInvalid(),
                 ),
             )

@@ -20,15 +20,17 @@ return static function( ContainerConfigurator $container ) : void {
     // Directories
     foreach ( [
         'dir.root'          => '%kernel.project_dir%',
+        'dir.cache'         => '%kernel.cache_dir%',
         'dir.config'        => '%dir.root%/config',
         'dir.var'           => '%dir.root%/var',
+        'dir.temp'          => '%dir.root%/var/temp',
         'dir.public'        => '%dir.root%/public',
         'dir.public.assets' => '%dir.root%/public/assets',
 
         // Assets
-        'dir.assets'       => '%dir.root%/assets',
-        'dir.assets.cache' => '%dir.root%/var/cache/assets',
-        'dir.assets.meta'  => '%dir.core%/var/assets/meta',
+        // 'dir.assets'       => '%dir.root%/assets',
+        // 'dir.assets.cache' => '%dir.root%/var/cache/assets',
+        // 'dir.assets.meta'  => '%dir.root%/var/assets/meta',
 
         // Core
         'dir.core'        => [__DIR__, 1],
@@ -37,7 +39,7 @@ return static function( ContainerConfigurator $container ) : void {
         'dir.core.assets' => '%dir.core%/assets',
 
         //
-        'path.asset_manifest'   => '%dir.root%/var/asset.manifest',
+        // 'path.asset_manifest'   => '%dir.root%/var/asset.manifest',
         'path.pathfinder_cache' => '%dir.root%/var/pathfinder.cache',
 
         // Templates
@@ -45,10 +47,9 @@ return static function( ContainerConfigurator $container ) : void {
         'dir.core.templates' => '%dir.core%/templates',
 
         // Cache
-        'dir.cache'                => '%kernel.cache_dir%',
-        'dir.cache.latte'          => '%kernel.cache_dir%/latte',
-        'dir.cache.view'           => '%kernel.cache_dir%/view',
-        'dir.cache.view.component' => '%kernel.cache_dir%/view/component',
+        'dir.cache.latte'          => '%dir.cache%/latte',
+        'dir.cache.view'           => '%dir.cache%/view',
+        'dir.cache.view.component' => '%dir.cache%/view/component',
 
         // Themes
         'path.theme.core' => '%dir.core%/config/themes/core.php',

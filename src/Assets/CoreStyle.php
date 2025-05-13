@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Core\Assets;
 
-use Core\Asset\{Type};
-use Core\AssetManager\RegisteredAsset;
+use Core\AssetManager\Asset;
 use Northrook\DesignSystem;
 
 /**
  * @internal
  */
-#[RegisteredAsset( Type::STYLE, ['/styles/core.css', '/styles/core/*.css'], )]
+#[Asset( ['/style/core.css', '/style/core/*.css'] )]
 final class CoreStyle extends ScriptAsset
 {
     private DesignSystem $designSystem;

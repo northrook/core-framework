@@ -21,7 +21,6 @@ return static function( ContainerConfigurator $container ) : void {
             [
                 PLACEHOLDER_ARRAY, // $parameters
                 service( 'parameter_bag' ),
-                service( 'logger' )->nullOnInvalid(),
                 service( 'cache.pathfinder' ),
                 service( 'debug.stopwatch' )->nullOnInvalid(),
                 true, // $deferCacheCommits

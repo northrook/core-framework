@@ -2,16 +2,12 @@
 
 namespace Core\Assets;
 
-use Core\Asset\Type;
-use Core\AssetManager\{RegisteredAsset};
+use Core\AssetManager\{Asset};
 
 /**
  * @internal
  */
-#[RegisteredAsset(
-    Type::SCRIPT,
-    '/scripts/htmx.js',
-)]
+#[Asset( '/script/htmx.js' )]
 final class HtmxScript extends ScriptAsset
 {
     /**
