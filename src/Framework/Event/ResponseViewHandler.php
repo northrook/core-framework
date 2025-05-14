@@ -145,6 +145,14 @@ final class ResponseViewHandler extends LifecycleEvent
             $profiler = $this->profiler?->event( $assetKey, 'Asset' );
             $asset    = $this->assetManager->getAsset( $assetKey );
 
+            try {
+                $asset = $this->assetManager->getAsset( $assetKey );
+            }
+            catch ( Throwable $exception ) {
+                dump( $exception );
+
+                continue;
+            }
             $html = $asset->getHtml();
 
             if ( $asset instanceof MinifiedAssetInterface

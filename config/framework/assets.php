@@ -32,7 +32,11 @@ return static function( ContainerConfigurator $container ) : void {
         ->set( AssetManager::class )
         ->args(
             [
-                param( 'dir.assets.meta' ),
+                [
+                    param( 'dir.assets' ),
+                    param( 'dir.core.assets' ),
+                ],
+                service( AssetManifest::class ),
                 service( Pathfinder::class ),
                 service( AssetManager::LOCATOR_ID ),
                 service( 'cache.asset_pool' )->nullOnInvalid(),
@@ -40,42 +44,4 @@ return static function( ContainerConfigurator $container ) : void {
         )
         ->tag( 'monolog.logger', ['channel' => 'assets'] )
         ->public();
-
-    //
-    // $service = $container->services()
-    //     ->defaults()
-    //     ->tag( 'monolog.logger', ['channel' => 'assets'] )
-    //     ->autoconfigure();
-    //
-    // //
-    // $service->set( 'core.asset_config', AssetConfig::class )
-    //     ->args(
-    //         [
-    //             service( Pathfinder::class ),
-    //             ['dir.assets', 'dir.core.assets'], // $assetDirectories
-    //             ['dir.config/assets.php', 'dir.core.config/assets.php'], // $configFiles
-    //         ],
-    //     );
-    //
-    // $service->set( AssetManifest::class )
-    //     ->args(
-    //         [
-    //             service( 'core.asset_config' ),
-    //             service( 'cache.asset_pool' ),
-    //             service( 'logger' )->nullOnInvalid(),
-    //         ],
-    //     );
-    //
-    // $service->set( AssetManager::class )
-    //     ->args(
-    //         [
-    //             service( 'core.asset_config' ),
-    //             service( Pathfinder::class ),
-    //             service( RegisterAssetServices::ID ),
-    //             service( AssetManifest::class ),
-    //             service( 'cache.asset_pool' ),
-    //         ],
-    //     )
-    //     ->autowire()
-    //     ->public();
 };

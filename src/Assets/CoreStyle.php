@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Assets;
 
-use Core\AssetManager\Asset;
+use Core\AssetManager\Compiler\Asset;
 use Northrook\DesignSystem;
 
 /**

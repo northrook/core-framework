@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Core\Controller;
 
+use Core\{AssetManager, Pathfinder};
 use Core\Framework\Response\{Parameters, Template};
-use Core\Pathfinder;
 use Core\Symfony\Toast;
 use Core\Framework\Controller;
 use Core\Framework\Controller\Attribute\{OnDocument};
@@ -31,10 +31,11 @@ final class PublicController extends Controller
     ), ]
     #[Template( 'welcome.latte' )]
     public function index(
-        ?string    $route,
-        Document   $document,
-        Request    $request,
-        Pathfinder $pathfinder,
+        ?string      $route,
+        Document     $document,
+        Request      $request,
+        Pathfinder   $pathfinder,
+        AssetManager $assetManager,
     ) : string {
         $path = $pathfinder(
             'dir.root',
@@ -42,6 +43,8 @@ final class PublicController extends Controller
         $document(
             'Index Demo Template',
         );
+
+        dump( $assetManager );
 
         return <<<HTML
             <body>

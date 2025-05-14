@@ -10,6 +10,8 @@ use Core\View\Document;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+// Firewall Controller :: match malicious URIs like /.env - soft-ban/black-hole
+
 #[Template( 'security.latte' )]
 final class SecurityController extends Controller
 {
