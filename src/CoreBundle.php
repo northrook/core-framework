@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core;
 
-use Core\AssetManager\RegisterAssetsPass;
+use Core\AssetManager\Config\RegisterAssetsPass;
 use Core\Symfony\DependencyInjection\FinalizeParametersPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;

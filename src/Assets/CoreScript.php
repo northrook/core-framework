@@ -2,13 +2,13 @@
 
 namespace Core\Assets;
 
-use Core\AssetManager\Compiler\Asset;
+use Core\AssetManager\Config\Asset;
 
 /**
  * @internal
  */
 #[Asset( '/script/core.js' )]
-final class CoreScript extends ScriptAsset
+final class CoreScript extends StyleAsset
 {
     /**
      * :: __construct is handled by each extending class

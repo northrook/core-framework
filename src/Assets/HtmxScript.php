@@ -2,7 +2,7 @@
 
 namespace Core\Assets;
 
-use Core\AssetManager\Compiler\Asset;
+use Core\AssetManager\Config\Asset;
 
 /**
  * @internal

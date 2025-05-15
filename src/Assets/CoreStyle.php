@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Core\Assets;
 
-use Core\AssetManager\Compiler\Asset;
+use Core\AssetManager\Config\Asset;
+use Core\Compiler\Hook\OnBuild;
 use Northrook\DesignSystem;
 
 /**
@@ -21,20 +22,12 @@ final class CoreStyle extends ScriptAsset
         $this->designSystem = $designSystem ?? new DesignSystem();
     }
 
-    /**
-     * :: __construct is handled by each extending class
-     * .. Autowired by the DependencyInjection extension
-     *
-     * Initialize serves as a runtime __construct hook.
-     *
-     * @return $this
-     */
-    protected function initialize() : self
+    #[OnBuild]
+    protected function generateStyles() : self
     {
         $styles = $this->designSystem->generateStyles();
 
         $this->meta->addSource( $styles );
-        $this->prefersInline();
 
         dump( $this );
         return $this;
