@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Core;
 
-use Core\AssetManager\Config\RegisterAssetsPass;
+use Core\AssetManager\Config\{AssetManifestPass, RegisterAssetsPass};
+use Core\AssetManager\AssetManifest;
 use Core\Symfony\DependencyInjection\FinalizeParametersPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
@@ -66,12 +67,7 @@ final class CoreBundle extends AbstractBundle
 
         $container
             ->addCompilerPass( new AutodiscoverServicesPass(), priority : 1_024 )
-            ->addCompilerPass(
-                new RegisterAssetsPass(
-                    param( 'dir.assets.meta' ),
-                    service( 'cache.asset_pool' )->nullOnInvalid(),
-                ),
-            )
+            ->addCompilerPass( new RegisterAssetsPass() )
             ->addCompilerPass(
                 new RegisterViewComponentsPass(
                     service( 'core.view.engine' ),
@@ -85,6 +81,12 @@ final class CoreBundle extends AbstractBundle
             ->addCompilerPass( new RegisterServiceArguments(), priority : -264 )
             ->addCompilerPass(
                 pass : new FinalizeParametersPass(),
+                type : PassConfig::TYPE_OPTIMIZE,
+            )
+            ->addCompilerPass(
+                pass : new AssetManifestPass(
+                    service( AssetManifest::class ),
+                ),
                 type : PassConfig::TYPE_OPTIMIZE,
             );
     }
