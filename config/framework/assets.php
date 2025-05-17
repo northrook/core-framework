@@ -9,14 +9,18 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Core\{AssetManager, AssetManager\AssetManifest, Pathfinder};
+use function Support\normalize_path;
 use const Support\PLACEHOLDER_ARGS;
 
 return static function( ContainerConfigurator $container ) : void {
-    $container->parameters()
-        ->set( 'path.asset_manifest', '%dir.var%/asset.manifest' )
-        ->set( 'dir.assets', '%dir.root%/assets' )
-        ->set( 'dir.assets.meta', '%dir.var%/assets' )
-        ->set( 'dir.assets.cache', '%dir.cache%/assets' );
+    foreach ( [
+        'path.asset_manifest' => '%dir.var%/asset.manifest',
+        'dir.assets'          => '%dir.root%/assets',
+        'dir.assets.meta'     => '%dir.var%/assets',
+        'dir.assets.cache'    => '%dir.cache%/assets',
+    ] as $key => $value ) {
+        $container->parameters()->set( $key, normalize_path( $value ) );
+    }
 
     $container->services()
         ->set( AssetManifest::class )

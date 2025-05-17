@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Controller;
 
-use Core\{AssetManager, Pathfinder};
+use Core\{AssetManager, Assets\ImageAsset, Assets\ScriptAsset, Assets\StyleAsset, Pathfinder};
 use Core\Framework\Response\{Parameters, Template};
 use Core\Symfony\Toast;
 use Core\Framework\Controller;
@@ -36,6 +36,9 @@ final class PublicController extends Controller
         Request      $request,
         Pathfinder   $pathfinder,
         AssetManager $assetManager,
+        ImageAsset   $imageAsset,
+        ScriptAsset  $scriptAsset,
+        StyleAsset   $styleAsset,
     ) : string {
         $path = $pathfinder(
             'dir.root',
@@ -44,7 +47,7 @@ final class PublicController extends Controller
             'Index Demo Template',
         );
 
-        dump( $assetManager );
+        dump( \get_defined_vars() );
 
         return <<<HTML
             <body>

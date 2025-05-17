@@ -20,11 +20,11 @@ return static function( ContainerConfigurator $container ) : void {
 
     $cachePool
         ->set( 'cache.asset_pool', PhpFilesAdapter::class )
-        ->args( ['asset_pool', CACHE_FOREVER, '%kernel.cache_dir%', true] );
+        ->args( ['asset_pool', CACHE_FOREVER, '%kernel.cache_dir%/pools/assets', true] );
 
     $cachePool
         ->set( 'cache.component_pool', PhpFilesAdapter::class )
-        ->args( ['component_pool', HOUR_4, '%kernel.cache_dir%', true] );
+        ->args( ['component_pool', HOUR_4, '%kernel.cache_dir%/pools/components', true] );
 
     $container->services()
         ->set( 'cache.pathfinder', LocalStorage::class )

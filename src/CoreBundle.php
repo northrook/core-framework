@@ -84,10 +84,10 @@ final class CoreBundle extends AbstractBundle
                 type : PassConfig::TYPE_OPTIMIZE,
             )
             ->addCompilerPass(
-                pass : new AssetManifestPass(
+                pass     : new AssetManifestPass(
                     service( AssetManifest::class ),
                 ),
-                type : PassConfig::TYPE_OPTIMIZE,
+                type     : PassConfig::TYPE_OPTIMIZE,
             );
     }
 }

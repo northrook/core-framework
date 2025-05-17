@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare( strict_types = 1 );
 
 namespace Core\Symfony\DependencyInjection;
 
@@ -11,14 +11,20 @@ final class FinalizeParametersPass extends CompilerPass
 {
     public function compile( ContainerBuilder $container ) : void
     {
-        foreach ( $this->parameterBag->all() as $key => $value ) {
-            if ( is_path( $value ) ) {
-                $this->parameterBag->set( $key, normalize_path( $value ) );
-            }
+        $parameters = $this->parameterBag->all();
 
+        $this->parameterBag->clear();
+
+        ksort( $parameters );
+
+        foreach ( $parameters as $key => $value ) {
             if ( \str_starts_with( $key, 'fragment.' ) ) {
-                $this->parameterBag->remove( $key );
+                continue;
             }
+            if ( is_path( $value ) ) {
+                $value = normalize_path( $value );
+            }
+            $this->parameterBag->set( $key, $value );
         }
     }
 }
