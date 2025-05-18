@@ -27,12 +27,7 @@ return static function( ContainerConfigurator $container ) : void {
 
     $services
         ->set( IconProviderService::class )
-        ->args(
-            [
-                service( 'cache.asset_pool' ),
-                service( 'logger' )->nullOnInvalid(),
-            ],
-        );
+        ->args( [service( 'cache.asset_pool' )] );
 
     $services
         ->set( DocumentEngine::class )

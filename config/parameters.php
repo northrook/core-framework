@@ -8,13 +8,9 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\Symfony\DependencyInjection\SettingsProvider;
 use function Support\normalize_path;
 
 return static function( ContainerConfigurator $container ) : void {
-    $container->services()
-        ->set( SettingsProvider::class );
-
     $container->parameters()->set( 'session.metadata.storage_key', '_session.meta' );
 
     // Directories
@@ -26,7 +22,7 @@ return static function( ContainerConfigurator $container ) : void {
         'dir.temp'          => '%dir.root%/var/temp',
         'dir.public'        => '%dir.root%/public',
         'dir.public.assets' => '%dir.root%/public/assets',
-        
+
         // Core
         'dir.core'        => [__DIR__, 1],
         'dir.core.src'    => '%dir.core%/src',

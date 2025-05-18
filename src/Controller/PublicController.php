@@ -19,8 +19,8 @@ final class PublicController extends Controller
     public function onDocumentResponse( Document $document ) : void
     {
         $document
-            ->title( 'Public Document Title' )
-            ->assets( 'style.core', 'script.core', 'script.htmx' );
+            ->title( 'Public Document Title' );
+            // ->assets( 'style.core', 'script.core', 'script.htmx' );
     }
 
     #[Route(
@@ -46,6 +46,8 @@ final class PublicController extends Controller
         $document(
             'Index Demo Template',
         );
+
+        $scrpt = $scriptAsset( 'core.js' );
 
         dump( \get_defined_vars() );
 

@@ -10,6 +10,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Core\AssetManager;
 use Core\Framework\Response\Parameters;
+use Core\Interface\SettingsProviderInterface;
 use Core\Symfony\ToastService;
 use Core\Framework\Event\{
     ControllerMethodInvoker,
@@ -29,6 +30,9 @@ use Symfony\Component\HttpKernel\Event\{
 use Core\View\{DocumentEngine, Template\Engine};
 
 return static function( ContainerConfigurator $container ) : void {
+    $container->services()
+        ->alias( SettingsProviderInterface::class, 'core.settings_provider' );
+
     $subscriber = $container->services()
         ->defaults()
         ->tag( 'kernel.event_subscriber' );
