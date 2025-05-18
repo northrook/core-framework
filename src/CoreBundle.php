@@ -29,6 +29,22 @@ use Core\View\Compiler\RegisterViewComponentsPass;
  */
 final class CoreBundle extends AbstractBundle
 {
+    private const array CONFIG = [
+        __DIR__.'/../config/application.php',
+        __DIR__.'/../config/parameters.php',
+        __DIR__.'/../config/pathfinder.php',
+        __DIR__.'/../config/response.php',
+        __DIR__.'/../config/template.php',
+        __DIR__.'/../config/view.php',
+        __DIR__.'/../config/framework/assets.php',
+        __DIR__.'/../config/framework/cache.php',
+        __DIR__.'/../config/framework/controllers.php',
+        __DIR__.'/../config/framework/profiler.php',
+        __DIR__.'/../config/framework/route_loaders.php',
+        __DIR__.'/../config/framework/settings.php',
+        __DIR__.'/../config/framework/services.php',
+    ];
+
     /**
      * @param array<array-key, mixed> $config
      * @param ContainerConfigurator   $container
@@ -41,19 +57,7 @@ final class CoreBundle extends AbstractBundle
         ContainerConfigurator $container,
         ContainerBuilder      $builder,
     ) : void {
-        $container->import( __DIR__.'/../config/application.php' );
-        $container->import( __DIR__.'/../config/parameters.php' );
-        $container->import( __DIR__.'/../config/pathfinder.php' );
-        $container->import( __DIR__.'/../config/response.php' );
-        $container->import( __DIR__.'/../config/template.php' );
-        $container->import( __DIR__.'/../config/view.php' );
-        $container->import( __DIR__.'/../config/framework/assets.php' );
-        $container->import( __DIR__.'/../config/framework/cache.php' );
-        $container->import( __DIR__.'/../config/framework/controllers.php' );
-        $container->import( __DIR__.'/../config/framework/profiler.php' );
-        $container->import( __DIR__.'/../config/framework/route_loaders.php' );
-        $container->import( __DIR__.'/../config/framework/settings.php.php' );
-        $container->import( __DIR__.'/../config/framework/services.php' );
+        \array_map( [$container, 'import'], $this::CONFIG );
     }
 
     /**

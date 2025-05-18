@@ -15,12 +15,11 @@ use Core\Framework\Routing\{
     SecurityRouteLoader,
     SystemRouteLoader,
 };
-use Core\Symfony\DependencyInjection\SettingsProvider;
 
 return static function( ContainerConfigurator $container ) : void {
     $router_args = [
         param( 'kernel.environment' ),
-        service( SettingsProvider::class ),
+        service( 'core.settings_provider' ),
     ];
 
     $router = $container->services()
