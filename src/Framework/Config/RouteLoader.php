@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Framework\Config;
 
+use Core\Autowire\SettingsAccessor;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\{Route, RouteCollection};
 use RuntimeException;
@@ -16,7 +17,7 @@ use Symfony\Contracts\Service\Attribute\Required;
  */
 abstract class RouteLoader extends Loader
 {
-    use \Core\Autowire\SettingsAccessor;
+    use SettingsAccessor;
 
     private bool $isLoaded = false;
 
@@ -24,7 +25,7 @@ abstract class RouteLoader extends Loader
 
     #[Required]
     final public function __construct(
-        #[Autowire( env : 'kernel.environment' )]
+        #[Autowire( param : 'kernel.environment' )]
         ?string $_env,
     ) {
         parent::__construct( $_env );

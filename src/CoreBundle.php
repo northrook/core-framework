@@ -13,12 +13,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\{param, service};
 use Core\Symfony\Compiler\{
-    AutodiscoverServicesPass,
-    AutowireInterfaceDependencies
+    AutodiscoverServicesPass
 };
 use Core\Framework\CompilerPass\{
     ApplicationInitialization,
-    RegisterServiceArguments,
+    AutowireServiceArguments,
 };
 use Core\View\Compiler\RegisterViewComponentsPass;
 
@@ -82,8 +81,7 @@ final class CoreBundle extends AbstractBundle
                 ),
             )
             ->addCompilerPass( new ApplicationInitialization() )
-            ->addCompilerPass( new AutowireInterfaceDependencies(), priority : -256 )
-            ->addCompilerPass( new RegisterServiceArguments(), priority : -264 )
+            ->addCompilerPass( new AutowireServiceArguments(), priority : -264 )
             ->addCompilerPass(
                 pass : new FinalizeParametersPass(),
                 type : PassConfig::TYPE_OPTIMIZE,

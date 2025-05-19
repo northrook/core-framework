@@ -10,7 +10,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 // use Core\Action\Headers;
 use _Dev\Attribute\TODO;
-use Core\Framework\CompilerPass\RegisterServiceArguments;
+use Core\Framework\CompilerPass\AutowireServiceArguments;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -31,7 +31,7 @@ return static function(
      * @used-by \Core\Autowire\ServiceLocator
      */
     $container->services()
-        ->set( RegisterServiceArguments::TAG )
+        ->set( AutowireServiceArguments::TAG )
         ->tag( 'container.service_locator' )
         ->args(
             [

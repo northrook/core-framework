@@ -17,9 +17,9 @@ use Core\Framework\Routing\{
 };
 
 return static function( ContainerConfigurator $container ) : void {
-
     $router = $container->services()
         ->defaults()
+        ->autowire()
         ->tag( 'routing.loader' );
 
     $router->set( AdminRouteLoader::class );
