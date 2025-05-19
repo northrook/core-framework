@@ -6,6 +6,7 @@ namespace Core\Framework\Event;
 
 use Core\Framework\Lifecycle\LifecycleEvent;
 use Core\Framework\Response\ResponseType;
+use Core\Interface\SettingsProviderInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpFoundation\{ParameterBag, Request};
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -24,6 +25,8 @@ final class RequestLifecycleHandler extends LifecycleEvent
     protected Request $request;
 
     protected ParameterBag $attributes;
+
+    public function __construct( protected readonly SettingsProviderInterface $settings ) {}
 
     public function __invoke( RequestEvent $event ) : void
     {
@@ -69,9 +72,10 @@ final class RequestLifecycleHandler extends LifecycleEvent
     {
         // Do not parse sub-requests
         if ( $this->isMainRequest === false ) {
-            $this->logger?->notice(
-                'Lifecycle: Sub-request, skipping.',
-                ['request' => $this->request],
+            $this->log(
+                message : 'Lifecycle: Sub-request, skipping.',
+                context : ['request' => $this->request],
+                level   : 'debug',
             );
             return false;
         }
@@ -96,16 +100,17 @@ final class RequestLifecycleHandler extends LifecycleEvent
             throw new NotFoundHttpException( $message );
         }
 
-        $_enabled = $this->getSetting(
+        $_enabled = $this->settings->get(
             'site.enabled_locales',
             ['en', 'dk', 'nl'],
         );
 
         if ( ! \in_array( $_locale, $_enabled ) ) {
             $_locale = 'en';
-            $this->logger?->warning(
-                'Unknown locale: {_locale}',
-                ['_locale' => $_locale],
+            $this->log(
+                message : 'Unknown locale: {_locale}',
+                context : ['_locale' => $_locale],
+                level   : 'warning',
             );
         }
 

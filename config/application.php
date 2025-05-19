@@ -44,7 +44,8 @@ return static function( ContainerConfigurator $container ) : void {
     /**
      * {@see RequestEvent}.
      */
-    $listener->set( RequestLifecycleHandler::class );
+    $listener->set( RequestLifecycleHandler::class )
+        ->args( [service( 'core.settings_provider' )] );
 
     /**
      * {@see ControllerEvent}.

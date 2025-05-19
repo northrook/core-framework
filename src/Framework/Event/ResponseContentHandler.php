@@ -73,7 +73,11 @@ final class ResponseContentHandler extends LifecycleEvent implements EventSubscr
             );
         }
         else {
-            $this->logger?->error( "Expected a 'View::TYPE' on this 'ResponseEvent'." );
+            $this->log(
+                message : 'Expected a {type} on this {event}.',
+                context : ['type' => ResponseType::class, 'event' => $event],
+                level   : 'error',
+            );
         }
 
         $profiler?->stop();

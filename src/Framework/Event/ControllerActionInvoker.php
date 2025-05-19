@@ -44,7 +44,10 @@ final class ControllerActionInvoker extends LifecycleEvent
             $controller->setCurrentRequest( $event->getRequest() );
         }
         else {
-            $this->logger?->notice( 'Non-framework Controller, skipping.' );
+            $this->log(
+                message : 'Non-framework Controller, skipping.',
+                level   : 'debug',
+            );
             self::$handleLifecycleEvent = false;
 
             $profiler?->stop();
@@ -88,8 +91,8 @@ final class ControllerActionInvoker extends LifecycleEvent
                 ReflectionAttribute::IS_INSTANCEOF,
             )[0] ?? null )?->newInstance() ?? new Template();
         }
-        catch ( ReflectionException $e ) {
-            $this->logger?->error( $e->getMessage() );
+        catch ( ReflectionException $exception ) {
+            $this->log( $exception );
             $controllerTemplate = new Template();
         }
 

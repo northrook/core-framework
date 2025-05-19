@@ -55,10 +55,7 @@ final class ControllerMethodInvoker extends LifecycleEvent
                 ->invoke( $controller );
         }
         catch ( ReflectionException $exception ) {
-            $this->logger?->error(
-                $exception->getMessage(),
-                ['exception' => $exception],
-            );
+            $this->log( $exception );
         }
     }
 

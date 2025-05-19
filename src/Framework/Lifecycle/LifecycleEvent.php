@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace Core\Framework\Lifecycle;
 
-use Core\Symfony\DependencyInjection\SettingsAccessor;
+use Core\Interface\{LogHandler, Loggable};
 use Core\Profiler\{Interface\Profilable, StopwatchProfiler};
-use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 use Symfony\Component\Stopwatch\Stopwatch;
 use BadMethodCallException;
 
-abstract class LifecycleEvent implements Profilable, LoggerAwareInterface
+abstract class LifecycleEvent implements Loggable, Profilable
 {
-    use SettingsAccessor,
-        StopwatchProfiler,
-        LoggerAwareTrait;
+    use LogHandler,
+        StopwatchProfiler;
 
     protected static bool $handleLifecycleEvent;
 
