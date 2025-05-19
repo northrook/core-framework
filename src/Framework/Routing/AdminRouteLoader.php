@@ -21,7 +21,7 @@ final class AdminRouteLoader extends RouteLoader
 
     protected function configure( mixed $resource, ?string $type ) : void
     {
-        if ( $this->settings->get( 'admin.access.sub_domain', true ) ) {
+        if ( $this->getSetting( 'admin.access.sub_domain', true ) ) {
             $this
                 ->path( '/' )
                 ->host(

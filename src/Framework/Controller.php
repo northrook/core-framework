@@ -4,27 +4,26 @@ declare(strict_types=1);
 
 namespace Core\Framework;
 
+use Core\Interface\{LogHandler, Loggable};
+use Core\Autowire\{ServiceLocator, SettingsAccessor};
 use Core\Framework\Response\{ResponseType, ViewResponse};
 use Core\Profiler\Interface\Profilable;
 use Core\Profiler\{StopwatchProfiler};
 use Symfony\Component\HttpFoundation\{Request};
 use Core\Framework\Controller\ResponseMethods;
 use Core\Framework\Controller\Attribute\{OnContent, OnDocument};
-use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
-use Core\Symfony\DependencyInjection\{ServiceContainer, SettingsAccessor};
-use Core\Symfony\Interface\ServiceContainerInterface;
 use Exception, RuntimeException, ReflectionClass, ReflectionException;
 use Symfony\Component\Stopwatch\Stopwatch;
 use InvalidArgumentException;
 use const Support\AUTO;
 
-abstract class Controller implements ServiceContainerInterface, Profilable, LoggerAwareInterface
+abstract class Controller implements Profilable, Loggable
 {
-    use ResponseMethods,
-        ServiceContainer,
+    use ServiceLocator,
         SettingsAccessor,
-        StopwatchProfiler,
-        LoggerAwareTrait;
+        ResponseMethods,
+        LogHandler,
+        StopwatchProfiler;
 
     protected Request $request;
 
@@ -61,7 +60,7 @@ abstract class Controller implements ServiceContainerInterface, Profilable, Logg
     ) : ViewResponse {
         $view = $this->request->attributes->get( '_response' );
 
-        if ( !$view instanceof ResponseType ) {
+        if ( ! $view instanceof ResponseType ) {
             $message = "Expected a 'View::TYPE' on this 'ResponseEvent'.";
             throw new InvalidArgumentException( $message );
         }

@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Core\Framework\CompilerPass;
 
 use Symfony\Component\DependencyInjection\{ContainerBuilder, Definition, Reference};
+use Core\Autowire\{ServiceLocator, SettingsAccessor};
 use Core\Framework\Controller;
 use Core\Symfony\Console\{ListReport};
-use Core\Symfony\DependencyInjection\CompilerPass;
-use Core\Symfony\Interface\ServiceContainerInterface;
+use Core\Symfony\DependencyInjection\{CompilerPass};
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use function Support\class_adopts_any;
+use function Support\{class_adopts_any, uses_trait};
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 /**
  * @internal
@@ -21,21 +22,16 @@ final class RegisterServiceArguments extends CompilerPass
 
     protected readonly Definition $serviceLocator;
 
+    protected readonly Definition $settingsProvider;
+
     public function compile( ContainerBuilder $container ) : void
     {
-        if ( ! $container->hasDefinition( $this::TAG ) ) {
-            $service_argument = $this::TAG;
-            $this->console->error(
-                $this::class." cannot find required '{$service_argument}' definition.",
-            );
-            return;
-        }
-
-        $this->serviceLocator = $container->getDefinition( $this::TAG );
+        $this->serviceLocator   = $this->getDefinition( $this::TAG );
+        $this->settingsProvider = $this->getDefinition( service( 'core.settings_provider' ) );
 
         $this
             ->registerTaggedServices()
-            ->injectServiceLocator();
+            ->injectServices();
     }
 
     private function registerTaggedServices() : self
@@ -81,24 +77,48 @@ final class RegisterServiceArguments extends CompilerPass
         return $this;
     }
 
-    private function injectServiceLocator() : void
+    private function injectServices() : void
     {
-        $registeredServices = new ListReport( __METHOD__ );
+        $report = new ListReport( __METHOD__ );
 
         foreach ( $this->getDeclaredClasses() as $class ) {
-            if (
-                \is_subclass_of( $class, ServiceContainerInterface::class )
-                && $this->container->hasDefinition( $class )
-            ) {
-                $registeredServices->item( $class );
-                $this->container->getDefinition( $class )
-                    ->addMethodCall(
-                        'setServiceLocator',
-                        [$this->serviceLocator],
-                    );
+            $definition = $this->getDefinition(
+                id       : $class,
+                nullable : true,
+            );
+
+            if ( ! $definition ) {
+                continue;
+            }
+
+            $add = [];
+
+            if ( uses_trait( $class, ServiceLocator::class ) ) {
+                $definition->addMethodCall(
+                    'setServiceLocator',
+                    [$this->serviceLocator],
+                );
+                $add[] = 'ServiceLocator';
+            }
+
+            if ( uses_trait( $class, SettingsAccessor::class ) ) {
+                $definition->addMethodCall(
+                    'setSettingsProvider',
+                    [$this->settingsProvider],
+                );
+                $add[] = 'SettingsAccessor';
+            }
+
+            if ( $add ) {
+                $report->item( $class );
+
+                foreach ( $add as $item ) {
+                    $report->add( $item );
+                }
+                $report->separator();
             }
         }
 
-        $registeredServices->output();
+        $report->output();
     }
 }

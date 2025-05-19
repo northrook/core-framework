@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 // use Core\Action\Headers;
+use _Dev\Attribute\TODO;
 use Core\Framework\CompilerPass\RegisterServiceArguments;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -20,8 +21,15 @@ use Symfony\Component\Routing\RouterInterface;
 // use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-return static function( ContainerConfigurator $container ) : void {
-    /** @used-by \Core\Symfony\DependencyInjection\ServiceContainer */
+return static function(
+    ContainerConfigurator $container,
+) : void {
+    /**
+     * @TODO    Deprecate 'core.service_arguments', use default
+     * @TODO    Create Service::class aliases
+     *
+     * @used-by \Core\Autowire\ServiceLocator
+     */
     $container->services()
         ->set( RegisterServiceArguments::TAG )
         ->tag( 'container.service_locator' )

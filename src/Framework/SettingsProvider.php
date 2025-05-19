@@ -55,7 +55,7 @@ final class SettingsProvider implements SettingsProviderInterface
             return $this->map[$setting];
         }
         $method = __METHOD__;
-        dump( \get_defined_vars() );
+        // dump( \get_defined_vars() );
         return $this->map[$setting] = $default;
     }
 
@@ -65,7 +65,7 @@ final class SettingsProvider implements SettingsProviderInterface
         $this->map[$setting] = $set;
 
         $method = __METHOD__;
-        dump( \get_defined_vars() );
+        // dump( \get_defined_vars() );
 
         return $this;
     }
@@ -76,7 +76,7 @@ final class SettingsProvider implements SettingsProviderInterface
         $this->map[$setting] ??= $add;
 
         $method = __METHOD__;
-        dump( \get_defined_vars() );
+        // dump( \get_defined_vars() );
 
         return $this;
     }
@@ -87,10 +87,10 @@ final class SettingsProvider implements SettingsProviderInterface
             ( function() : bool {
                 $map      = \array_keys( $this->map );
                 $settings = \array_keys( $this->settings );
-                dump( \get_defined_vars() );
+                // dump( \get_defined_vars() );
                 \ksort( $settings );
                 \ksort( $map );
-                dump( \get_defined_vars() );
+                // dump( \get_defined_vars() );
 
                 return $map === $settings;
             } )(),

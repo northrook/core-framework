@@ -4,26 +4,30 @@ declare(strict_types=1);
 
 namespace Core\Framework\Config;
 
-use Core\Interface\SettingsProviderInterface;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\{Route, RouteCollection};
 use RuntimeException;
 use InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @see https://symfony.com/doc/current/routing/custom_route_loader.html
  */
 abstract class RouteLoader extends Loader
 {
+    use \Core\Autowire\SettingsAccessor;
+
     private bool $isLoaded = false;
 
     protected readonly RouteCollection $routes;
 
-    public function __construct(
-        ?string                                      $env,
-        protected readonly SettingsProviderInterface $settings,
+    #[Required]
+    final public function __construct(
+        #[Autowire( env : 'kernel.environment' )]
+        ?string $_env,
     ) {
-        parent::__construct( $env );
+        parent::__construct( $_env );
     }
 
     /**

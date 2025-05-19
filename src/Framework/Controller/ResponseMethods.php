@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Core\Framework\Controller;
 
+use Core\Autowire\ServiceLocator;
 use Core\Framework\Exception\HttpNotFoundException;
-use Core\Symfony\DependencyInjection\ServiceContainer;
-use Core\Symfony\Interface\ServiceContainerInterface;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\{BinaryFileResponse,
     File,
@@ -23,13 +22,11 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Exception;
 
 /**
- * @phpstan-require-implements ServiceContainerInterface
- *
  * @author Martin Nielsen <mn@northrook.com>
  */
 trait ResponseMethods
 {
-    use ServiceContainer;
+    use ServiceLocator;
 
     /**
      * @param string              $name
@@ -80,12 +77,12 @@ trait ResponseMethods
      */
     protected function forwardToController( string $controller, array $path = [], array $query = [] ) : Response
     {
-        $request             = $this->serviceLocator( Request::class );
+        $request             = $this->getService( Request::class );
         $path['_controller'] = $controller;
         $subRequest          = $request->duplicate( $query, null, $path );
 
         try {
-            return $this->serviceLocator( HttpKernelInterface::class )->handle(
+            return $this->getService( HttpKernelInterface::class )->handle(
                 $subRequest,
                 HttpKernelInterface::SUB_REQUEST,
             );
@@ -111,7 +108,7 @@ trait ResponseMethods
     ) : RedirectResponse {
         // TODO : [md] Log redirects
 
-        $url = $this->serviceLocator( RouterInterface::class )->generate( $route, $parameters );
+        $url = $this->getService( RouterInterface::class )->generate( $route, $parameters );
 
         return new RedirectResponse( $url, $status );
     }
@@ -119,7 +116,7 @@ trait ResponseMethods
     /**
      * Returns a {@see JsonResponse} using the {@see SerializerInterface} if available.
      *
-     * - Will use the {@see SerializerInterface} assigned to {@see ServiceContainer} by default.
+     * - Will use the {@see SerializerInterface} assigned to the {@see ServiceLocator} by default.
      * - Pass a custom {@see SerializerInterface} as the last argument to override the default.
      * - Pass `false` to use the {@see JsonResponse} built in `json_encode`.
      *
@@ -139,7 +136,7 @@ trait ResponseMethods
         SerializerInterface|null|false $serializer = null,
     ) : JsonResponse {
         if ( $serializer !== false ) {
-            $serializer ??= $this->serviceLocator( SerializerInterface::class );
+            $serializer ??= $this->getService( SerializerInterface::class );
             $context = \array_merge( ['json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS], $context );
             $json    = $serializer->serialize( $data, 'json', $context );
 
@@ -172,6 +169,6 @@ trait ResponseMethods
 
     private function urlGenerator() : UrlGeneratorInterface
     {
-        return $this->serviceLocator( UrlGeneratorInterface::class );
+        return $this->getService( UrlGeneratorInterface::class );
     }
 }

@@ -6,7 +6,6 @@ namespace Core\Framework\Event;
 
 use Core\Framework\Lifecycle\LifecycleEvent;
 use Core\Framework\Response\ResponseType;
-use Core\Interface\SettingsProviderInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpFoundation\{ParameterBag, Request};
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -25,8 +24,6 @@ final class RequestLifecycleHandler extends LifecycleEvent
     protected Request $request;
 
     protected ParameterBag $attributes;
-
-    public function __construct( protected readonly SettingsProviderInterface $settings ) {}
 
     public function __invoke( RequestEvent $event ) : void
     {
@@ -100,7 +97,7 @@ final class RequestLifecycleHandler extends LifecycleEvent
             throw new NotFoundHttpException( $message );
         }
 
-        $_enabled = $this->settings->get(
+        $_enabled = $this->getSetting(
             'site.enabled_locales',
             ['en', 'dk', 'nl'],
         );

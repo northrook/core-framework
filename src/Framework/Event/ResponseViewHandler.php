@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Core\Framework\Event;
 
 use Core\AssetManager;
-use Core\AssetManager\Interface\MinifiedAssetInterface;
 use Core\Symfony\ToastService;
 use Core\View\{DocumentEngine, Html\HtmlFormatter, Template\Engine, Template\Exception\CompileException};
 use Symfony\Component\HttpKernel\Event\ResponseEvent;

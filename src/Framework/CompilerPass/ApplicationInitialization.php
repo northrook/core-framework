@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Core\Framework\CompilerPass;
 
-use Core\Symfony\Console\{ListReport, Output};
+use Core\Symfony\Console\{ListReport};
 use Core\Symfony\DependencyInjection\CompilerPass;
 use Support\Time;
 use JetBrains\PhpStorm\Language;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Finder\Finder;
 use SplFileInfo;
-use Exception, LogicException, InvalidArgumentException;
+use LogicException, InvalidArgumentException;
 use function Support\normalize_path;
 
 /**
@@ -28,8 +28,6 @@ final class ApplicationInitialization extends CompilerPass
 
     public function compile( ContainerBuilder $container ) : void
     {
-        $this->normalizePathParameters();
-
         $this->initializeDefaultConfiguration();
     }
 
@@ -148,29 +146,6 @@ final class ApplicationInitialization extends CompilerPass
         $string = \trim( $string );
 
         return \hash( 'xxh3', $string );
-    }
-
-    private function normalizePathParameters() : void
-    {
-        foreach ( $this->parameterBag->all() as $key => $value ) {
-            // Only parse prefixed keys
-            if ( \str_starts_with( $key, 'dir.' ) || \str_starts_with( $key, 'path.' ) ) {
-                // Skip pure-placeholders
-                if ( \str_starts_with( $value, '%' ) && \str_ends_with( $value, '%' ) ) {
-                    continue;
-                }
-
-                // Normalize and report
-                try {
-                    $value = normalize_path( $value );
-                    $this->parameterBag->set( $key, $value );
-                }
-                catch ( Exception $e ) {
-                    $message = Output::format( Output::MARKER, 'error' )."{$key} : {$e->getMessage()}";
-                    Output::printLine( $message );
-                }
-            }
-        }
     }
 
     private function getProjectPath( string|SplFileInfo $path ) : string
