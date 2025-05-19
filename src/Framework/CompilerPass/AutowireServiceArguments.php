@@ -24,7 +24,7 @@ use Throwable;
  */
 final class AutowireServiceArguments extends CompilerPass
 {
-    public const string TAG = 'core.service_arguments';
+    public const string LOCATOR = 'core.service_locator';
 
     private readonly ListReport $report;
 
@@ -36,7 +36,7 @@ final class AutowireServiceArguments extends CompilerPass
     {
         $this->report = new ListReport( __METHOD__ );
 
-        $this->serviceLocator   = $this->getDefinition( $this::TAG );
+        $this->serviceLocator   = $this->getDefinition( $this::LOCATOR );
         $this->settingsProvider = $this->getDefinition( service( 'core.settings_provider' ) );
 
         $this
@@ -200,7 +200,7 @@ final class AutowireServiceArguments extends CompilerPass
 
         dump( [__METHOD__ => \get_defined_vars()] );
 
-        foreach ( $this->taggedServiceIds( $this::TAG, 'controller.service_arguments' ) as $id ) {
+        foreach ( $this->taggedServiceIds( $this::LOCATOR, 'controller.service_arguments' ) as $id ) {
             $taggedService = $this->container->getDefinition( $id );
             $serviceId     = $taggedService->innerServiceId ?? $taggedService->getClass();
             $serviceClass  = $taggedService->getClass();
@@ -227,7 +227,7 @@ final class AutowireServiceArguments extends CompilerPass
                 $arguments[$id] = new Reference( $serviceId );
             }
             else {
-                $service_argument = $this::TAG;
+                $service_argument = $this::LOCATOR;
                 $this->console->error(
                     $this::class." could not find a serviceId for '{$id}' when parsing services tagged with '{$service_argument}'.",
                 );

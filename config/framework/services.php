@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 // use Core\Action\Headers;
-use _Dev\Attribute\TODO;
 use Core\Framework\CompilerPass\AutowireServiceArguments;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -25,13 +24,10 @@ return static function(
     ContainerConfigurator $container,
 ) : void {
     /**
-     * @TODO    Deprecate 'core.service_arguments', use default
-     * @TODO    Create Service::class aliases
-     *
      * @used-by \Core\Autowire\ServiceLocator
      */
     $container->services()
-        ->set( AutowireServiceArguments::TAG )
+        ->set( AutowireServiceArguments::LOCATOR )
         ->tag( 'container.service_locator' )
         ->args(
             [
@@ -42,7 +38,6 @@ return static function(
                     RouterInterface::class       => service( 'router' ),
                     HttpKernelInterface::class   => service( 'http_kernel' ),
                     SerializerInterface::class   => service( 'serializer' ),
-
                     // Security
                     // TokenStorageInterface::class => service(
                     //     'security.token_storage',
