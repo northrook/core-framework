@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Core\Framework;
 
+use Core\Framework\Controller\Attribute\OnDocument;
 use Core\Interface\{LogHandler, Loggable};
-use Core\Autowire\{ServiceLocator, SettingsAccessor};
+use Core\Autowire\{ServiceLocator, SettingsProvider};
 use Core\Framework\Response\{ResponseType, ViewResponse};
 use Core\Profiler\Interface\Profilable;
 use Core\Profiler\{StopwatchProfiler};
 use Symfony\Component\HttpFoundation\{Request};
 use Core\Framework\Controller\ResponseMethods;
-use Core\Framework\Controller\Attribute\{OnContent, OnDocument};
+use Core\Framework\Controller\Attribute\{OnContent};
 use Exception, RuntimeException, ReflectionClass, ReflectionException;
 use Symfony\Component\Stopwatch\Stopwatch;
 use InvalidArgumentException;
@@ -20,7 +21,7 @@ use const Support\AUTO;
 abstract class Controller implements Profilable, Loggable
 {
     use ServiceLocator,
-        SettingsAccessor,
+        SettingsProvider,
         ResponseMethods,
         LogHandler,
         StopwatchProfiler;

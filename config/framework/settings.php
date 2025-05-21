@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Core\Framework\SettingsProvider;
+use Core\Framework\Settings\SettingsProvider;
 
 return static function( ContainerConfigurator $container ) : void {
     //

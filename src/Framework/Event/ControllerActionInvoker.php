@@ -8,6 +8,8 @@ use Core\Framework\Controller;
 use Core\Framework\Lifecycle\LifecycleEvent;
 use Symfony\Component\HttpKernel\Event\{ControllerArgumentsEvent, ControllerEvent};
 use Core\Framework\Response\Template;
+use Core\Framework\Controller\Attribute\OnContent;
+use Core\Framework\Controller\Attribute\OnDocument;
 use InvalidArgumentException;
 use ReflectionException;
 use ReflectionAttribute;

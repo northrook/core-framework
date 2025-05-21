@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Framework\Config;
 
-use Core\Autowire\SettingsAccessor;
+use Core\Autowire\SettingsProvider;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\{Route, RouteCollection};
 use RuntimeException;
@@ -17,7 +17,7 @@ use Symfony\Contracts\Service\Attribute\Required;
  */
 abstract class RouteLoader extends Loader
 {
-    use SettingsAccessor;
+    use SettingsProvider;
 
     private bool $isLoaded = false;
 

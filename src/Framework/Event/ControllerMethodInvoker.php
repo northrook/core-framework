@@ -7,6 +7,8 @@ namespace Core\Framework\Event;
 use Core\Framework\Controller;
 use Core\Framework\Lifecycle\LifecycleEvent;
 use Symfony\Component\HttpKernel\Event\{ControllerArgumentsEvent};
+use Core\Framework\Controller\Attribute\OnContent;
+use Core\Framework\Controller\Attribute\OnDocument;
 use ReflectionException;
 use ReflectionClass;
 use InvalidArgumentException;
@@ -14,7 +16,7 @@ use InvalidArgumentException;
 /**
  * {@see ControllerArgumentsEvent}
  *
- * Calls {@see Controller} methods annotated with {@see OnContent::class} or {@see OnDocument::class}.
+ * Calls {@see Controller} methods annotated with {@see OnContent::class} or {@see \Core\Framework\Controller\Attribute\OnDocument::class}.
  *
  * @internal
  *

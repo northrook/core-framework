@@ -9,7 +9,7 @@ use Core\Interface\ActionInterface;
 use Core\Profiler\Interface\Profilable;
 use JetBrains\PhpStorm\Deprecated;
 use Psr\Log\LoggerAwareInterface;
-use Core\Autowire\{ServiceLocator, SettingsAccessor};
+use Core\Autowire\{ServiceLocator, SettingsProvider};
 use Core\Framework\Controller;
 use Core\Symfony\Console\{ListReport};
 use Core\Symfony\DependencyInjection\{CompilerPass};
@@ -173,12 +173,12 @@ final class AutowireServiceArguments extends CompilerPass
                 $add[] = 'ServiceLocator';
             }
 
-            if ( uses_trait( $class, SettingsAccessor::class ) ) {
+            if ( uses_trait( $class, SettingsProvider::class ) ) {
                 $definition->addMethodCall(
                     'setSettingsProvider',
                     [$this->settingsProvider],
                 );
-                $add[] = 'SettingsAccessor';
+                $add[] = 'SettingsProvider';
             }
 
             if ( $add ) {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Framework\SettingsProvider;
+namespace Core\Framework\Settings;
 
 use _Dev\Attribute\TODO;
 use Core\Interface\DataInterface;

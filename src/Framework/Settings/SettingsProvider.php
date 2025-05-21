@@ -2,13 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Core\Framework;
+namespace Core\Framework\Settings;
 
 use _Dev\Attribute\Experimental;
 use Core\Exception\NotSupportedException;
-use Core\Framework\SettingsProvider\Setting;
 use Core\Interface\SettingsProviderInterface;
 
+/**
+ * @internal
+ */
 #[Experimental]
 final class SettingsProvider implements SettingsProviderInterface
 {
