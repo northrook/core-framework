@@ -2,25 +2,19 @@
 
 namespace Core\Assets;
 
+use Core\AssetManager\AbstractAsset;
 use Core\AssetManager\Config\Asset;
 
 /**
- * @internal
  */
 #[Asset( '/script/core.js' )]
-final class CoreScript extends StyleAsset
+final class CoreScript extends AbstractAsset
 {
     /**
-     * :: __construct is handled by each extending class
-     * .. Autowired by the DependencyInjection extension
-     *
-     * Initialize serves as a runtime __construct hook.
-     *
-     * @return $this
+     * Initialize serves as a runtime by {@see __invoke}.
      */
-    protected function initialize() : self
+    protected function build() : void
     {
         dump( $this );
-        return $this;
     }
 }

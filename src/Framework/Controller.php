@@ -77,6 +77,8 @@ abstract class Controller implements Profilable, Loggable
      * Called by {@see Event\ControllerMethodInvoker::controllerOnViewMethods}.
      *
      * @return void
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     final protected function controllerResponseMethods() : void
     {

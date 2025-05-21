@@ -198,7 +198,7 @@ final class AutowireServiceArguments extends CompilerPass
     {
         $arguments = $this->serviceLocator->getArguments()[0] ?? [];
 
-        dump( [__METHOD__ => \get_defined_vars()] );
+        // dump( [__METHOD__ => \get_defined_vars()] );
 
         foreach ( $this->taggedServiceIds( $this::LOCATOR, 'controller.service_arguments' ) as $id ) {
             $taggedService = $this->container->getDefinition( $id );
