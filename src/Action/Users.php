@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\Action;
 
+use Core\Compiler\Autodiscover;
 use Core\Interface\ActionInterface;
-use Core\Symfony\DependencyInjection\Autodiscover;
 use const Support\AUTO;
 
 #[Autodiscover( autowire : true )]

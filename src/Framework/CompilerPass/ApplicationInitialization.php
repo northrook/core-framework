@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Core\Framework\CompilerPass;
 
-use Core\Symfony\Console\{ListReport};
-use Core\Symfony\DependencyInjection\CompilerPass;
+use Core\Exception\CompilerException;
+use Core\Container\CompilerPass;
 use Support\Time;
 use JetBrains\PhpStorm\Language;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -33,7 +33,7 @@ final class ApplicationInitialization extends CompilerPass
 
     protected function initializeDefaultConfiguration() : void
     {
-        $log          = new ListReport( __METHOD__ );
+        // $log          = new ListReport( __METHOD__ );
         $app_defaults = new Finder();
 
         $app_defaults->files()->in( $this->defaultsDirectory )->name( ['*.php', '*.yaml'] );
@@ -42,23 +42,24 @@ final class ApplicationInitialization extends CompilerPass
             $project_path = $this->getProjectPath( $default );
 
             if ( ! $this->overrideExistingFile( $project_path ) ) {
-                $log->note( 'skipping '.$project_path );
+                // $log->note( 'skipping '.$project_path );
 
                 continue;
             }
 
-            $log->item( $project_path );
+            // $log->item( $project_path );
             $config = $this->createPhpConfig( $default->getRealPath() );
 
             $status = \file_put_contents( $project_path, $config );
 
-            if ( $status ) {
-                $log->note( 'generated' );
+            if ( ! $status ) {
+                CompilerException::error(
+                    message : 'Unable to write configuration file',
+                );
             }
-
-            $log->note( 'file_put_contents failed' );
+            // $log->note( 'file_put_contents failed' );
         }
-        $log->output();
+        // $log->output();
     }
 
     protected function createPhpConfig( string $source, bool $canEdit = true ) : string

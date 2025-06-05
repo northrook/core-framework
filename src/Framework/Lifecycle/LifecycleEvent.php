@@ -4,26 +4,16 @@ declare(strict_types=1);
 
 namespace Core\Framework\Lifecycle;
 
-use Core\Autowire\SettingsProvider;
-use Core\Interface\{LogHandler, Loggable};
-use Core\Profiler\{Interface\Profilable, StopwatchProfiler};
-use Symfony\Component\Stopwatch\Stopwatch;
+use Core\Autowire\{Logger, Profiler, SettingsProvider};
 use BadMethodCallException;
 
-abstract class LifecycleEvent implements Loggable, Profilable
+abstract class LifecycleEvent
 {
     use SettingsProvider,
-        LogHandler,
-        StopwatchProfiler;
+        Logger,
+        Profiler;
 
     protected static bool $handleLifecycleEvent;
-
-    final public function setProfiler(
-        ?Stopwatch $stopwatch,
-        ?string    $category = null,
-    ) : void {
-        $this->assignProfiler( $stopwatch, $category ?? 'Lifecycle' );
-    }
 
     final protected function skipEvent() : bool
     {

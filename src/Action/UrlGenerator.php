@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Action;
 
-use Core\Symfony\DependencyInjection\Autodiscover;
+use Core\Compiler\Autodiscover;
 use Core\Interface\ActionInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 

@@ -4,22 +4,21 @@ declare(strict_types=1);
 
 namespace Core;
 
-use Core\AssetManager\Config\{AssetManifestPass, RegisterAssetsPass};
 use Core\AssetManager\AssetManifest;
-use Core\Symfony\DependencyInjection\FinalizeParametersPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\{param, service};
-use Core\Symfony\Compiler\{
-    AutodiscoverServicesPass
-};
 use Core\Framework\CompilerPass\{
     ApplicationInitialization,
+    AutodiscoverServicesPass,
     AutowireServiceArguments,
+    FinalizeParametersPass,
+    // RegisterViewComponentsPass,
+    // AssetManifestPass,
+    // RegisterAssetsPass
 };
-use Core\View\Compiler\RegisterViewComponentsPass;
 
 /**
  * Core Symfony Framework.
@@ -71,26 +70,26 @@ final class CoreBundle extends AbstractBundle
 
         $container
             ->addCompilerPass( new AutodiscoverServicesPass(), priority : 1_024 )
-            ->addCompilerPass( new RegisterAssetsPass() )
-            ->addCompilerPass(
-                new RegisterViewComponentsPass(
-                    service( 'core.view.engine' ),
-                    service( 'debug.stopwatch' ),
-                    service( 'logger' ),
-                    service( 'cache.component_pool' ),
-                ),
-            )
+            // ->addCompilerPass( new RegisterAssetsPass() )
+            // ->addCompilerPass(
+            //     new RegisterViewComponentsPass(
+            //         service( 'core.view.engine' ),
+            //         service( 'debug.stopwatch' ),
+            //         service( 'logger' ),
+            //         service( 'cache.component_pool' ),
+            //     ),
+            // )
             ->addCompilerPass( new ApplicationInitialization() )
             ->addCompilerPass( new AutowireServiceArguments(), priority : -264 )
             ->addCompilerPass(
                 pass : new FinalizeParametersPass(),
                 type : PassConfig::TYPE_OPTIMIZE,
-            )
-            ->addCompilerPass(
-                pass : new AssetManifestPass(
-                    service( AssetManifest::class ),
-                ),
-                type : PassConfig::TYPE_OPTIMIZE,
             );
+            // ->addCompilerPass(
+        //     pass : new AssetManifestPass(
+        //         service( AssetManifest::class ),
+        //     ),
+        //     type : PassConfig::TYPE_OPTIMIZE,
+        // );
     }
 }

@@ -5,33 +5,24 @@ declare(strict_types=1);
 namespace Core\Framework;
 
 use Core\Framework\Controller\Attribute\OnDocument;
-use Core\Interface\{LogHandler, Loggable};
-use Core\Autowire\{ServiceLocator, SettingsProvider};
+use Core\Autowire\{Logger, Profiler, ServiceLocator, SettingsProvider};
 use Core\Framework\Response\{ResponseType, ViewResponse};
-use Core\Profiler\Interface\Profilable;
-use Core\Profiler\{StopwatchProfiler};
 use Symfony\Component\HttpFoundation\{Request};
 use Core\Framework\Controller\ResponseMethods;
 use Core\Framework\Controller\Attribute\{OnContent};
 use Exception, RuntimeException, ReflectionClass, ReflectionException;
-use Symfony\Component\Stopwatch\Stopwatch;
 use InvalidArgumentException;
 use const Support\AUTO;
 
-abstract class Controller implements Profilable, Loggable
+abstract class Controller
 {
     use ServiceLocator,
         SettingsProvider,
         ResponseMethods,
-        LogHandler,
-        StopwatchProfiler;
+        Logger,
+        Profiler;
 
     protected Request $request;
-
-    final public function setProfiler( ?Stopwatch $stopwatch, ?string $category = 'Controller' ) : void
-    {
-        $this->assignProfiler( $stopwatch, $category );
-    }
 
     /**
      * Set by {@see ControllerActionInvoker::__invoke}.
@@ -101,8 +92,8 @@ abstract class Controller implements Profilable, Loggable
                 continue;
             }
 
-            $action     = $method->getName();
-            $profiler   = $this->profiler?->event( $action );
+            $action = $method->getName();
+            $this->profilerStart( $action );
             $parameters = [];
 
             // Locate requested services arguments
@@ -134,7 +125,7 @@ abstract class Controller implements Profilable, Loggable
                 $this->logger?->error( $exception->getMessage(), ['exception' => $exception] );
             }
 
-            $profiler?->stop();
+            $this->profilerStop( $action );
         }
 
         $this->request->attributes->set( '_controller_actions', $calledMethods );

@@ -2,7 +2,7 @@
 
 namespace Core\Admin;
 
-use Core\Symfony\DependencyInjection\Autodiscover;
+use Core\Compiler\Autodiscover;
 
 #[Autodiscover]
 final class Dashboard {}

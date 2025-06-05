@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Core\Framework\CompilerPass;
 
 use Symfony\Component\DependencyInjection\{ContainerBuilder, ContainerInterface, Definition, Reference};
+use Core\Exception\CompilerException;
+use Core\Container\CompilerPass;
 use Core\Interface\ActionInterface;
 use Core\Profiler\Interface\Profilable;
 use JetBrains\PhpStorm\Deprecated;
 use Psr\Log\LoggerAwareInterface;
-use Core\Autowire\{ServiceLocator, SettingsProvider};
+use Core\Autowire\{Profiler, ServiceLocator, SettingsProvider};
 use Core\Framework\Controller;
-use Core\Symfony\Console\{ListReport};
-use Core\Symfony\DependencyInjection\{CompilerPass};
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use function Support\{class_adopts_any, uses_trait};
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -26,7 +26,7 @@ final class AutowireServiceArguments extends CompilerPass
 {
     public const string LOCATOR = 'core.service_locator';
 
-    private readonly ListReport $report;
+    // private readonly ListReport $report;
 
     protected readonly Definition $serviceLocator;
 
@@ -34,7 +34,7 @@ final class AutowireServiceArguments extends CompilerPass
 
     public function compile( ContainerBuilder $container ) : void
     {
-        $this->report = new ListReport( __METHOD__ );
+        // $this->report = new ListReport( __METHOD__ );
 
         $this->serviceLocator   = $this->getDefinition( $this::LOCATOR );
         $this->settingsProvider = $this->getDefinition( service( 'core.settings_provider' ) );
@@ -43,23 +43,24 @@ final class AutowireServiceArguments extends CompilerPass
             ->registerTaggedServices()
             ->autowireServices()
             ->autowireInterfaces();
-
-        $this->report->output();
+        // $this->report->output();
     }
 
     protected function autowireInterfaces() : self
     {
         if ( ! \interface_exists( ActionInterface::class ) ) {
-            $this->report->error( "\Core\Interface\ActionInterface does not exist; ".__METHOD__.' skipped.' );
+            CompilerException::error(
+                "\Core\Interface\ActionInterface does not exist; ".__METHOD__.' skipped.',
+            );
             return $this;
         }
         if ( ! \interface_exists( LoggerAwareInterface::class ) ) {
-            $this->report->error( "\Psr\Log\LoggerAwareInterface does not exist; ".__METHOD__.' skipped.' );
+            CompilerException::error( "\Psr\Log\LoggerAwareInterface does not exist; ".__METHOD__.' skipped.' );
             return $this;
         }
-        if ( ! \interface_exists( Profilable::class ) ) {
-            $this->report->error(
-                "\Core\Profiler\Interface\Profilable does not exist; ".__METHOD__.' skipped.',
+        if ( ! \class_exists( Profiler::class, false ) ) {
+            CompilerException::error(
+                "\Core\Autowire\Profiler does not exist; ".__METHOD__.' skipped.',
             );
             return $this;
         }
@@ -87,7 +88,7 @@ final class AutowireServiceArguments extends CompilerPass
                     $docBlock        = $setLoggerMethod->getDocComment();
                 }
                 catch ( Throwable $e ) {
-                    $this->report->error( $e->getMessage() );
+                    CompilerException::error( $e->getMessage() );
 
                     continue;
                 }
@@ -95,11 +96,11 @@ final class AutowireServiceArguments extends CompilerPass
                 $isDeprecated = ( $docBlock && \str_contains( $docBlock, '@deprecated' ) )
                                 || $reflect->getAttributes( Deprecated::class );
 
-                if ( $isDeprecated ) {
-                    $this->report->warning( 'setLogger deprecated for: '.$class );
-
-                    continue;
-                }
+                // if ( $isDeprecated ) {
+                //     $this->report->warning( 'setLogger deprecated for: '.$class );
+                //
+                //     continue;
+                // }
 
                 $loggerSet = false;
 
@@ -112,7 +113,7 @@ final class AutowireServiceArguments extends CompilerPass
                 }
 
                 if ( $this->verbose && $loggerSet ) {
-                    $this->report->warning( 'setLogger already set for: '.$service );
+                    // $this->report->warning( 'setLogger already set for: '.$service );
 
                     continue;
                 }
@@ -138,14 +139,14 @@ final class AutowireServiceArguments extends CompilerPass
                 $add[] = 'Call: setProfiler '.$stopwatch->__toString();
             }
 
-            if ( $add ) {
-                $this->report->item( $class );
-
-                foreach ( $add as $item ) {
-                    $this->report->add( $item );
-                }
-                $this->report->separator();
-            }
+            // if ( $add ) {
+            //     $this->report->item( $class );
+            //
+            //     foreach ( $add as $item ) {
+            //         $this->report->add( $item );
+            //     }
+            //     $this->report->separator();
+            // }
         }
 
         return $this;
@@ -180,15 +181,15 @@ final class AutowireServiceArguments extends CompilerPass
                 );
                 $add[] = 'SettingsProvider';
             }
-
-            if ( $add ) {
-                $this->report->item( $class );
-
-                foreach ( $add as $item ) {
-                    $this->report->add( $item );
-                }
-                $this->report->separator();
-            }
+            //
+            // if ( $add ) {
+            //     $this->report->item( $class );
+            //
+            //     foreach ( $add as $item ) {
+            //         $this->report->add( $item );
+            //     }
+            //     $this->report->separator();
+            // }
         }
 
         return $this;

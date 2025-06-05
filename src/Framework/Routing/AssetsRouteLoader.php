@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Core\Framework\Routing;
 
+use Core\Container\RouteLoader;
 use Core\Controller\AssetController;
-use Core\Framework\Config\RouteLoader;
 
 final class AssetsRouteLoader extends RouteLoader
 {

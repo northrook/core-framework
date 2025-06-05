@@ -27,7 +27,7 @@ final class RequestLifecycleHandler extends LifecycleEvent
 
     public function __invoke( RequestEvent $event ) : void
     {
-        $profiler = $this->profiler?->event( 'request' );
+        $this->profilerStart( 'request' );
 
         $this->isMainRequest = $event->isMainRequest();
         $this->request       = $event->getRequest();
@@ -46,7 +46,7 @@ final class RequestLifecycleHandler extends LifecycleEvent
         $this->attributes->set( '_view', $_view );
         $this->attributes->set( 'hx-request', $_view === ResponseType::CONTENT );
 
-        $profiler?->stop();
+        $this->profilerStop( 'request' );
     }
 
     protected function setRequestLocale() : void

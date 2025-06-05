@@ -52,7 +52,9 @@ final class ResponseViewHandler extends LifecycleEvent
 
         $this->responseProperties( $event );
 
-        $profiler = $this->profiler?->event( 'response.'.( $this->type?->name() ?? 'render' ) );
+        $profile = 'response.'.( $this->type?->name() ?? 'render' );
+
+        $this->profilerStart( $profile );
 
         $this->resolveContent( $event );
 
@@ -65,7 +67,7 @@ final class ResponseViewHandler extends LifecycleEvent
 
         $event->getResponse()->setContent( $string );
 
-        $profiler?->stop();
+        $this->profilerStop( $profile );
     }
 
     private function responseProperties( ResponseEvent $event ) : void
@@ -91,7 +93,6 @@ final class ResponseViewHandler extends LifecycleEvent
 
         // If contains any whitespace, we can safely assume it not a template string
         if ( \str_contains( $content, ' ' ) ) {
-            $this->profiler?->event( 'response.raw' )?->stop();
             return;
         }
 
@@ -99,24 +100,21 @@ final class ResponseViewHandler extends LifecycleEvent
             'view.template.clear_cache',
             true, // :: DEBUG
         ) ) {
-            $profiler = $this->profiler?->event( 'clear.cache', 'View' );
             $this->engine->clearTemplateCache();
-            $profiler?->stop();
         }
+
+        $this->profilerStart( 'response.content' );
 
         $template = null;
         $profiler = null;
 
         if ( \str_ends_with( $content, '.latte' ) ) {
-            $profiler = $this->profiler?->event( 'response.template' );
             $template = $content;
         }
         elseif ( $this->type === ResponseType::DOCUMENT && $this->template?->document ) {
-            $profiler = $this->profiler?->event( 'response.document' );
             $template = $this->template->document;
         }
         elseif ( $this->type === ResponseType::CONTENT && $this->template?->content ) {
-            $profiler = $this->profiler?->event( 'response.content' );
             $this->view->contentOnly();
             $template = $this->template->content;
         }
@@ -135,14 +133,15 @@ final class ResponseViewHandler extends LifecycleEvent
             ),
         );
 
-        $profiler?->stop();
+        $this->profilerStop( 'response.content' );
     }
 
     final protected function handleEnqueuedAssets() : void
     {
+        $this->profilerStart( 'response.assets' );
+
         foreach ( $this->view->document->assets->getEnqueuedAssets() as $assetKey ) {
-            $profiler = $this->profiler?->event( $assetKey, 'Asset' );
-            $asset    = $this->assetManager->getAsset( $assetKey );
+            $asset = $this->assetManager->getAsset( $assetKey );
 
             try {
                 $asset = $this->assetManager->getAsset( $assetKey );
@@ -152,17 +151,19 @@ final class ResponseViewHandler extends LifecycleEvent
 
                 continue;
             }
-            $html = $asset->getHtml();
+            // $html = $asset->getHtml();
+            //
+            // if ( $asset instanceof MinifiedAssetInterface
+            //      && $asset->getMinifier()->usedCache() === false
+            // ) {
+            //     $message = "The {$assetKey} was updated.";
+            //     $this->toastService->addMessage( 'info', $message );
+            // }
+            //
+            // $this->view->document->head->injectHtml( $html, $assetKey );
 
-            if ( $asset instanceof MinifiedAssetInterface
-                 && $asset->getMinifier()->usedCache() === false
-            ) {
-                $message = "The {$assetKey} was updated.";
-                $this->toastService->addMessage( 'info', $message );
-            }
-
-            $this->view->document->head->injectHtml( $html, $assetKey );
-            $profiler?->stop();
+            // $this->profilerLap( 'response.assets' );
         }
+        $this->profilerStop( 'response.assets' );
     }
 }

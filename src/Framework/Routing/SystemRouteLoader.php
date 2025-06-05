@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Core\Framework\Routing;
 
-use Core\Controller\{SystemController};
-use Core\Framework\Config\RouteLoader;
+use Core\Container\RouteLoader;
+use Core\Controller\SystemController;
 
 final class SystemRouteLoader extends RouteLoader
 {

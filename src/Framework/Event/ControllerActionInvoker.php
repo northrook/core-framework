@@ -8,8 +8,7 @@ use Core\Framework\Controller;
 use Core\Framework\Lifecycle\LifecycleEvent;
 use Symfony\Component\HttpKernel\Event\{ControllerArgumentsEvent, ControllerEvent};
 use Core\Framework\Response\Template;
-use Core\Framework\Controller\Attribute\OnContent;
-use Core\Framework\Controller\Attribute\OnDocument;
+use Core\Framework\Controller\Attribute\{OnContent, OnDocument};
 use InvalidArgumentException;
 use ReflectionException;
 use ReflectionAttribute;
@@ -36,7 +35,7 @@ final class ControllerActionInvoker extends LifecycleEvent
         if ( $this->skipEvent() ) {
             return;
         }
-        $profiler = $this->profiler?->event( 'controller.prepare' );
+        $this->profilerStart( 'controller.prepare' );
 
         // Get Template::attr from both Controller:class and Controller::method
         // Merge the two, return single Template
@@ -44,6 +43,14 @@ final class ControllerActionInvoker extends LifecycleEvent
 
         if ( $controller instanceof Controller ) {
             $controller->setCurrentRequest( $event->getRequest() );
+
+            $parameters = [
+                '_controller_class'  => $controller::class,
+                '_controller_method' => $method,
+                '_template'          => $this->resolveViewTemplate( $event, $controller ),
+            ];
+
+            $event->getRequest()->attributes->add( $parameters );
         }
         else {
             $this->log(
@@ -51,20 +58,9 @@ final class ControllerActionInvoker extends LifecycleEvent
                 level   : 'debug',
             );
             self::$handleLifecycleEvent = false;
-
-            $profiler?->stop();
-            return;
         }
 
-        $parameters = [
-            '_controller_class'  => $controller::class,
-            '_controller_method' => $method,
-            '_template'          => $this->resolveViewTemplate( $event, $controller ),
-        ];
-
-        $event->getRequest()->attributes->add( $parameters );
-
-        $profiler?->stop();
+        $this->profilerStop( 'controller.prepare' );
     }
 
     /**
@@ -75,7 +71,7 @@ final class ControllerActionInvoker extends LifecycleEvent
      */
     private function resolveViewTemplate( ControllerEvent $event, object|string $controller ) : Template
     {
-        $profiler = $this->profiler?->event( 'controller.view.template' );
+        $this->profilerStart( 'controller.view.template' );
 
         $template = ( $event->getControllerReflector()->getAttributes(
             Template::class,
@@ -83,7 +79,7 @@ final class ControllerActionInvoker extends LifecycleEvent
         )[0] ?? null )?->newInstance();
 
         if ( $template instanceof Template && $template->content && $template->document ) {
-            $profiler?->stop();
+            $this->profilerStop( 'controller.view.template' );
             return $template;
         }
 
@@ -99,14 +95,14 @@ final class ControllerActionInvoker extends LifecycleEvent
         }
 
         if ( ! $template ) {
-            $profiler?->stop();
+            $this->profilerStop( 'controller.view.template' );
             return $controllerTemplate;
         }
 
         $template->document ??= $controllerTemplate->document;
         $template->content  ??= $controllerTemplate->content;
 
-        $profiler?->stop();
+        $this->profilerStop( 'controller.view.template' );
         return $template;
     }
 
@@ -117,11 +113,11 @@ final class ControllerActionInvoker extends LifecycleEvent
      */
     private function resolveController( ControllerEvent $event ) : array
     {
-        $profiler   = $this->profiler?->event( 'controller.resolve' );
+        $this->profilerStart( 'controller.resolve' );
         $controller = $event->getController();
 
         if ( \is_object( $controller ) ) {
-            $profiler?->stop();
+            $this->profilerStop( 'controller.resolve' );
             return [$controller::class, '__invoke'];
         }
 
@@ -142,7 +138,7 @@ final class ControllerActionInvoker extends LifecycleEvent
 
         \assert( \is_string( $method ) );
 
-        $profiler?->stop();
+        $this->profilerStop( 'controller.resolve' );
         return [$controller, $method];
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Framework\Config;
+namespace Core\Container;
 
 use Core\Autowire\SettingsProvider;
 use Symfony\Component\Config\Loader\Loader;

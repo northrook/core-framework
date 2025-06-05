@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Core\Controller;
 
-use Core\{AssetManager, Assets\ImageAsset, Assets\ScriptAsset, Assets\StyleAsset, Pathfinder};
+// use Core\{AssetManager, Assets\ImageAsset, Assets\ScriptAsset, Assets\StyleAsset, Pathfinder};
+use Core\Pathfinder;
 use Core\Framework\Response\{Parameters, Template};
 use Core\Symfony\Toast;
 use Core\Framework\Controller;
@@ -20,7 +21,7 @@ final class PublicController extends Controller
     {
         $document
             ->title( 'Public Document Title' );
-            // ->assets( 'style.core', 'script.core', 'script.htmx' );
+        // ->assets( 'style.core', 'script.core', 'script.htmx' );
     }
 
     #[Route(
@@ -31,14 +32,14 @@ final class PublicController extends Controller
     ), ]
     #[Template( 'welcome.latte' )]
     public function index(
-        ?string      $route,
-        Document     $document,
-        Request      $request,
-        Pathfinder   $pathfinder,
-        AssetManager $assetManager,
-        ImageAsset   $imageAsset,
-        ScriptAsset  $scriptAsset,
-        StyleAsset   $styleAsset,
+        ?string    $route,
+        Document   $document,
+        Request    $request,
+        Pathfinder $pathfinder,
+        // AssetManager $assetManager,
+        // ImageAsset   $imageAsset,
+        // ScriptAsset  $scriptAsset,
+        // StyleAsset   $styleAsset,
     ) : string {
         $path = $pathfinder(
             'dir.root',
@@ -47,7 +48,7 @@ final class PublicController extends Controller
             'Index Demo Template',
         );
 
-        $scrpt = $scriptAsset( 'core.js' );
+        // $scrpt = $scriptAsset( 'core.js' );
 
         dump( \get_defined_vars() );
 

@@ -36,7 +36,7 @@ final class ResponseContentHandler extends LifecycleEvent implements EventSubscr
             return;
         }
 
-        $profiler = $this->profiler?->event( 'controller.view' );
+        $this->profilerStart( 'controller.view' );
 
         $content = $this->resolveViewContent( $event->getControllerResult() );
 
@@ -49,7 +49,7 @@ final class ResponseContentHandler extends LifecycleEvent implements EventSubscr
             $event->setResponse( new Response( $content ) );
         }
 
-        $profiler?->stop();
+        $this->profilerStop( 'controller.view' );
     }
 
     public function onKernelResponse( ResponseEvent $event ) : void
@@ -58,7 +58,7 @@ final class ResponseContentHandler extends LifecycleEvent implements EventSubscr
             return;
         }
 
-        $profiler = $this->profiler?->event( 'controller.response' );
+        $this->profilerStart( 'controller.response' );
 
         $_response_view = $event->getRequest()->attributes->get( '_view' );
 
@@ -80,7 +80,7 @@ final class ResponseContentHandler extends LifecycleEvent implements EventSubscr
             );
         }
 
-        $profiler?->stop();
+        $this->profilerStop( 'controller.response' );
     }
 
     private function resolveViewContent( mixed $value ) : string
