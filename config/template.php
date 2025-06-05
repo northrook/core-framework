@@ -69,8 +69,8 @@ return static function( ContainerConfigurator $container ) : void {
             [
                 '$engine'     => service( 'core.view.engine' ),
                 '$locator'    => service( 'view.component_locator' ),
-                '$components' => abstract_arg( ComponentBag::class ),
-                '$tags'       => abstract_arg( 'ComponentProperties::tagged' ),
+                '$components' => [],
+                '$tags'       => [],
             ],
         );
 };

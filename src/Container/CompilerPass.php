@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Core\Container;
 
+use Core\Console\StatusReport;
 use Core\Exception\CompilerException;
 use Support\ClassFinder;
-use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\{ContainerBuilder, Definition, Reference};
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
@@ -20,7 +18,7 @@ abstract class CompilerPass implements CompilerPassInterface
 {
     protected readonly ContainerBuilder $container;
 
-    protected readonly SymfonyStyle $console;
+    protected readonly StatusReport $report;
 
     protected readonly ParameterBagInterface $parameterBag;
 
@@ -40,18 +38,21 @@ abstract class CompilerPass implements CompilerPassInterface
     final public function process( ContainerBuilder $container ) : void
     {
         $this->container        = $container;
-        $this->console          = new SymfonyStyle( new StringInput( '' ), new ConsoleOutput() );
+        $this->report           = new StatusReport( $this::class );
         $this->parameterBag     = $container->getParameterBag();
         $this->projectDirectory = $this->resolveProjectDirectory();
         $this->verbose          = (bool) $this->parameterBag->get( 'kernel.debug' );
 
-        echo cli_format(
-            ' '.\trim( 'Compiler' ).' ',
-            'magenta',
-            'bg_black',
-            'bold',
-        ).' '.class_basename( $this::class )."\n";
+        // echo cli_format(
+        //     ' '.\trim( 'Compiler' ).' ',
+        //     'magenta',
+        //     'bg_black',
+        //     'bold',
+        // ).' '.class_basename( $this::class )."\n";
+
         $this->compile( $container );
+
+        $this->report->output();
     }
 
     /**
@@ -68,7 +69,7 @@ abstract class CompilerPass implements CompilerPassInterface
      *                                                             created on a missing service
      * @param bool                                   $nullable     whether to return null when the definition is not found
      *
-     * @return null|Definition the retrieved or newly created service definition, or null
+     * @return ($nullable is true ? null|Definition : Definition)
      *
      * @throws ServiceNotFoundException if the definition cannot be found, and $nullable is false
      */

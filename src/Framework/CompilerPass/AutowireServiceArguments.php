@@ -34,8 +34,6 @@ final class AutowireServiceArguments extends CompilerPass
 
     public function compile( ContainerBuilder $container ) : void
     {
-        // $this->report = new ListReport( __METHOD__ );
-
         $this->serviceLocator   = $this->getDefinition( $this::LOCATOR );
         $this->settingsProvider = $this->getDefinition( service( 'core.settings_provider' ) );
 
@@ -43,24 +41,28 @@ final class AutowireServiceArguments extends CompilerPass
             ->registerTaggedServices()
             ->autowireServices()
             ->autowireInterfaces();
-        // $this->report->output();
     }
 
     protected function autowireInterfaces() : self
     {
         if ( ! \interface_exists( ActionInterface::class ) ) {
             CompilerException::error(
-                "\Core\Interface\ActionInterface does not exist; ".__METHOD__.' skipped.',
+                message  : "\Core\Interface\ActionInterface does not exist; ".__METHOD__.' skipped.',
+                continue : $this->verbose,
             );
             return $this;
         }
         if ( ! \interface_exists( LoggerAwareInterface::class ) ) {
-            CompilerException::error( "\Psr\Log\LoggerAwareInterface does not exist; ".__METHOD__.' skipped.' );
+            CompilerException::error(
+                message  : "\Psr\Log\LoggerAwareInterface does not exist; ".__METHOD__.' skipped.',
+                continue : $this->verbose,
+            );
             return $this;
         }
-        if ( ! \class_exists( Profiler::class, false ) ) {
+        if ( ! \trait_exists( Profiler::class ) ) {
             CompilerException::error(
-                "\Core\Autowire\Profiler does not exist; ".__METHOD__.' skipped.',
+                message  : "\Core\Autowire\Profiler does not exist; ".__METHOD__.' skipped.',
+                continue : $this->verbose,
             );
             return $this;
         }
@@ -96,11 +98,11 @@ final class AutowireServiceArguments extends CompilerPass
                 $isDeprecated = ( $docBlock && \str_contains( $docBlock, '@deprecated' ) )
                                 || $reflect->getAttributes( Deprecated::class );
 
-                // if ( $isDeprecated ) {
-                //     $this->report->warning( 'setLogger deprecated for: '.$class );
-                //
-                //     continue;
-                // }
+                if ( $isDeprecated ) {
+                    $this->report->warning( 'setLogger deprecated for: '.$class );
+
+                    continue;
+                }
 
                 $loggerSet = false;
 
@@ -113,7 +115,7 @@ final class AutowireServiceArguments extends CompilerPass
                 }
 
                 if ( $this->verbose && $loggerSet ) {
-                    // $this->report->warning( 'setLogger already set for: '.$service );
+                    $this->report->warning( 'setLogger already set for: '.$service );
 
                     continue;
                 }
@@ -139,14 +141,14 @@ final class AutowireServiceArguments extends CompilerPass
                 $add[] = 'Call: setProfiler '.$stopwatch->__toString();
             }
 
-            // if ( $add ) {
-            //     $this->report->item( $class );
-            //
-            //     foreach ( $add as $item ) {
-            //         $this->report->add( $item );
-            //     }
-            //     $this->report->separator();
-            // }
+            if ( $add ) {
+                $this->report->item( $class );
+
+                foreach ( $add as $item ) {
+                    $this->report->add( $item );
+                }
+                $this->report->separator();
+            }
         }
 
         return $this;
@@ -181,15 +183,15 @@ final class AutowireServiceArguments extends CompilerPass
                 );
                 $add[] = 'SettingsProvider';
             }
-            //
-            // if ( $add ) {
-            //     $this->report->item( $class );
-            //
-            //     foreach ( $add as $item ) {
-            //         $this->report->add( $item );
-            //     }
-            //     $this->report->separator();
-            // }
+
+            if ( $add ) {
+                $this->report->item( $class );
+
+                foreach ( $add as $item ) {
+                    $this->report->add( $item );
+                }
+                $this->report->separator();
+            }
         }
 
         return $this;
@@ -229,7 +231,7 @@ final class AutowireServiceArguments extends CompilerPass
             }
             else {
                 $service_argument = $this::LOCATOR;
-                $this->console->error(
+                $this->report->error(
                     $this::class." could not find a serviceId for '{$id}' when parsing services tagged with '{$service_argument}'.",
                 );
             }

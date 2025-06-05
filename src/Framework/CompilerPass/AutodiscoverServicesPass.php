@@ -27,12 +27,9 @@ final class AutodiscoverServicesPass extends CompilerPass
 
     public function compile( ContainerBuilder $container ) : void
     {
-        // $this->report = new ListReport( __METHOD__ );
-
         $this
             ->autodiscoverAnnotatedClasses()
             ->autodiscover();
-        // $this->report->output();
     }
 
     private function autodiscover() : self
@@ -40,7 +37,7 @@ final class AutodiscoverServicesPass extends CompilerPass
         foreach ( $this->autodiscover as $className => $autodiscovered ) {
             $serviceId = $autodiscovered->serviceId;
 
-            // $this->report->item( "Registered: {$serviceId}" );
+            $this->report->item( "Registered: {$serviceId}" );
 
             $definition = $this->getDefinition( $serviceId, $className );
             $interfaces = \class_implements( $className ) ?: [];
@@ -62,12 +59,12 @@ final class AutodiscoverServicesPass extends CompilerPass
                             ),
                         );
                     }
-                    // $definition->addTag( $tagName, $attributes );
-                    // // $this->report->add( "tagged: '{$tagName}'" );
-                    //
-                    // foreach ( $attributes as $attribute => $value ) {
-                    //     $this->report->line( "[{$attribute} => {$value}]" );
-                    // }
+                    $definition->addTag( $tagName, $attributes );
+                    $this->report->add( "tagged: '{$tagName}'" );
+
+                    foreach ( $attributes as $attribute => $value ) {
+                        $this->report->line( "[{$attribute} => {$value}]" );
+                    }
                 }
             }
 
@@ -75,7 +72,7 @@ final class AutodiscoverServicesPass extends CompilerPass
                  && $definition->hasTag( 'kernel.event_subscriber' ) === false
             ) {
                 $definition->addTag( 'kernel.event_subscriber' );
-                // $this->report->add( "auto tagged: 'kernel.event_subscriber'" );
+                $this->report->add( "auto tagged: 'kernel.event_subscriber'" );
             }
 
             // :: Tags
@@ -125,7 +122,7 @@ final class AutodiscoverServicesPass extends CompilerPass
                 foreach ( $interfaces as $interface ) {
                     if ( \str_starts_with( ClassInfo::basename( $interface ), $basename ) ) {
                         $this->container->setAlias( $interface, $serviceId );
-                        // $this->report->add( "auto alias: '{$interface}'" );
+                        $this->report->add( "auto alias: '{$interface}'" );
                     }
                 }
             }
@@ -133,12 +130,12 @@ final class AutodiscoverServicesPass extends CompilerPass
             if ( \is_array( $autodiscovered->alias ) ) {
                 foreach ( $autodiscovered->alias as $alias ) {
                     $this->container->setAlias( $alias, $serviceId );
-                    // $this->report->add( "alias: '{$alias}'" );
+                    $this->report->add( "alias: '{$alias}'" );
                 }
             }
 
             $this->container->setDefinition( $serviceId, $definition );
-            // $this->report->separator();
+            $this->report->separator();
         }
 
         return $this;
@@ -154,7 +151,7 @@ final class AutodiscoverServicesPass extends CompilerPass
                 ->withAttribute( Autodiscover::class ) as $class
         ) {
             if ( ! $class->exists ) {
-                $this->console->error( [__METHOD__, "Class {$class} does not exist."] );
+                $this->report->error( __METHOD__." Class {$class} does not exist." );
 
                 continue;
             }

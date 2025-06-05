@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Framework\CompilerPass;
 
+use Core\Console\StatusReport;
 use Core\Exception\CompilerException;
 use Core\Container\CompilerPass;
 use Support\Time;
@@ -33,7 +34,7 @@ final class ApplicationInitialization extends CompilerPass
 
     protected function initializeDefaultConfiguration() : void
     {
-        // $log          = new ListReport( __METHOD__ );
+        $report       = new StatusReport( __METHOD__ );
         $app_defaults = new Finder();
 
         $app_defaults->files()->in( $this->defaultsDirectory )->name( ['*.php', '*.yaml'] );
@@ -42,12 +43,12 @@ final class ApplicationInitialization extends CompilerPass
             $project_path = $this->getProjectPath( $default );
 
             if ( ! $this->overrideExistingFile( $project_path ) ) {
-                // $log->note( 'skipping '.$project_path );
+                $report->note( 'skipping '.$project_path );
 
                 continue;
             }
 
-            // $log->item( $project_path );
+            $report->item( $project_path );
             $config = $this->createPhpConfig( $default->getRealPath() );
 
             $status = \file_put_contents( $project_path, $config );
@@ -57,9 +58,9 @@ final class ApplicationInitialization extends CompilerPass
                     message : 'Unable to write configuration file',
                 );
             }
-            // $log->note( 'file_put_contents failed' );
+            $report->note( 'file_put_contents failed' );
         }
-        // $log->output();
+        $report->output();
     }
 
     protected function createPhpConfig( string $source, bool $canEdit = true ) : string
@@ -172,14 +173,14 @@ final class ApplicationInitialization extends CompilerPass
             // Attempt to set permissions on fail
             $setPermissions = \chmod( $path, 0755 );
             if ( ! $setPermissions ) {
-                $this->console->error( 'Skipping existing file due to read permissions error: '.$path );
+                $this->report->error( 'Skipping existing file due to read permissions error: '.$path );
                 return false;
             }
         }
 
         // Always skip existing .yaml configs
         if ( \pathinfo( $path, PATHINFO_EXTENSION ) === 'yaml' ) {
-            $this->console->warning( 'Passed [yaml] file: '.$path );
+            $this->report->warning( 'Passed [yaml] file: '.$path );
             return false;
         }
 

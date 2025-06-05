@@ -28,10 +28,6 @@ return static function( ContainerConfigurator $container ) : void {
 
     $container->services()
         ->set( 'cache.pathfinder', LocalStorage::class )
-        ->call(
-            'setStopwatch',
-            [service( 'debug.stopwatch' )->ignoreOnInvalid()],
-        )
         ->tag( 'monolog.logger', ['channel' => 'cache'] )
         ->args( ['%kernel.cache_dir%/pathfinder_cache.php'] );
 };

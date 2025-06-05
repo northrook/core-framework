@@ -33,8 +33,8 @@ return static function( ContainerConfigurator $container ) : void {
         'site.timezone'    => $timezone,
 
         // Locales
-        'locale'           => param( 'kernel.locale' ),
-        'locale.supported' => param( 'kernel.locale.supported' ),
+        'locale'           => param( 'kernel.default_locale' ),
+        'locale.supported' => param( 'kernel.enabled_locales' ),
         'locale.detect'    => true,
 
         // Cache
