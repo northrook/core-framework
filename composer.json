@@ -30,12 +30,12 @@
     "northrook/design-system": "dev-main",
     "northrook/toast-bundle": "dev-main",
     "northrook/settings": "dev-main",
+    "northrook/php-class-finder": "dev-main",
     "symfony/framework-bundle": "@stable",
     "symfony/monolog-bundle": "@stable",
     "symfony/profiler-pack": "@stable",
     "symfony/debug-bundle": "@stable",
-    "symfony/serializer": "^7.2",
-    "northrook/php-class-finder": "dev-main"
+    "symfony/serializer": "@stable"
   },
   "require-dev": {
     "northrook/dev": "dev-main"
